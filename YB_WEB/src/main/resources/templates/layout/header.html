@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">>
+<head>
+<meta charset="UTF-8">
+<title>YB WEB 헤더</title>
+</head>
+<body>
+    <!-- 상단 헤더 -->
+    <header th:fragment="header" class="main-header">
+    <div class="header-inner">
+        <div class="logo">
+            <span class="logo-mark">◆</span>
+            <span class="logo-text">YB WEB</span>
+        </div>
+
+        <nav class="gnb">
+            <ul>
+                <li><a href="#">새소식</a></li>
+                <li><a href="#">게임정보</a></li>
+                <li><a href="#">가이드</a></li>
+                <li><a href="#">커뮤니티</a></li>
+                <li><a href="#">미디어</a></li>
+                <li><a href="#">이벤트</a></li>
+                <li><a href="#">샵</a></li>
+                <li><a href="#">고객센터</a></li>
+            </ul>
+        </nav>
+
+        <div class="header-actions">
+            <!-- 로그인 상태 -->
+            <div th:if="${session.loginMember != null}">
+                <span th:text="${session.loginMember.name}">모험가</span>님 환영합니다.
+                <form th:action="@{/logout}" method="post" style="display:inline;">
+                    <button class="btn-login" type="submit">LOGOUT</button>
+                </form>
+            </div>
+
+            <!-- 비로그인 상태 -->
+            <div th:if="${session.loginMember == null}">
+                <a th:href="@{/login}">
+                    <button class="btn-login" type="button">LOGIN</button>
+                </a>
+            </div>
+
+            <button class="btn-game-start" type="button">GAME START</button>
+        </div>
+    </div>
+
+    <div class="header-glow"></div>
+</header>
+</body>
+</html>

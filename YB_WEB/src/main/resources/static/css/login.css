@@ -1,0 +1,216 @@
+@charset "UTF-8";
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* 로그인 페이지 전용 body */
+body.login-page {
+    font-family: "Noto Sans KR", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    min-height: 100vh;
+    background:
+        radial-gradient(circle at 10% 0%, #e0f2fe 0%, transparent 55%),
+        radial-gradient(circle at 90% 0%, #fef3c7 0%, transparent 60%),
+        linear-gradient(to bottom, #eff6ff 0%, #e5e7eb 70%, #e5e7eb 100%);
+    color: #111827;
+
+    /* 세로 레이아웃: 헤더 – 메인 – 푸터 */
+    display: flex;
+    flex-direction: column;
+
+    padding-top: 76px; /* 헤더 높이만큼 */
+}
+
+.login-main {
+    flex: 1; /* 헤더/푸터 사이 남는 공간 꽉 채움 */
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* 블러 배경 */
+.login-bg {
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(circle at 20% 0%, rgba(129, 140, 248, 0.25), transparent 55%),
+        radial-gradient(circle at 80% 100%, rgba(248, 181, 129, 0.3), transparent 55%);
+    opacity: 0.9;
+    z-index: 0;
+}
+
+.login-wrap {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 420px;
+    padding: 24px 12px 32px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* 카드 */
+.login-card {
+    width: 100%;
+    background: #ffffff;
+    border-radius: 18px;
+    padding: 30px 28px 24px;
+    box-shadow:
+        0 18px 35px rgba(148, 163, 184, 0.5),
+        0 0 0 1px rgba(255, 255, 255, 0.6);
+}
+
+/* 로그인 카드 안의 로고 (헤더랑 이름 다름!!) */
+.login-header {
+    text-align: center;
+    margin-bottom: 22px;
+}
+
+.login-logo-mark {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #6366f1, #f97316);
+    color: #fff;
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    box-shadow: 0 0 20px rgba(129, 140, 248, 0.6);
+}
+
+.login-logo-text {
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    color: #111827;
+    margin-bottom: 4px;
+}
+
+.login-subtitle {
+    font-size: 13px;
+    color: #6b7280;
+}
+
+/* 폼 */
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.field label {
+    font-size: 13px;
+    color: #4b5563;
+}
+
+.field input {
+    border-radius: 10px;
+    border: 1px solid #d1d5db;
+    background: #f9fafb;
+    padding: 9px 11px;
+    font-size: 14px;
+    color: #111827;
+    outline: none;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+}
+
+.field input::placeholder {
+    color: #9ca3af;
+}
+
+.field input:focus {
+    border-color: #6366f1;
+    box-shadow:
+        0 0 0 1px rgba(99,102,241,0.2),
+        0 0 18px rgba(129,140,248,0.25);
+    background: #ffffff;
+}
+
+/* 에러 메시지 */
+.error-msg {
+    font-size: 12px;
+    color: #b91c1c;
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 8px;
+    padding: 7px 9px;
+    margin-top: 2px;
+}
+
+/* 로그인 submit 버튼 – 이름도 header랑 다르게 */
+.login-submit-btn {
+    margin-top: 4px;
+    width: 100%;
+    border: none;
+    border-radius: 999px;
+    padding: 10px 14px;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    background: linear-gradient(135deg, #6366f1, #f97316);
+    color: #fff;
+    box-shadow:
+        0 10px 18px rgba(148,163,184,0.7),
+        0 0 16px rgba(129,140,248,0.6);
+    transition: transform 0.08s ease, box-shadow 0.08s ease, filter 0.08s ease;
+}
+
+.login-submit-btn:hover {
+    filter: brightness(1.05);
+}
+
+.login-submit-btn:active {
+    transform: translateY(1px);
+}
+
+/* 링크들 */
+.login-extra {
+    margin-top: 10px;
+    text-align: center;
+    font-size: 12px;
+    color: #9ca3af;
+}
+
+.login-extra .link {
+    color: #6366f1;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.login-extra .link:hover {
+    text-decoration: underline;
+}
+
+.login-extra .divider {
+    margin: 0 6px;
+    color: #d1d5db;
+}
+
+/* 푸터 */
+.login-footer {
+    margin-top: 14px;
+    font-size: 11px;
+    color: #9ca3af;
+    text-align: center;
+}
+
+/* 모바일 여백 */
+@media (max-width: 480px) {
+    .login-card {
+        padding: 24px 18px 22px;
+    }
+}

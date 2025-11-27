@@ -1,0 +1,99 @@
+@charset "UTF-8";
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: "Noto Sans KR", sans-serif;
+    background: #ffffff;
+    color: #111;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* 전체 영역 */
+.error-wrap {
+    text-align: center;
+    padding: 60px 20px;
+    width: 100%;
+}
+
+/* 느낌표 아이콘 원 */
+.error-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    border: 2px solid #999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 32px;
+    color: #777;
+    margin: 0 auto 22px;
+}
+
+/* 메인 제목 */
+.error-title {
+    font-size: 26px;
+    font-weight: 600;
+    color: #111;
+    margin-bottom: 18px;
+}
+
+/* 설명 문장 */
+.error-msg {
+    font-size: 15px;
+    color: #666;
+    line-height: 1.65;
+    margin-bottom: 32px;
+}
+
+/* 버튼 영역 */
+.btn-area {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 25px;
+}
+
+.btn {
+    padding: 12px 26px;
+    border-radius: 6px;
+    font-size: 15px;
+    font-weight: 500;
+    text-decoration: none;
+    display: inline-block;
+}
+
+/* 버튼 스타일 */
+.btn-dark {
+    background: #333;
+    color: #fff;
+}
+
+.btn-orange {
+    background: #ff6500;
+    color: #fff;
+}
+
+/* 버튼 hover */
+.btn:hover {
+    opacity: 0.88;
+}
+
+/* 하단 정보 */
+.error-detail {
+    font-size: 12px;
+    color: #888;
+    margin-top: 12px;
+}
+
+/* 500 등 에러코드 숫자 크게 표시용 */
+.error-code {
+    font-size: 60px;
+    font-weight: 700;
+    letter-spacing: 6px;
+    color: #ff6500;
+    margin-bottom: 14px;
+}

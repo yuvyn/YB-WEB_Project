@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>룰렛 이벤트</title>
+
+    <!-- 폰트 -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+
+    <!-- CSS -->
+    <link rel="stylesheet" th:href="@{/css/eventA.css}">
+</head>
+<body>
+
+<div class="event-bg">
+    <!-- 은은한 광원 -->
+    <div class="bg-glow bg-glow-1"></div>
+    <div class="bg-glow bg-glow-2"></div>
+
+    <div class="page-wrap">
+        <header class="event-header">
+            <div class="event-title-wrap">
+                <span class="event-badge">WINTER SPECIAL</span>
+                <h1>겨울 스페셜 룰렛 이벤트</h1>
+            </div>
+            <p class="event-sub">
+                룰렛을 돌리고 <strong>인게임 보상</strong>을 획득하세요!<br/>
+                매일 주어지는 기회를 소진하기 전에 꼭 참여해 보세요.
+            </p>
+
+            <div class="event-meta">
+                <span>이벤트 기간 : 2025.12.01 ~ 2025.12.31</span>
+                <span>보상 지급 : 이벤트 종료 후 인게임 우편 일괄 지급</span>
+            </div>
+        </header>
+
+        <main class="event-layout">
+            <!-- 룰렛 영역 -->
+            <section class="panel-card roulette-card">
+                <div class="panel-header">
+                    <h2>룰렛</h2>
+                    <span>버튼을 눌러 운을 시험해 보세요!</span>
+                </div>
+
+                <div class="roulette-container">
+                    <div class="roulette-pointer"></div>
+
+                    <div class="roulette-wheel" id="rouletteWheel">
+                        <!-- 10개 보상 텍스트 -->
+                        <span class="segment-label">골드 100</span>
+                        <span class="segment-label">크리스탈 50</span>
+                        <span class="segment-label">강화 재료 상자</span>
+                        <span class="segment-label">아바타 조각</span>
+                        <span class="segment-label">펫 소환권</span>
+                        <span class="segment-label">실마엘 혈석 300</span>
+                        <span class="segment-label">카드 팩(희귀)</span>
+                        <span class="segment-label">칭호 상자</span>
+                        <span class="segment-label">배틀 아이템 상자</span>
+                        <span class="segment-label">꽝 (재도전)</span>
+                    </div>
+
+                    <div class="roulette-center">
+                        <span class="center-text">EVENT ROULETTE</span>
+                        <button id="btnStart" class="btn-start">START</button>
+                        <span class="center-sub">클릭하여 룰렛 시작</span>
+                    </div>
+                </div>
+
+                <p class="roulette-info">
+                    룰렛이 멈추면 해당 보상이 당첨됩니다.<br/>
+                    <span class="highlight">꽝 (재도전)</span>이 나올 경우 참여 기회가 차감되지 않습니다.
+                </p>
+            </section>
+
+            <!-- 우측 정보 영역 -->
+            <section class="panel-card info-card">
+                <div class="panel-header">
+                    <h2>이벤트 정보</h2>
+                    <span>참여 가능 횟수와 기록을 확인하세요.</span>
+                </div>
+
+                <div class="info-top">
+                    <div class="chance-box">
+                        <span class="chance-label">오늘 남은 기회</span>
+                        <div class="chance-value">
+                            <strong id="chanceCount">3</strong>
+                            <span class="chance-unit">회</span>
+                        </div>
+                    </div>
+                    <div class="user-box">
+                        <span class="user-label">참여 계정</span>
+                        <span class="user-name" th:text="${userName} ?: 'guest01'">guest01</span>
+                    </div>
+                </div>
+
+                <div class="info-desc">
+                    <ul>
+                        <li>하루 최대 <strong>3회</strong>까지 참여할 수 있습니다.</li>
+                        <li><strong>꽝 (재도전)</strong> 당첨 시, 기회 차감 없이 한 번 더 도전할 수 있습니다.</li>
+                        <li>이벤트 종료 후 <strong>인게임 우편</strong>으로 보상이 순차 지급됩니다.</li>
+                    </ul>
+                </div>
+
+                <div class="history-wrap">
+                    <div class="history-header">
+                        <h3>참여 내역</h3>
+                        <span id="historyEmptyText">아직 참여 내역이 없습니다.</span>
+                    </div>
+                    <ul id="historyList" class="history-list">
+                        <!-- JS에서 채워짐 -->
+                    </ul>
+                </div>
+            </section>
+        </main>
+    </div>
+</div>
+
+<!-- 팝업 오버레이 -->
+<div id="resultOverlay" class="overlay hidden">
+    <div class="overlay-backdrop"></div>
+    <div class="overlay-dialog">
+        <div class="dialog-glow"></div>
+        <h2>아이템 획득!</h2>
+        <p id="resultText">보상 이름</p>
+        <button id="btnResultOk" class="btn-result-ok">확인</button>
+    </div>
+</div>
+
+<!-- JS -->
+<script th:src="@{/js/eventA.js}"></script>
+</body>
+</html>
