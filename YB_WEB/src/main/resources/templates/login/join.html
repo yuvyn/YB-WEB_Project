@@ -29,6 +29,7 @@
         <!-- 회원가입 폼 -->
         <form th:action="@{/join}" method="post" class="register-form">
 
+            <!-- 아이디 -->
             <div class="field">
                 <label for="loginId">아이디</label>
                 <input type="text"
@@ -38,6 +39,25 @@
                        th:value="${loginId}">
             </div>
 
+			<!-- 비밀번호 -->
+            <div class="field">
+                <label for="password">비밀번호</label>
+                <input type="password"
+                       id="password"
+                       name="password"
+                       placeholder="비밀번호를 입력해 주세요">
+            </div>
+
+            <!-- 비밀번호 확인 -->
+            <div class="field">
+                <label for="passwordConfirm">비밀번호 확인</label>
+                <input type="password"
+                       id="passwordConfirm"
+                       name="passwordConfirm"
+                       placeholder="비밀번호를 다시 입력해 주세요">
+            </div>
+
+            <!-- 이름 -->
             <div class="field">
                 <label for="name">이름</label>
                 <input type="text"
@@ -47,7 +67,28 @@
                        th:value="${name}">
             </div>
 
-			<div class="field">
+            <!-- 닉네임 -->
+            <div class="field">
+                <label for="nickname">닉네임</label>
+                <input type="text"
+                       id="nickname"
+                       name="nickname"
+                       placeholder="닉네임을 입력해 주세요"
+                       th:value="${nickname}">
+            </div>
+
+            <!-- 휴대폰 번호 -->
+            <div class="field">
+                <label for="phone">휴대폰 번호</label>
+                <input type="text"
+                       id="phone"
+                       name="phone"
+                       placeholder="휴대폰 번호를 입력해 주세요 ( - 없이)"
+                       th:value="${phone}">
+            </div>
+
+            <!-- 이메일 -->
+            <div class="field">
                 <label for="email">이메일</label>
                 <input type="text"
                        id="email"
@@ -56,21 +97,35 @@
                        th:value="${email}">
             </div>
 
+            <!-- 생년월일 -->
             <div class="field">
-                <label for="password">비밀번호</label>
-                <input type="password"
-                       id="password"
-                       name="password"
-                       placeholder="비밀번호를 입력해 주세요">
-            </div>
+			    <label for="birth">생년월일</label>
+			    <input type="date"
+			           id="birth"
+			           name="birth"
+			           th:value="${birth}">
+			</div>
 
+            <!-- 성별 -->
             <div class="field">
-                <label for="passwordConfirm">비밀번호 확인</label>
-                <input type="password"
-                       id="passwordConfirm"
-                       name="passwordConfirm"
-                       placeholder="비밀번호를 다시 입력해 주세요">
-            </div>
+			    <label>성별</label>
+			    <div class="gender-group">
+			        <label class="gender-option">
+			            <input type="radio"
+			                   name="gender"
+			                   value="M"
+			                   th:checked="${gender} == 'M'">
+			            <span>남자</span>
+			        </label>
+			        <label class="gender-option">
+			            <input type="radio"
+			                   name="gender"
+			                   value="F"
+			                   th:checked="${gender} == 'F'">
+			            <span>여자</span>
+			        </label>
+			    </div>
+			</div>
 
             <!-- 에러 메시지 -->
             <div th:if="${error}" class="error-msg" th:text="${error}"></div>

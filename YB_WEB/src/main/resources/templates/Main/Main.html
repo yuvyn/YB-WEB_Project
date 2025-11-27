@@ -36,38 +36,84 @@
 
             <!-- 중앙: 메인 배너 & 서브 탭 -->
             <div class="hero-main-banner">
-                <div class="banner-main">
-                    <div class="banner-topline"></div>
-                    <div class="banner-content">
-                        <div class="banner-label">2025 WINTER SHOWCASE</div>
-                        <h2>겨울 시즌 대규모 업데이트</h2>
-                        <p>
-                            신규 레이드, 클래스, 섬 콘텐츠까지<br>
-                            한 번에 만나는 윈터 쇼케이스.
-                        </p>
-                        <div class="banner-actions">
-                            <button class="btn-primary">사전 등록하기</button>
-                            <button class="btn-ghost">업데이트 상세 보기</button>
-                        </div>
-                    </div>
-                    <div class="banner-glow"></div>
-                </div>
+    <div class="banner-main">
+        <div class="banner-topline"></div>
 
-                <div class="banner-tabs">
-                    <button class="active">
-                        <span class="tab-label">WINTER SHOWCASE</span>
-                        <span class="tab-desc">신규 레이드 & 클래스</span>
-                    </button>
-                    <button>
-                        <span class="tab-label">7주년 축제</span>
-                        <span class="tab-desc">한정 탈 것 & 코스튬</span>
-                    </button>
-                    <button>
-                        <span class="tab-label">업데이트 안내</span>
-                        <span class="tab-desc">패치 노트 확인</span>
-                    </button>
+        <!-- 왼쪽/오른쪽 화살표 -->
+        <button class="banner-nav prev" type="button">&lt;</button>
+        <button class="banner-nav next" type="button">&gt;</button>
+
+        <!-- 슬라이드들 -->
+        <div class="banner-slides">
+            <!-- 슬라이드 1 : WINTER SHOWCASE -->
+            <div class="banner-slide active" data-index="0">
+                <div class="banner-content">
+                    <div class="banner-label">2025 WINTER SHOWCASE</div>
+                    <h2>겨울 시즌 대규모 업데이트</h2>
+                    <p>
+                        신규 레이드, 클래스, 섬 콘텐츠까지<br>
+                        한 번에 만나는 윈터 쇼케이스.
+                    </p>
+                    <div class="banner-actions">
+                        <button class="btn-primary">사전 등록하기</button>
+                        <button class="btn-ghost">업데이트 상세 보기</button>
+                    </div>
                 </div>
+                <div class="banner-glow"></div>
             </div>
+
+            <!-- 슬라이드 2 : 7주년 축제 -->
+            <div class="banner-slide" data-index="1">
+                <div class="banner-content">
+                    <div class="banner-label">7TH ANNIVERSARY FESTA</div>
+                    <h2>7주년 기념 대축제</h2>
+                    <p>
+                        한정 탈 것, 코스튬, 칭호까지<br>
+                        7주년 기념 보상을 모두 모아 보세요.
+                    </p>
+                    <div class="banner-actions">
+                        <button class="btn-primary">이벤트 참여하기</button>
+                        <button class="btn-ghost">보상 목록 보기</button>
+                    </div>
+                </div>
+                <div class="banner-glow"></div>
+            </div>
+
+            <!-- 슬라이드 3 : 업데이트 안내 -->
+            <div class="banner-slide" data-index="2">
+                <div class="banner-content">
+                    <div class="banner-label">PATCH NOTE</div>
+                    <h2>업데이트 안내 및 패치 노트</h2>
+                    <p>
+                        시즌 밸런스 조정, 시스템 개편, 편의성 개선 등<br>
+                        자세한 패치 내역을 확인해 보세요.
+                    </p>
+                    <div class="banner-actions">
+                        <button class="btn-primary">패치 노트 보기</button>
+                        <button class="btn-ghost">이전 업데이트</button>
+                    </div>
+                </div>
+                <div class="banner-glow"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 아래 탭 버튼들 -->
+    <div class="banner-tabs">
+        <button class="active" data-slide="0">
+            <span class="tab-label">WINTER SHOWCASE</span>
+            <span class="tab-desc">신규 레이드 &amp; 클래스</span>
+        </button>
+        <button data-slide="1">
+            <span class="tab-label">7주년 축제</span>
+            <span class="tab-desc">한정 탈 것 &amp; 코스튬</span>
+        </button>
+        <button data-slide="2">
+            <span class="tab-label">업데이트 안내</span>
+            <span class="tab-desc">패치 노트 확인</span>
+        </button>
+    </div>
+</div>
 
             <!-- 우측: 공지 / 이벤트 / PC방 카드 -->
             <aside class="hero-right">
@@ -238,6 +284,6 @@
     <!-- 하단 푸터 -->
     <th:block th:replace="layout/footer :: footer"></th:block>
 </div>
-
+<script th:src="@{/js/main.js}"></script>
 </body>
 </html>

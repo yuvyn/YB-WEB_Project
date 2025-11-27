@@ -678,3 +678,72 @@ body {
     background: #111827;
     color: #f9fafb;
 }
+
+/* ---------- HERO BANNER SLIDER ---------- */
+
+.banner-main {
+    position: relative;
+}
+
+/* 슬라이드 래퍼 */
+.banner-slides {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+/* 개별 슬라이드 */
+.banner-slide {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.35s ease;
+}
+
+/* 처음에 보이는 슬라이드 */
+.banner-slide.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* 화살표 버튼 */
+.banner-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 28px;
+    height: 28px;
+    border-radius: 999px;
+    border: 1px solid rgba(148,163,184,0.8);
+    background: rgba(255,255,255,0.9);
+    font-size: 14px;
+    font-weight: 700;
+    color: #4b5563;
+    cursor: pointer;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 18px rgba(148,163,184,0.5);
+}
+
+.banner-nav.prev {
+    left: 12px;
+}
+
+.banner-nav.next {
+    right: 12px;
+}
+
+.banner-nav:hover {
+    background: #f9fafb;
+}
+
+/* 탭 active는 기존 스타일 그대로 + 약간 강조 */
+.banner-tabs button.active {
+    border-color: transparent;
+    background: linear-gradient(135deg,#6366f1,#f97316);
+    color: #ffffff;
+    box-shadow: 0 6px 16px rgba(99,102,241,0.35);
+}

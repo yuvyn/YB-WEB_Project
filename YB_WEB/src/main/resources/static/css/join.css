@@ -187,6 +187,80 @@ body.register-page {
     text-decoration: underline;
 }
 
+/* ========= 생년월일 인풋 정리 ========= */
+
+.field input[type="date"] {
+    appearance: none;
+    -webkit-appearance: none;
+    font-family: inherit;
+    font-size: 14px;
+    color: #6b7280;               /* 기본은 placeholder 느낌 */
+}
+
+/* 실제 값이 들어가면 글자색 진하게 */
+.field input[type="date"]:valid {
+    color: #111827;
+}
+
+/* 캘린더 아이콘 호버 느낌만 살짝 */
+.field input[type="date"]::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    opacity: 0.7;
+}
+
+.field input[type="date"]:hover::-webkit-calendar-picker-indicator {
+    opacity: 1;
+}
+
+
+/* ========= 성별 필드 (세그먼트 버튼) ========= */
+
+.gender-group {
+    display: flex;
+    gap: 8px;
+    margin-top: 2px;
+}
+
+.gender-option {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+/* 실제 라디오 버튼은 숨기고 */
+.gender-option input[type="radio"] {
+    display: none;
+}
+
+/* 보이는 부분은 span을 버튼처럼 */
+.gender-option span {
+    flex: 1;
+    text-align: center;
+    padding: 9px 0;
+    border-radius: 11px;
+    border: 1px solid #d1d5db;
+    background: #f9fafb;
+    font-size: 13px;
+    color: #4b5563;
+    transition:
+        border-color 0.15s ease,
+        box-shadow 0.15s ease,
+        background 0.15s ease,
+        color 0.15s ease;
+}
+
+/* 선택된 성별 하이라이트 */
+.gender-option input[type="radio"]:checked + span {
+    border-color: #6366f1;
+    background: #eef2ff;
+    color: #111827;
+    box-shadow:
+        0 0 0 1px rgba(99,102,241,0.18),
+        0 0 14px rgba(129,140,248,0.30);
+}
+
 /* ========= 반응형 ========= */
 
 @media (max-width: 768px) {

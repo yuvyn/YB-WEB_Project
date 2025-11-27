@@ -68,43 +68,59 @@ public class LoginController {
  // 회원가입 화면
     @GetMapping("/join")
     public String joinForm(Model model) {
-        // 처음 들어올 때 빈 값 세팅 (에러로 돌아올 때 덮어씌워짐)
+        // 에러로 돌아올 때는 기존 값 그대로, 처음 들어오면 빈 값 세팅
         if (!model.containsAttribute("loginId")) {
             model.addAttribute("loginId", "");
             model.addAttribute("name", "");
+            model.addAttribute("nickname", "");
+            model.addAttribute("phone", "");
             model.addAttribute("email", "");
+            model.addAttribute("birth", "");
+            model.addAttribute("gender", "");
         }
         return "login/join";   // templates/login/join.html
     }
 
- // 회원가입 처리
+    // 회원가입 처리
     @PostMapping("/join")
     public String join(@RequestParam("loginId") String loginId,
                        @RequestParam("name") String name,
+                       @RequestParam("nickname") String nickname,
+                       @RequestParam(value = "phone", required = false) String phone,
                        @RequestParam("email") String email,
+                       @RequestParam(value = "birth", required = false) String birth,
+                       @RequestParam(value = "gender", required = false) String gender,
                        @RequestParam("password") String password,
                        @RequestParam("passwordConfirm") String passwordConfirm,
                        Model model) {
 
-        // 1) 비밀번호 확인 (이건 화면쪽 검증이니까 컨트롤러에서 해도 괜찮음)
+        // 1) 비밀번호 확인
         if (!password.equals(passwordConfirm)) {
             model.addAttribute("error", "비밀번호와 비밀번호 확인이 일치하지 않습니다.");
             model.addAttribute("loginId", loginId);
             model.addAttribute("name", name);
+            model.addAttribute("nickname", nickname);
+            model.addAttribute("phone", phone);
             model.addAttribute("email", email);
+            model.addAttribute("birth", birth);
+            model.addAttribute("gender", gender);
             return "login/join";
         }
 
         try {
-            // 2) 나머지 가입 로직은 서비스에 위임
-            loginService.join(loginId, name, email, password);
+            // 2) 가입 로직 서비스에 위임
+            loginService.join(loginId, name, nickname, phone, email, birth, gender, password);
 
         } catch (IllegalStateException e) {
-            // 서비스에서 던진 중복 에러 처리
+            // 중복/검증 에러
             model.addAttribute("error", e.getMessage());
             model.addAttribute("loginId", loginId);
             model.addAttribute("name", name);
+            model.addAttribute("nickname", nickname);
+            model.addAttribute("phone", phone);
             model.addAttribute("email", email);
+            model.addAttribute("birth", birth);
+            model.addAttribute("gender", gender);
             return "login/join";
         }
 
