@@ -17,4 +17,9 @@ public class MainController {
     public String eventA() {
         return "event/eventB";
     }
+    
+    @GetMapping("/game")
+    public String game() {
+        return "game/game";
+    }
 }

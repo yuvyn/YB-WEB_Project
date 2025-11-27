@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<link rel="stylesheet" th:href="@{/css/game/game.css}">
+
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+<div class="game-root">
+
+    <!-- TITLE SCREEN -->
+    <div id="screen-title" class="screen active">
+        <div class="title-screen-inner card">
+            <div class="logo-big">루나 나이츠</div>
+            <div class="subtitle">세븐나이츠 느낌의 웹 미니 RPG 데모</div>
+            <button class="btn-big" id="btn-title-start">GAME START</button>
+            <div class="mt-12" style="font-size: 12px; opacity: .75;">
+                로그인, 로비, 던전, 전투, 보상까지 한 번에 도는 구조 예시
+            </div>
+        </div>
+    </div>
+
+    <!-- LOBBY SCREEN -->
+    <div id="screen-lobby" class="screen">
+        <div class="top-bar">
+            <div class="top-left">
+                <div class="avatar-small">🗡</div>
+                <div>
+                    <div style="font-size: 13px; font-weight: 600;">유저명: <span id="user-name">Player</span></div>
+                    <div style="font-size: 11px; opacity: .75;">Lv. 1 기사단장</div>
+                </div>
+            </div>
+            <div class="top-right">
+                <div class="pill">💰 Gold: <span id="gold-amount">0</span></div>
+                <button class="btn-secondary" id="btn-to-title">타이틀</button>
+            </div>
+        </div>
+
+        <div class="card lobby-layout">
+            <div>
+                <h2>루나 왕국 로비</h2>
+                <div style="font-size: 12px; opacity: .8; margin-bottom: 10px;">
+                    상단에서 재화 / 우편을 확인하고, 아래 메뉴에서<br>
+                    상점 / 뽑기 / 영웅 / 장비 / 던전 등으로 이동합니다.
+                </div>
+                <div class="menu-grid">
+                    <button class="menu-btn" data-menu="shop">
+                        <strong>상점</strong>
+                        <span>포션과 재료 구매 (데모에서는 준비중)</span>
+                    </button>
+                    <button class="menu-btn" data-menu="mail">
+                        <strong>우편함</strong>
+                        <span>보상 수령 (데모에서는 준비중)</span>
+                    </button>
+                    <button class="menu-btn" data-menu="gacha">
+                        <strong>영웅 뽑기</strong>
+                        <span>SSR/SR/R 영웅 소환 (구현 여지)</span>
+                    </button>
+                    <button class="menu-btn" data-menu="forge">
+                        <strong>제작소</strong>
+                        <span>장비 제작 / 승급 (준비중)</span>
+                    </button>
+                    <button class="menu-btn" data-menu="heroes">
+                        <strong>영웅</strong>
+                        <span>보유 영웅 목록 (데모에서는 고정 영웅)</span>
+                    </button>
+                    <button class="menu-btn" data-menu="equip">
+                        <strong>장비</strong>
+                        <span>무기 / 방어구 관리 (보상으로 획득)</span>
+                    </button>
+                    <button class="menu-btn" data-menu="dungeon">
+                        <strong>던전</strong>
+                        <span>스토리 스테이지 1-1 ~ 1-10 입장</span>
+                    </button>
+                </div>
+            </div>
+            <div>
+                <h3 style="font-size: 14px; margin-bottom: 6px;">공지 & 로그</h3>
+                <div class="news-box" id="lobby-log">
+                    <div class="news-item">[SYSTEM] 루나 나이츠에 접속하셨습니다.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- DUNGEON SCREEN -->
+    <div id="screen-dungeon" class="screen">
+        <div class="top-bar">
+            <div class="top-left">
+                <button class="btn-secondary" id="btn-back-lobby">&lt; 로비로</button>
+                <div style="font-size: 13px; font-weight: 600;">스토리 던전 - 숲의 입구</div>
+            </div>
+            <div class="top-right">
+                <div class="pill">💰 Gold: <span id="gold-amount2">0</span></div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="panel-title">
+                <span>스테이지 선택</span>
+                <span class="badge">Chapter 1 - Fairy Forest</span>
+            </div>
+            <div style="font-size: 12px; opacity: .8;">
+                1-1 ~ 1-10 스테이지 중 하나를 선택하여 전투를 진행합니다.<br>
+                클리어한 스테이지는 <b>CLEARED</b> 표시가 나타납니다.
+            </div>
+            <div class="stage-list" id="stage-list"></div>
+        </div>
+    </div>
+
+    <!-- BATTLE SCREEN -->
+    <div id="screen-battle" class="screen">
+        <div class="top-bar">
+            <div class="top-left">
+                <button class="btn-secondary" id="btn-battle-exit-small">던전으로</button>
+                <div style="font-size: 13px; font-weight: 600;">Stage: <span id="battle-stage-name"></span></div>
+            </div>
+            <div class="top-right">
+                <div class="pill">턴 기반 전투</div>
+                <div class="menu-button" id="btn-battle-menu">☰</div>
+            </div>
+        </div>
+
+        <div class="card battle-wrapper">
+            <div class="battlefield" id="battlefield">
+                <div class="ground"></div>
+
+                <!-- HERO -->
+                <div class="entity hero" id="hero-entity">
+                    <div class="entity-name" id="hero-name">루나 나이트</div>
+                    <div class="entity-avatar">🗡</div>
+                    <div class="entity-hp-bar">
+                        <div class="entity-hp-inner" id="hero-hp-bar"></div>
+                    </div>
+                    <div class="entity-hp-text" id="hero-hp-text"></div>
+                </div>
+
+                <!-- ENEMY -->
+                <div class="entity enemy" id="enemy-entity">
+                    <div class="entity-name" id="enemy-name"></div>
+                    <div class="entity-avatar enemy-face" id="enemy-avatar">🍄</div>
+                    <div class="entity-hp-bar">
+                        <div class="entity-hp-inner" id="enemy-hp-bar"></div>
+                    </div>
+                    <div class="entity-hp-text" id="enemy-hp-text"></div>
+                </div>
+
+                <!-- STAGE CLEAR MODAL -->
+                <div class="modal-backdrop" id="modal-clear">
+                    <div class="modal">
+                        <h2>STAGE CLEAR!</h2>
+                        <div style="font-size: 12px; opacity: .9;" id="clear-stage-label"></div>
+                        <div class="reward-list" id="reward-list"></div>
+                        <div>
+                            <button id="btn-next-stage">다음 스테이지</button>
+                            <button id="btn-restart-stage" class="btn-secondary">다시 시작</button>
+                            <button id="btn-exit-dungeon" class="btn-danger">던전 나가기</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PAUSE MENU MODAL -->
+                <div class="modal-backdrop" id="modal-pause">
+                    <div class="modal" style="background: radial-gradient(circle at top,#0ea5e9,#020617); border-color: rgba(129,230,217,0.9);">
+                        <h2>일시 정지</h2>
+                        <div class="mt-8">
+                            <button id="btn-continue" class="btn-secondary">계속하기</button>
+                            <button id="btn-restart2">다시 시작</button>
+                            <button id="btn-exit2" class="btn-danger">던전 나가기</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel mt-8">
+                <div>
+                    <div class="panel-title">
+                        <span>영웅 상태</span>
+                        <span class="badge">ATK <span id="hero-atk">70</span></span>
+                    </div>
+                    <div style="font-size: 12px; opacity: .8;">
+                        기본 공격 : 공격력 80% ~ 120%<br>
+                        스킬 : 공격력 130% ~ 170%<br>
+                        가드 : 이번 턴 받는 피해 50% 감소
+                    </div>
+                    <div class="mt-8">
+                        <button id="btn-attack">공격</button>
+                        <button id="btn-skill">스킬</button>
+                        <button id="btn-guard" class="btn-secondary">가드</button>
+                    </div>
+                </div>
+                <div>
+                    <div class="panel-title">
+                        <span>전투 로그</span>
+                        <span class="badge" id="battle-stage-label"></span>
+                    </div>
+                    <div class="log" id="battle-log"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script th:src="@{/js/game/game.js}"></script>
+</body>
+</html>

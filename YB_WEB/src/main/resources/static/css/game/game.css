@@ -1,0 +1,407 @@
+@charset "UTF-8";
+
+* { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: radial-gradient(circle at top, #0f172a, #020617);
+            color: #e5e7eb;
+        }
+        .game-root {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 24px 16px 40px;
+        }
+        h1,h2,h3 { margin: 0; }
+        button {
+            border: none;
+            border-radius: 999px;
+            padding: 9px 16px;
+            font-size: 14px;
+            cursor: pointer;
+            background: linear-gradient(135deg, #3b82f6, #6366f1);
+            color: white;
+            box-shadow: 0 8px 18px rgba(37,99,235,0.45);
+            transition: transform 0.08s ease, box-shadow 0.08s ease, opacity 0.12s ease;
+        }
+        button:hover:not(:disabled) {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 22px rgba(37,99,235,0.6);
+        }
+        button:disabled {
+            opacity: 0.4;
+            cursor: default;
+            box-shadow: none;
+            transform: none;
+        }
+        .btn-secondary {
+            background: linear-gradient(135deg, #4b5563, #111827);
+            box-shadow: 0 6px 16px rgba(15,23,42,0.7);
+        }
+        .btn-danger {
+            background: linear-gradient(135deg, #ef4444, #b91c1c);
+        }
+        .badge {
+            padding: 2px 8px;
+            border-radius: 999px;
+            font-size: 10px;
+            background: rgba(31,41,55,0.85);
+        }
+        .screen {
+            display: none;
+        }
+        .screen.active {
+            display: block;
+        }
+        .card {
+            border-radius: 18px;
+            padding: 16px;
+            background: rgba(15,23,42,0.97);
+            border: 1px solid rgba(75,85,99,0.8);
+            box-shadow: 0 20px 45px rgba(15,23,42,0.9);
+        }
+        .title-main {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+        .title-main span {
+            font-size: 13px;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            opacity: .7;
+        }
+        .title-main h1 {
+            font-size: 30px;
+            margin-top: 6px;
+        }
+
+        /* 공통 상단 상태바 */
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .top-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .top-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .avatar-small {
+            width: 32px;
+            height: 32px;
+            border-radius: 999px;
+            background: radial-gradient(circle at 30% 20%, #f9fafb, #9ca3af);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            border: 2px solid rgba(148,163,184,0.9);
+        }
+        .pill {
+            padding: 4px 10px;
+            border-radius: 999px;
+            background: rgba(15,23,42,0.9);
+            font-size: 12px;
+        }
+
+        /* ====== TITLE SCREEN ====== */
+        .title-screen-inner {
+            text-align: center;
+            margin-top: 40px;
+        }
+        .logo-big {
+            font-size: 40px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg,#f97316,#ec4899);
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+        .subtitle {
+            font-size: 13px;
+            opacity: 0.75;
+            margin-bottom: 22px;
+        }
+        .btn-big {
+            padding: 12px 26px;
+            font-size: 16px;
+        }
+
+        /* ====== LOBBY ====== */
+        .lobby-layout {
+            display: grid;
+            grid-template-columns: 2fr 3fr;
+            gap: 12px;
+        }
+        @media (max-width: 900px) {
+            .lobby-layout { grid-template-columns: 1fr; }
+        }
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit,minmax(120px,1fr));
+            gap: 10px;
+        }
+        .menu-btn {
+            border-radius: 16px;
+            padding: 12px 10px;
+            text-align: left;
+            background: radial-gradient(circle at top left, rgba(37,99,235,0.5), rgba(15,23,42,0.98));
+            border: 1px solid rgba(59,130,246,0.8);
+            cursor: pointer;
+            font-size: 13px;
+        }
+        .menu-btn span {
+            display: block;
+            font-size: 11px;
+            opacity: 0.75;
+        }
+        .menu-btn strong {
+            font-size: 14px;
+        }
+
+        .news-box {
+            font-size: 12px;
+            max-height: 140px;
+            overflow-y: auto;
+        }
+        .news-item {
+            margin-bottom: 4px;
+            opacity: 0.85;
+        }
+
+        /* ====== DUNGEON LIST ====== */
+        .stage-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .stage-card {
+            border-radius: 14px;
+            padding: 10px 12px;
+            background: radial-gradient(circle at top, rgba(37,99,235,0.25), rgba(15,23,42,0.98));
+            border: 1px solid rgba(55,65,81,0.9);
+            font-size: 13px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .stage-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* ====== BATTLE FIELD ====== */
+        .battle-wrapper {
+            border-radius: 20px;
+            padding: 12px;
+            background: linear-gradient(145deg, #020617, #0b1120);
+            box-shadow: 0 25px 60px rgba(15,23,42,0.9);
+            border: 1px solid rgba(75,85,99,0.7);
+            position: relative;
+        }
+        .battlefield {
+            position: relative;
+            height: 280px;
+            border-radius: 16px;
+            overflow: hidden;
+            background:
+                linear-gradient(to top, rgba(15,23,42,0.9), rgba(56,189,248,0.2)),
+                url("https://images.pexels.com/photos/2189706/pexels-photo-2189706.jpeg?auto=compress&cs=tinysrgb&w=1200") center/cover no-repeat;
+        }
+        .ground {
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 40px;
+            height: 70px;
+            background: linear-gradient(to top, rgba(15,23,42,0.95), transparent);
+        }
+        .entity {
+            position: absolute;
+            bottom: 80px;
+            width: 120px;
+            height: 140px;
+            border-radius: 24px;
+            box-shadow: 0 18px 35px rgba(15,23,42,0.8);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            overflow: hidden;
+        }
+        .hero {
+            left: 10%;
+            background: radial-gradient(circle at top left, #1d4ed8, #020617);
+            border: 1px solid rgba(59,130,246,0.9);
+        }
+        .enemy {
+            right: 10%;
+            background: radial-gradient(circle at top right, #b91c1c, #020617);
+            border: 1px solid rgba(248,113,113,0.9);
+        }
+        .entity-name {
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+        .entity-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 999px;
+            border: 2px solid rgba(148,163,184,0.85);
+            background: radial-gradient(circle at 30% 20%, #f9fafb, #9ca3af);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 8px;
+            font-size: 26px;
+        }
+        .enemy-face {
+            background: radial-gradient(circle at 30% 20%, #fecaca, #7f1d1d);
+        }
+        .entity-hp-bar {
+            width: 90%;
+            height: 10px;
+            border-radius: 999px;
+            background: rgba(15,23,42,0.8);
+            overflow: hidden;
+            margin-bottom: 4px;
+        }
+        .entity-hp-inner {
+            height: 100%;
+            width: 100%;
+            background: linear-gradient(90deg, #22c55e, #ef4444);
+            transition: width 0.25s ease;
+        }
+        .entity-hp-text {
+            font-size: 11px;
+            margin-bottom: 8px;
+            opacity: 0.9;
+        }
+
+        /* 데미지 텍스트 */
+        .damage-text {
+            position: absolute;
+            font-weight: 700;
+            font-size: 18px;
+            pointer-events: none;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.9);
+            animation: floatUp 0.8s ease-out forwards;
+        }
+        .damage-hero { color: #60a5fa; }
+        .damage-enemy { color: #f97316; }
+        @keyframes floatUp {
+            from { transform: translateY(0); opacity: 1; }
+            to   { transform: translateY(-40px); opacity: 0; }
+        }
+
+        /* 캐릭터 모션 */
+        .anim-hero-attack { animation: heroAttack .4s ease-out; }
+        @keyframes heroAttack {
+            0% { transform: translateX(0); }
+            40% { transform: translateX(80px); }
+            100% { transform: translateX(0); }
+        }
+        .anim-enemy-hit { animation: enemyHit .25s ease-out; }
+        @keyframes enemyHit {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-8px); }
+            50% { transform: translateX(6px); }
+            75% { transform: translateX(-4px); }
+            100% { transform: translateX(0); }
+        }
+        .anim-enemy-attack { animation: enemyAttack .4s ease-out; }
+        @keyframes enemyAttack {
+            0% { transform: translateX(0); }
+            40% { transform: translateX(-60px); }
+            100% { transform: translateX(0); }
+        }
+        .anim-hero-hit { animation: heroHit .25s ease-out; }
+        @keyframes heroHit {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(6px); }
+            50% { transform: translateX(-4px); }
+            75% { transform: translateX(3px); }
+            100% { transform: translateX(0); }
+        }
+
+        .panel {
+            margin-top: 10px;
+            display: grid;
+            grid-template-columns: 2fr 3fr;
+            gap: 10px;
+        }
+        @media (max-width: 900px) {
+            .panel { grid-template-columns: 1fr; }
+        }
+        .panel-title {
+            font-size: 13px;
+            margin-bottom: 4px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .log {
+            font-size: 12px;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+        .log-line { margin-bottom: 3px; }
+        .log-system { color: #38bdf8; }
+        .log-hero { color: #a5b4fc; }
+        .log-enemy { color: #fecaca; }
+
+        .menu-button {
+            border-radius: 999px;
+            width: 34px;
+            height: 34px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            background: rgba(15,23,42,0.8);
+            border: 1px solid rgba(148,163,184,0.8);
+            cursor: pointer;
+        }
+
+        /* STAGE CLEAR 모달 */
+        .modal-backdrop {
+            position: absolute;
+            inset: 0;
+            background: rgba(15,23,42,0.9);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 20;
+        }
+        .modal-backdrop.active { display: flex; }
+        .modal {
+            border-radius: 16px;
+            padding: 18px 16px 14px;
+            background: radial-gradient(circle at top, #f97316, #0b1120);
+            border: 2px solid rgba(254,240,138,0.9);
+            color: #fefce8;
+            text-align: center;
+            min-width: 260px;
+            box-shadow: 0 20px 45px rgba(0,0,0,0.8);
+        }
+        .modal h2 {
+            margin-bottom: 6px;
+        }
+        .reward-list {
+            font-size: 12px;
+            margin: 6px 0 10px;
+        }
+        .reward-list div { margin-bottom: 2px; }
+
+        /* 유틸 */
+        .mt-8 { margin-top: 8px; }
+        .mt-12 { margin-top: 12px; }
+        .mt-16 { margin-top: 16px; }
