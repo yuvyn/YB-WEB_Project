@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>회원가입 - YB WEB</title>
+
+    <!-- 폰트 -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+
+    <!-- 공통 CSS -->
+    <link rel="stylesheet" th:href="@{/css/signup_select.css}">
+    <link rel="stylesheet" th:href="@{/css/layout/header.css}">
+    <link rel="stylesheet" th:href="@{/css/layout/footer.css}">
+</head>
+<body class="signup-page">
+
+<div class="page">
+
+    <!-- 헤더 -->
+    <th:block th:replace="layout/header :: header"></th:block>
+
+    <!-- 메인 본문 -->
+    <section class="signup-select-area">
+        <div class="signup-box">
+
+            <div class="signup-title">
+                <h1>회원가입</h1>
+                <p>원하시는 방식으로 가입을 진행해 주세요.</p>
+            </div>
+
+            <div class="signup-buttons">
+
+                <!-- 구글 로그인 -->
+                <button class="btn-social google"
+                        type="button"
+                        onclick="location.href='/oauth2/authorization/google'">
+                    <img src="/img/google.png" alt="Google">
+                    <span>구글 계정으로 로그인</span>
+                </button>
+
+                <!-- 네이버 로그인 -->
+                <button class="btn-social naver"
+				        type="button"
+				        onclick="location.href='/oauth2/authorization/naver'">
+				    <span class="naver-icon">N</span>
+				    <span>네이버 아이디로 로그인</span>
+				</button>
+
+                <!-- YB WEB 자체 회원가입 -->
+                <button class="btn-normal"
+                        type="button"
+                        onclick="location.href='/join'">
+                    YB WEB 전용 회원가입
+                </button>
+
+            </div>
+
+            <div class="signup-other">
+                이미 계정이 있으신가요?
+                <a th:href="@{/login}">로그인 하기</a>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- 푸터 -->
+    <th:block th:replace="layout/footer :: footer"></th:block>
+
+</div>
+
+</body>
+</html>

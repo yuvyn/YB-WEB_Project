@@ -1,0 +1,185 @@
+@charset "UTF-8";
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* 공통 폰트 */
+body {
+    font-family: 'Noto Sans KR', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* =========================
+   회원가입 페이지 전용
+   ========================= */
+html, body {
+    height: 100%;
+}
+
+/* 로그인 페이지의 body.login-page랑 비슷하게 맞춘 버전 */
+body.signup-page {
+    min-height: 100vh;
+    background:
+        radial-gradient(circle at 10% 0%, #e0f2fe 0%, transparent 55%),
+        radial-gradient(circle at 90% 0%, #fef3c7 0%, transparent 60%),
+        linear-gradient(to bottom, #eff6ff 0%, #e5e7eb 70%, #e5e7eb 100%);
+    color: #111827;
+
+    display: flex;
+    flex-direction: column;
+
+    padding-top: 76px; /* 헤더 높이만큼 여백 */
+}
+
+/* 중앙 박스 감싸는 영역 (본문 역할) */
+.signup-select-area {
+    flex: 1;                 /* 남는 세로 공간 채우기 → 푸터 아래로 밀기 */
+    display: flex;
+    justify-content: center;
+    align-items: center;     /* 가운데 배치 */
+    padding: 40px 0 80px;    /* 아래 공간 조금 여유 */
+}
+
+/* 중앙 박스 */
+.signup-box {
+    width: 420px;
+    background: #ffffff;
+    padding: 36px 32px 40px;
+    border-radius: 24px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 18px 40px rgba(148,163,184,0.4);
+    text-align: center;
+}
+
+/* 제목 */
+.signup-title h1 {
+    font-size: 22px;
+    font-weight: 800;
+    color: #111827;
+}
+
+.signup-title p {
+    margin-top: 6px;
+    font-size: 13px;
+    color: #6b7280;
+}
+
+/* 버튼 묶음 */
+.signup-buttons {
+    margin-top: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* 소셜 로그인 공통 */
+.btn-social {
+    width: 100%;
+    border-radius: 999px;
+    padding: 12px 18px;
+    border: 1px solid #d1d5db;
+    background: #ffffff;
+    font-size: 14px;
+    font-weight: 500;
+    color: #374151;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: 0.15s;
+    box-shadow: 0 8px 18px rgba(148,163,184,0.25);
+}
+
+.btn-social:hover {
+    background: #f9fafb;
+}
+
+.btn-social img {
+    display: block;
+}
+
+/* 구글 */
+.btn-social.google img {
+    width: 20px;
+    height: 20px;
+}
+
+/* 네이버 버튼 전체 스타일 */
+.btn-social.naver {
+    background: #03c75a;
+    color: #ffffff;
+    border-color: #03c75a;
+    font-weight: 600;
+}
+
+/* 네이버 아이콘 (흰 사각형 + 초록 N) */
+.naver-icon {
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+    background: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 13px;
+    font-weight: 900;
+    color: #03c75a;
+    line-height: 1;
+}
+
+/* 일반 회원가입 */
+.btn-normal {
+    width: 100%;
+    border-radius: 999px;
+    padding: 14px 0;
+    font-size: 14px;
+    font-weight: 700;
+    background: linear-gradient(135deg,#6366f1,#f97316);
+    color: #ffffff;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 12px 26px rgba(99,102,241,0.35);
+}
+.btn-normal:hover {
+    filter: brightness(1.05);
+}
+
+/* 기타 텍스트 */
+.signup-other {
+    margin-top: 22px;
+    font-size: 12px;
+    color: #6b7280;
+}
+
+.signup-other a {
+    color: #111827;
+    font-weight: 600;
+    margin-left: 4px;
+}
+.signup-other a:hover {
+    text-decoration: underline;
+}
+
+.sns-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #6366f1, #f97316);
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 700;
+    text-decoration: none;
+    font-size: 14px;
+    box-shadow: 0 6px 14px rgba(99,102,241,0.25);
+    transition: filter 0.15s ease;
+}
+
+.sns-icon:hover {
+    filter: brightness(1.1);
+}

@@ -22,4 +22,14 @@ public class MainController {
     public String game() {
         return "game/game";
     }
+    
+    @GetMapping("/QnA")
+    public String QnA() {
+        return "board/QnAboard";
+    }
+    
+    @GetMapping("/signup")
+    public String signup() {
+        return "login/signup_select";
+    }
 }

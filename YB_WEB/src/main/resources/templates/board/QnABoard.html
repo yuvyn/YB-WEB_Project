@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>YB WEB - 문의 게시판</title>
+
+    <!-- 폰트 -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+
+    <!-- 공통 CSS -->
+    <link rel="stylesheet" th:href="@{/css/board/QnABoard.css}">
+    <link rel="stylesheet" th:href="@{/css/layout/header.css}">
+    <link rel="stylesheet" th:href="@{/css/layout/footer.css}">
+</head>
+<body>
+
+<div class="page">
+
+    <!-- 상단 헤더 -->
+    <th:block th:replace="layout/header :: header"></th:block>
+
+    <!-- 상단 타이틀 영역 -->
+    <section class="inquiry-hero">
+        <div class="content-inner">
+            <div class="inquiry-hero-inner">
+                <div class="inquiry-hero-text">
+                    <span class="inquiry-badge">CUSTOMER CENTER</span>
+                    <h1>문의 게시판</h1>
+                    <p>
+                        게임 이용 중 발생한 오류, 계정, 결제, 건의 사항을 남겨 주세요.<br>
+                        빠르게 확인 후 답변을 드리겠습니다.
+                    </p>
+                </div>
+                <div class="inquiry-hero-info">
+                    <div class="info-line">
+                        <span class="info-label">운영 시간</span>
+                        <span class="info-value">평일 10:00 ~ 18:00 (주말·공휴일 휴무)</span>
+                    </div>
+                    <div class="info-line">
+                        <span class="info-label">답변 소요 시간</span>
+                        <span class="info-value">평균 1~2 영업일 내</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 본문: 문의 게시판 -->
+    <section class="inquiry-section">
+        <div class="content-inner inquiry-layout">
+
+            <!-- 좌측: 카테고리 / 안내 -->
+            <aside class="inquiry-side">
+                <div class="side-card">
+                    <h2>문의 유형</h2>
+                    <ul class="side-type-list">
+                        <li class="active">전체 문의</li>
+                        <li>계정/로그인</li>
+                        <li>결제/캐시</li>
+                        <li>게임 오류/버그</li>
+                        <li>건의/피드백</li>
+                        <li>기타 문의</li>
+                    </ul>
+                </div>
+
+                <div class="side-card notice">
+                    <h2>안내사항</h2>
+                    <ul>
+                        <li>비속어, 욕설, 허위 사실 유포 시 제재될 수 있습니다.</li>
+                        <li>계정/결제 문의는 본인 인증 후 보다 빠르게 처리됩니다.</li>
+                        <li>중복 문의는 확인 및 답변이 지연될 수 있습니다.</li>
+                    </ul>
+                </div>
+            </aside>
+
+            <!-- 우측: 게시판 -->
+            <div class="inquiry-main">
+                <div class="board-header">
+                    <div class="board-title">
+                        <h2>문의 리스트</h2>
+                        <span class="board-count">총 <strong>128</strong>건</span>
+                    </div>
+
+                    <div class="board-actions">
+                        <select class="select-small">
+                            <option>전체 상태</option>
+                            <option>접수</option>
+                            <option>처리중</option>
+                            <option>답변완료</option>
+                        </select>
+                        <select class="select-small">
+                            <option>제목+내용</option>
+                            <option>제목</option>
+                            <option>작성자</option>
+                        </select>
+                        <div class="board-search">
+                            <input type="text" placeholder="검색어를 입력해 주세요">
+                            <button type="button">검색</button>
+                        </div>
+                        <button class="btn-write" type="button">문의 작성하기</button>
+                    </div>
+                </div>
+
+                <!-- 게시판 리스트 (더미데이터) -->
+                <div class="board-card">
+                    <table class="inquiry-table">
+                        <colgroup>
+                            <col style="width: 70px;">
+                            <col style="width: 110px;">
+                            <col>
+                            <col style="width: 110px;">
+                            <col style="width: 110px;">
+                            <col style="width: 90px;">
+                        </colgroup>
+                        <thead>
+                        <tr>
+                            <th>번호</th>
+                            <th>구분</th>
+                            <th>제목</th>
+                            <th>처리 상태</th>
+                            <th>작성일</th>
+                            <th>조회</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <!-- 최신 고정 공지 -->
+                        <tr class="row-notice">
+                            <td>공지</td>
+                            <td><span class="badge type-notice">안내</span></td>
+                            <td class="title">
+                                [필독] 1:1 문의 작성 전 자주 묻는 질문을 확인해 주세요.
+                            </td>
+                            <td><span class="badge status-done">답변완료</span></td>
+                            <td>2025.11.20</td>
+                            <td>1,203</td>
+                        </tr>
+
+                        <!-- 더미 데이터 예시 -->
+                        <tr>
+                            <td>128</td>
+                            <td><span class="badge type-account">계정</span></td>
+                            <td class="title">
+                                스팀 연동 후 계정이 사라진 것 같습니다.
+                            </td>
+                            <td><span class="badge status-ing">처리중</span></td>
+                            <td>2025.11.28</td>
+                            <td>32</td>
+                        </tr>
+                        <tr>
+                            <td>127</td>
+                            <td><span class="badge type-pay">결제</span></td>
+                            <td class="title">
+                                패키지 결제 후 아이템이 지급되지 않았습니다.
+                            </td>
+                            <td><span class="badge status-new">접수</span></td>
+                            <td>2025.11.28</td>
+                            <td>14</td>
+                        </tr>
+                        <tr>
+                            <td>126</td>
+                            <td><span class="badge type-bug">버그</span></td>
+                            <td class="title">
+                                특정 던전 입장 시 클라이언트가 강제 종료됩니다.
+                            </td>
+                            <td><span class="badge status-done">답변완료</span></td>
+                            <td>2025.11.27</td>
+                            <td>67</td>
+                        </tr>
+                        <tr>
+                            <td>125</td>
+                            <td><span class="badge type-suggest">건의</span></td>
+                            <td class="title">
+                                길드 콘텐츠 보상 구조 개선 건의드립니다.
+                            </td>
+                            <td><span class="badge status-done">답변완료</span></td>
+                            <td>2025.11.27</td>
+                            <td>41</td>
+                        </tr>
+                        <tr>
+                            <td>124</td>
+                            <td><span class="badge type-etc">기타</span></td>
+                            <td class="title">
+                                닉네임 변경 관련해서 문의드립니다.
+                            </td>
+                            <td><span class="badge status-new">접수</span></td>
+                            <td>2025.11.26</td>
+                            <td>19</td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                    <!-- 페이지네이션 -->
+                    <div class="pagination">
+                        <button class="page-btn" type="button">&laquo;</button>
+                        <button class="page-btn active" type="button">1</button>
+                        <button class="page-btn" type="button">2</button>
+                        <button class="page-btn" type="button">3</button>
+                        <button class="page-btn" type="button">4</button>
+                        <button class="page-btn" type="button">&raquo;</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 1:1 문의 실시간 채팅 위젯 -->
+    <div class="inquiry-chat-launcher">
+        <span>1:1 문의</span>
+    </div>
+
+    <div class="inquiry-chat-window">
+        <div class="chat-header">
+            <div class="chat-title">
+                <span class="chat-badge">REAL-TIME</span>
+                <h3>1:1 문의 채팅</h3>
+            </div>
+            <button class="chat-close" type="button">×</button>
+        </div>
+
+        <div class="chat-body">
+            <!-- 초기 안내 메시지 -->
+            <div class="chat-msg bot">
+                <div class="bubble">
+                    안녕하세요, YB WEB 고객센터입니다. 👋<br>
+                    아래 빠른 문의 유형을 선택하시거나, 직접 내용을 입력해 주세요.
+                </div>
+                <span class="time">지금</span>
+            </div>
+
+            <!-- 빠른 선택 버튼들 (더미 챗봇용) -->
+            <div class="chat-quick-wrap">
+                <p class="chat-quick-title">자주 묻는 질문 바로가기</p>
+                <div class="chat-quick-list">
+                    <button type="button" class="chat-quick-btn" data-key="account">계정/로그인 문제</button>
+                    <button type="button" class="chat-quick-btn" data-key="pay">결제/캐시 문의</button>
+                    <button type="button" class="chat-quick-btn" data-key="bug">게임 오류/버그</button>
+                    <button type="button" class="chat-quick-btn" data-key="event">이벤트/쿠폰 문의</button>
+                    <button type="button" class="chat-quick-btn" data-key="human">상담원 연결 요청</button>
+                </div>
+            </div>
+        </div>
+
+        <form class="chat-input-area">
+            <textarea rows="1"
+                      placeholder="문의 내용을 입력해 주세요. (스크린샷 등은 게시판 문의를 이용해 주세요.)"></textarea>
+            <button type="submit">전송</button>
+        </form>
+    </div>
+
+    <!-- 푸터 -->
+    <th:block th:replace="layout/footer :: footer"></th:block>
+
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const launcher = document.querySelector('.inquiry-chat-launcher');
+        const chatWindow = document.querySelector('.inquiry-chat-window');
+        const chatClose = document.querySelector('.chat-close');
+        const chatBody = document.querySelector('.chat-body');
+        const chatForm = document.querySelector('.chat-input-area');
+        const chatTextarea = chatForm.querySelector('textarea');
+        const quickButtons = document.querySelectorAll('.chat-quick-btn');
+
+        // 현재 모드: bot(챗봇), agent_wait(상담원 대기), agent(상담원 연결됨)
+        let chatMode = 'bot';
+
+        // 더미 FAQ 답변 맵
+        const quickAnswers = {
+            account: '🔐 [계정/로그인 안내]\n\n' +
+                '1) 비밀번호를 잊으신 경우, 로그인 화면의 "비밀번호 찾기"를 이용해 주세요.\n' +
+                '2) 다른 플랫폼(스팀, 구글 등)과 연동한 경우, 해당 플랫폼 계정으로 로그인해야 합니다.\n' +
+                '3) 계정 도용이 의심될 경우, 즉시 비밀번호를 변경하시고 문의 게시판으로 연락해 주세요.',
+            pay: '💳 [결제/캐시 안내]\n\n' +
+                '- 결제 후 10분 이내에 캐시/아이템이 지급되지 않았다면,\n' +
+                '  ① 결제 내역 스크린샷\n' +
+                '  ② 결제 일시 / 결제 수단\n' +
+                '  ③ 캐릭터명 / 서버명\n' +
+                '을 첨부하여 문의 게시판에 남겨 주세요.\n\n' +
+                '중복 결제가 확인될 경우, 각 스토어/결제사 정책에 따라 환불이 진행됩니다.',
+            bug: '🐞 [게임 오류/버그 안내]\n\n' +
+                '게임 오류 발생 시, 아래 정보를 함께 남겨 주시면 빠른 확인에 도움이 됩니다.\n' +
+                '  1) 발생 일시\n' +
+                '  2) 사용 기기 / OS / 브라우저\n' +
+                '  3) 오류 화면 스크린샷\n' +
+                '  4) 재현 가능 여부 (어떤 행동 후 발생하는지)\n\n' +
+                '심각한 버그의 경우, 패치 전까지 임시 조치 안내를 드릴 수 있습니다.',
+            event: '🎁 [이벤트/쿠폰 안내]\n\n' +
+                '- 이벤트 보상은 보통 지급일까지 최대 1~2영업일이 소요될 수 있습니다.\n' +
+                '- 쿠폰 번호는 대소문자를 구분하며, 유효기간이 지난 쿠폰은 사용이 불가능합니다.\n\n' +
+                '※ 특정 이벤트 보상 누락이 의심될 경우,\n' +
+                '  참여 일시 / 이벤트 명 / 캐릭터명 을 함께 적어 문의해 주세요.'
+            // human 은 아래에서 따로 처리
+        };
+
+        function openChat() {
+            chatWindow.classList.add('open');
+        }
+
+        function closeChat() {
+            chatWindow.classList.remove('open');
+        }
+
+        launcher.addEventListener('click', openChat);
+        chatClose.addEventListener('click', closeChat);
+
+        // 텍스트 영역 엔터로 전송 (shift+enter는 줄바꿈)
+        chatTextarea.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                chatForm.requestSubmit();
+            }
+        });
+
+        // 빠른 버튼(챗봇 + 상담원 연결) 클릭 이벤트
+        quickButtons.forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                const key = btn.dataset.key;
+                const userText = btn.textContent.trim();
+
+                // 내 말풍선
+                appendMessage('user', userText);
+
+                if (key === 'human') {
+                    // 상담원 연결 요청 로직
+                    requestAgent();
+                    return;
+                }
+
+                const botText = quickAnswers[key] || '죄송합니다. 아직 준비되지 않은 항목입니다.';
+
+                // 챗봇 응답
+                setTimeout(function () {
+                    appendMessage('bot', botText);
+                }, 400);
+            });
+        });
+
+        // 상담원 연결 요청(더미)
+        function requestAgent() {
+            // 모드 변경
+            chatMode = 'agent_wait';
+
+            appendSystemMessage('상담원 연결을 요청하셨습니다. 잠시만 기다려 주세요...');
+
+            // 상담원이 입장하는 것처럼 더미 연출
+            setTimeout(function () {
+                appendSystemMessage('상담원이 채팅에 입장했습니다.');
+                appendMessage('bot',
+                    '[상담원] 안녕하세요, YB WEB 고객센터입니다. 😊\n' +
+                    '궁금하신 내용을 자세히 적어 주시면 순서대로 안내 도와드리겠습니다.'
+                );
+                chatMode = 'agent';
+            }, 1200);
+        }
+
+        // 입력창 submit
+        chatForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            const text = chatTextarea.value.trim();
+            if (!text) return;
+
+            // 내 메시지
+            appendMessage('user', text);
+            chatTextarea.value = '';
+
+            // 모드에 따라 응답 다르게
+            if (chatMode === 'bot') {
+                // 챗봇 기본 응답 (자유 입력용)
+                setTimeout(function () {
+                    appendMessage('bot',
+                        '문의해 주셔서 감사합니다. 🙏\n' +
+                        '현재는 데모 버전으로, 실제 상담원과의 연결은 구현 전입니다.\n' +
+                        '실 서비스에서는 담당자가 순차적으로 채팅에 참여하여 1:1 안내를 드리게 됩니다.'
+                    );
+                }, 800);
+            } else if (chatMode === 'agent_wait') {
+                // 상담원 대기 중일 때
+                setTimeout(function () {
+                    appendMessage('bot',
+                        '[시스템] 현재 상담원 연결을 준비 중입니다. 잠시만 기다려 주세요.'
+                    );
+                }, 600);
+            } else if (chatMode === 'agent') {
+                // 상담원 모드인 것처럼 응답 (더미)
+                setTimeout(function () {
+                    appendMessage('bot',
+                        '[상담원] 남겨주신 내용을 확인 중입니다.\n' +
+                        '현재 데모 환경이라 실제 계정/결제 정보는 확인할 수 없지만,\n' +
+                        '실제 서비스에서는 이 위치에서 상담원이 직접 답변을 입력하게 됩니다.'
+                    );
+                }, 900);
+            }
+        });
+
+        // 일반 메시지(유저/봇)
+        function appendMessage(type, text) {
+            const msg = document.createElement('div');
+            msg.classList.add('chat-msg', type);
+
+            const bubble = document.createElement('div');
+            bubble.classList.add('bubble');
+            bubble.innerText = text;
+
+            const time = document.createElement('span');
+            time.classList.add('time');
+            const now = new Date();
+            time.textContent =
+                now.getHours().toString().padStart(2, '0') + ':' +
+                now.getMinutes().toString().padStart(2, '0');
+
+            msg.appendChild(bubble);
+            msg.appendChild(time);
+
+            chatBody.appendChild(msg);
+            chatBody.scrollTop = chatBody.scrollHeight;
+        }
+
+        // 시스템 메시지 (가운데 얇은 문구)
+        function appendSystemMessage(text) {
+            const msg = document.createElement('div');
+            msg.classList.add('chat-msg', 'system');
+
+            const bubble = document.createElement('div');
+            bubble.classList.add('bubble');
+            bubble.innerText = text;
+
+            msg.appendChild(bubble);
+
+            chatBody.appendChild(msg);
+            chatBody.scrollTop = chatBody.scrollHeight;
+        }
+    });
+</script>
+</body>
+</html>

@@ -46,8 +46,27 @@
                         <span class="divider">|</span>
                         <a href="#" class="link">비밀번호 찾기</a>
                         <span class="divider">|</span>
-                        <a th:href="@{/join}" class="link">회원가입</a>
+                        <a th:href="@{/signup}" class="link">회원가입</a>
                     </div>
+                    
+                    <div class="social-login">
+				        <div class="social-title">다른 계정으로 로그인</div>
+				        <div class="social-buttons">
+				            <!-- 구글 -->
+				            <button class="social-btn google" 
+							        th:onclick="|location.href='@{/oauth2/authorization/google}'|">
+							    <img src="/img/google.png" alt="Google">
+							</button>
+				
+				            <!-- 네이버 -->
+				            <button type="button"
+				                    class="social-btn naver"
+				                    th:onclick="|location.href='@{/oauth2/authorization/naver}'|">
+				                <!-- 이미지 대신 N 글자만 써도 됨 -->
+				                <span class="naver-text">N</span>
+				            </button>
+				        </div>
+				    </div>
                 </form>
             </div>
         </div>
