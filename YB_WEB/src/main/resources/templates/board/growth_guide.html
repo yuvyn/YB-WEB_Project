@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>성장 가이드 - YB WEB</title>
+
+    <!-- 폰트 -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+
+    <!-- 공통 레이아웃 CSS -->
+    <link rel="stylesheet" th:href="@{/css/layout/header.css}">
+    <link rel="stylesheet" th:href="@{/css/layout/footer.css}">
+
+    <!-- 성장 가이드 전용 CSS -->
+    <link rel="stylesheet" th:href="@{/css/board/growth_guide.css}">
+</head>
+<body class="board-page">
+
+<div class="page">
+
+    <!-- 공통 헤더 -->
+    <th:block th:replace="layout/header :: header"></th:block>
+
+    <!-- 메인 영역 -->
+    <main class="board-main">
+
+        <!-- 상단 헤더 -->
+        <section class="board-header">
+            <div class="board-header-inner">
+                <div class="board-title-wrap">
+                    <p class="breadcrumb">가이드 &gt; 성장 가이드</p>
+                    <h1>성장 가이드</h1>
+                    <p class="board-desc">
+                        레벨업·장비 세팅·골드 수급까지, 단계별로 정리된 성장 가이드를 책 형태로 확인해 보세요.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 성장 가이드 책 영역 -->
+        <section class="growth-section">
+            <div class="board-inner">
+
+                <!-- 책 열기 / 페이지 제어용 input (화면에서는 숨김) -->
+                <input type="checkbox" id="growth-book-open" class="book-toggle">
+
+                <input type="radio" name="growth-page" id="growth-page-1" class="page-radio" checked>
+                <input type="radio" name="growth-page" id="growth-page-2" class="page-radio">
+                <input type="radio" name="growth-page" id="growth-page-3" class="page-radio">
+
+                <div class="growth-layout">
+
+                    <!-- 왼쪽: 책 설명/탭 -->
+                    <aside class="growth-side">
+                        <div class="growth-side-card">
+                            <h2>성장 로드맵</h2>
+                            <p>
+                                처음 시작하는 모험가부터<br>
+                                엔드 콘텐츠를 노리는 유저까지,<br>
+                                구간별 핵심만 빠르게 볼 수 있도록 정리했습니다.
+                            </p>
+                            <ul class="growth-summary">
+                                <li>1장 – 스타트 대시 / 점핑</li>
+                                <li>2장 – 장비·전투 레벨 성장</li>
+                                <li>3장 – 골드·재화·루틴 관리</li>
+                            </ul>
+                        </div>
+
+                        <!-- 탭 (책 페이지와 연동) -->
+                        <div class="growth-tabs">
+                            <label class="growth-tab tab-1" for="growth-page-1">
+                                CH.1 스타트 가이드
+                            </label>
+                            <label class="growth-tab tab-2" for="growth-page-2">
+                                CH.2 장비 / 전투 성장
+                            </label>
+                            <label class="growth-tab tab-3" for="growth-page-3">
+                                CH.3 골드 / 일일 루틴
+                            </label>
+                        </div>
+                    </aside>
+
+                    <!-- 오른쪽: 책 전체 -->
+                    <div class="growth-book-area">
+
+                        <!-- 닫힌 책 (표지) -->
+                        <label for="growth-book-open" class="growth-book-cover">
+                            <div class="cover-inner">
+                                <div class="cover-tag">GROWTH GUIDE</div>
+                                <h2>YB WEB 성장 가이드 북</h2>
+                                <p>클릭하면 책이 열리고 1페이지부터 내용을 볼 수 있습니다.</p>
+                                <div class="cover-meta">
+                                    <span>초보·복귀 모험가 추천</span>
+                                    <span>총 3장 구성</span>
+                                </div>
+                                <div class="cover-hint">클릭하여 펼치기</div>
+                            </div>
+                        </label>
+
+                        <!-- 열린 책 -->
+                        <div class="growth-book">
+                            <!-- 왼쪽 페이지 -->
+                            <div class="book-page page-left">
+                                <!-- 페이지 1 내용 (왼쪽) -->
+                                <div class="page-content page-1-left">
+                                    <h3>CH.1 초보/복귀 스타트 가이드</h3>
+                                    <ul>
+                                        <li>점핑권 또는 성장 지원 상자 활용 시, 추천 코스 정리</li>
+                                        <li>메인 퀘스트 동선과 꼭 들러야 할 서브 콘텐츠</li>
+                                        <li>처음 골드를 어디에 쓰는 것이 효율적인지</li>
+                                        <li>장비는 어느 구간까지 “넘어가도 되는지” 기준</li>
+                                    </ul>
+                                </div>
+
+                                <!-- 페이지 2 내용 (왼쪽) -->
+                                <div class="page-content page-2-left">
+                                    <h3>CH.2 장비 / 전투 레벨 성장</h3>
+                                    <ul>
+                                        <li>구간별 추천 장비 티어 및 강화 우선 순위</li>
+                                        <li>스킬 트리 예시와 콘텐츠별 추천 세팅</li>
+                                        <li>주간/일일 레이드 스케줄 예시</li>
+                                        <li>부캐 활용을 통한 성장 동선 단축 팁</li>
+                                    </ul>
+                                </div>
+
+                                <!-- 페이지 3 내용 (왼쪽) -->
+                                <div class="page-content page-3-left">
+                                    <h3>CH.3 골드 / 재화 관리</h3>
+                                    <ul>
+                                        <li>매주 확보 가능한 기본 골드 루트 정리</li>
+                                        <li>거래 가능한 재화 vs 계정 귀속 재화 구분</li>
+                                        <li>“필수 지출” / “선택 지출” 항목 나누기</li>
+                                        <li>장기적으로 모아야 할 재화 체크리스트</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <!-- 오른쪽 페이지 -->
+                            <div class="book-page page-right">
+                                <!-- 페이지 1 내용 (오른쪽) -->
+                                <div class="page-content page-1-right">
+                                    <h3>추천 진행 순서 (CH.1)</h3>
+                                    <ol>
+                                        <li>점핑 또는 스토리 선택 → 메인 퀘스트 진행</li>
+                                        <li>가이드 퀘스트로 시스템 개방(스킬/ 장비/ 던전 등)</li>
+                                        <li>첫 장비 세팅 &amp; 간단한 스킬 트리 맞추기</li>
+                                        <li>초반 성장 구간 종료 후, CH.2로 넘어가기</li>
+                                    </ol>
+                                    <p class="page-tip">TIP: 초반에는 “완벽한 세팅”보다
+                                        빠르게 여러 콘텐츠를 열어보는 것이 중요해요.</p>
+                                </div>
+
+                                <!-- 페이지 2 내용 (오른쪽) -->
+                                <div class="page-content page-2-right">
+                                    <h3>성장 체크포인트 (CH.2)</h3>
+                                    <ol>
+                                        <li>내 레벨 구간에서 목표해야 할 전투력 / 장비 점수</li>
+                                        <li>요일 던전, 레이드, 이벤트를 통한 재료 수급 루틴</li>
+                                        <li>부캐릭터는 어디까지 키울지 기준 정하기</li>
+                                        <li>다음 장비 티어를 준비하는 교체 타이밍</li>
+                                    </ol>
+                                    <p class="page-tip">TIP: 특정 구간에서 막힌다면,
+                                        한 단계 낮은 던전/레이드에서 재료를 모아보세요.</p>
+                                </div>
+
+                                <!-- 페이지 3 내용 (오른쪽) -->
+                                <div class="page-content page-3-right">
+                                    <h3>일일 / 주간 루틴 예시 (CH.3)</h3>
+                                    <ul>
+                                        <li>일일: 숙제/레이드/던전/미션 등 필수 루틴</li>
+                                        <li>주간: 주간 보상 초기화 기준으로 묶어서 처리</li>
+                                        <li>골드 수급 루틴 + 소비 루틴을 분리해서 관리</li>
+                                        <li>이벤트 / 시즌 패스를 활용한 추가 재화 확보</li>
+                                    </ul>
+                                    <p class="page-tip">TIP: “해야 하는 것”과
+                                        “해도 되는 것”을 나눠두면 피로도가 확 줄어듭니다.</p>
+                                </div>
+                            </div>
+
+                            <!-- 페이지 넘기는 화살표 (라벨) -->
+                            <!-- CH.1 → CH.2 -->
+                            <label for="growth-page-2"
+                                   class="arrow-btn arrow-next arrow-next-1">
+                                CH.2 &gt;
+                            </label>
+
+                            <!-- CH.2 → CH.1 / CH.3 -->
+                            <label for="growth-page-1"
+                                   class="arrow-btn arrow-prev arrow-prev-2">
+                                &lt; CH.1
+                            </label>
+                            <label for="growth-page-3"
+                                   class="arrow-btn arrow-next arrow-next-2">
+                                CH.3 &gt;
+                            </label>
+
+                            <!-- CH.3 → CH.2 -->
+                            <label for="growth-page-2"
+                                   class="arrow-btn arrow-prev arrow-prev-3">
+                                &lt; CH.2
+                            </label>
+
+                        </div> <!-- .growth-book -->
+                    </div> <!-- .growth-book-area -->
+
+                </div> <!-- .growth-layout -->
+
+            </div>
+        </section>
+
+        <!-- 아래에 일반 게시판 리스트를 추가하고 싶으면 이 밑에 section 하나 더 만들면 됨 -->
+
+    </main>
+
+    <!-- 공통 푸터 -->
+    <th:block th:replace="layout/footer :: footer"></th:block>
+</div>
+
+</body>
+</html>

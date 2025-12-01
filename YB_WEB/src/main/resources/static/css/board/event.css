@@ -1,0 +1,406 @@
+@charset "UTF-8";
+
+/* 공통 폰트 */
+body {
+    font-family: 'Noto Sans KR', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* 전체 페이지 레이아웃 */
+body.board-page {
+    min-height: 100vh;
+    background:
+        radial-gradient(circle at 10% 0%, #e0f2fe 0%, transparent 55%),
+        radial-gradient(circle at 90% 0%, #fef3c7 0%, transparent 60%),
+        linear-gradient(to bottom, #eff6ff 0%, #e5e7eb 70%, #e5e7eb 100%);
+    color: #111827;
+    padding-top: 76px; /* 헤더 높이 */
+}
+
+.page {
+    min-width: 1320px;
+}
+
+.board-main {
+    padding-bottom: 100px; /* 푸터와 겹치지 않게 여유 */
+}
+
+.board-inner,
+.board-header-inner,
+.event-toolbar-inner {
+    width: 1320px;
+    margin: 0 auto;
+}
+
+/* ========================
+   상단 헤더 영역
+   ======================== */
+
+.board-header {
+    padding: 26px 0 18px;
+}
+
+.board-header-inner {
+    display: flex;
+    justify-content: space-between;
+    gap: 40px;
+    align-items: flex-end;
+}
+
+.board-title-wrap .breadcrumb {
+    font-size: 12px;
+    color: #9ca3af;
+    margin-bottom: 4px;
+}
+
+.board-title-wrap h1 {
+    font-size: 22px;
+    font-weight: 800;
+    color: #111827;
+}
+
+.board-title-wrap .board-desc {
+    margin-top: 6px;
+    font-size: 13px;
+    color: #6b7280;
+}
+
+.board-header-side .header-label {
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 999px;
+    border: 1px solid rgba(148,163,184,0.8);
+    background: rgba(255,255,255,0.9);
+    color: #4b5563;
+}
+
+/* ========================
+   필터 / 검색 영역
+   ======================== */
+
+.event-toolbar-section {
+    padding: 4px 0 10px;
+}
+
+.event-toolbar-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+}
+
+.event-count {
+    font-size: 13px;
+    color: #4b5563;
+}
+
+.event-count span {
+    font-weight: 700;
+    color: #111827;
+}
+
+.event-filters {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 6px;
+}
+
+/* 필터 탭 버튼 */
+
+.filter-tabs {
+    display: flex;
+    gap: 6px;
+}
+
+.filter-tabs button {
+    border-radius: 999px;
+    padding: 6px 14px;
+    border: 1px solid #d1d5db;
+    font-size: 12px;
+    background: rgba(255,255,255,0.95);
+    color: #4b5563;
+    cursor: pointer;
+}
+
+.filter-tabs button.active {
+    border-color: transparent;
+    background: linear-gradient(135deg,#6366f1,#f97316);
+    color: #ffffff;
+    box-shadow: 0 8px 18px rgba(99,102,241,0.35);
+}
+
+/* 검색 폼 */
+
+.event-search {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.event-search select,
+.event-search input {
+    border-radius: 999px;
+    border: 1px solid #d1d5db;
+    font-size: 12px;
+    padding: 7px 10px;
+    background: rgba(255,255,255,0.96);
+    outline: none;
+    color: #111827;
+}
+
+.event-search input {
+    min-width: 180px;
+}
+
+.event-search input::placeholder {
+    color: #9ca3af;
+}
+
+.event-search button {
+    border-radius: 999px;
+    border: none;
+    padding: 7px 16px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    background: #111827;
+    color: #f9fafb;
+}
+
+/* ========================
+   이벤트 카드 그리드
+   ======================== */
+
+.event-list-section {
+    padding: 12px 0 24px;
+}
+
+.event-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+}
+
+/* 카드 공통 */
+
+.event-card {
+    display: flex;
+    flex-direction: column;
+    background: rgba(255,255,255,0.96);
+    border-radius: 18px;
+    overflow: hidden;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 14px 30px rgba(148,163,184,0.55);
+    min-height: 260px;
+}
+
+/* 카드 상단 썸네일 */
+
+.event-thumb {
+    position: relative;
+    height: 120px;
+    background-size: cover;
+    background-position: center;
+}
+
+/* 썸네일 색감 (더미) */
+.thumb-1 {
+    background: linear-gradient(135deg,#6366f1,#0ea5e9);
+}
+.thumb-2 {
+    background: linear-gradient(135deg,#f97316,#facc15);
+}
+.thumb-3 {
+    background: linear-gradient(135deg,#22c55e,#16a34a);
+}
+.thumb-4 {
+    background: linear-gradient(135deg,#ec4899,#8b5cf6);
+}
+.thumb-5 {
+    background: linear-gradient(135deg,#6b7280,#111827);
+}
+
+/* D-DAY / 종료 라벨 */
+
+.d-day {
+    position: absolute;
+    right: 12px;
+    top: 10px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 600;
+    background: rgba(15,23,42,0.85);
+    color: #f9fafb;
+}
+
+.d-day.end {
+    background: rgba(148,163,184,0.9);
+}
+
+/* 카드 본문 */
+
+.event-body {
+    padding: 14px 14px 13px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
+}
+
+/* 상단 배지들 */
+
+.event-top {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    font-size: 11px;
+    padding: 3px 9px;
+    border: 1px solid #e5e7eb;
+    background: #f9fafb;
+    color: #4b5563;
+}
+
+/* 상태 배지 */
+
+.badge-status.open {
+    border-color: #bbf7d0;
+    background: #ecfdf5;
+    color: #15803d;
+}
+
+.badge-status.upcoming {
+    border-color: #bfdbfe;
+    background: #eff6ff;
+    color: #1d4ed8;
+}
+
+.badge-status.closed {
+    border-color: #e5e7eb;
+    background: #f3f4f6;
+    color: #6b7280;
+}
+
+/* 타입 배지 */
+
+.badge-type.web {
+    border-color: #a5b4fc;
+    background: #eef2ff;
+    color: #4f46e5;
+}
+
+.badge-type.ingame {
+    border-color: #6ee7b7;
+    background: #ecfdf5;
+    color: #059669;
+}
+
+.badge-type.pc {
+    border-color: #7dd3fc;
+    background: #e0f2fe;
+    color: #0284c7;
+}
+
+.badge-type.event {
+    border-color: #f9a8d4;
+    background: #fdf2f8;
+    color: #be185d;
+}
+
+/* 타이틀 / 설명 */
+
+.event-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #111827;
+    line-height: 1.4;
+}
+
+.event-desc {
+    font-size: 12px;
+    color: #4b5563;
+    line-height: 1.6;
+}
+
+/* 메타 정보 */
+
+.event-meta {
+    font-size: 11px;
+    color: #6b7280;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+/* 액션 버튼 */
+
+.event-actions {
+    margin-top: auto;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.btn-detail {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-size: 12px;
+    text-decoration: none;
+    border: 1px solid #d1d5db;
+    background: #ffffff;
+    color: #374151;
+    cursor: pointer;
+}
+
+.btn-detail:hover {
+    background: #f3f4f6;
+}
+
+.btn-detail.disabled {
+    opacity: 0.6;
+    cursor: default;
+}
+
+/* ========================
+   페이징
+   ======================== */
+
+.pagination {
+    margin-top: 18px;
+    display: flex;
+    justify-content: center;
+    gap: 4px;
+}
+
+.page-btn {
+    min-width: 32px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    border: 1px solid #d1d5db;
+    background: #ffffff;
+    font-size: 12px;
+    cursor: pointer;
+    color: #4b5563;
+}
+
+.page-btn.active {
+    border-color: transparent;
+    background: linear-gradient(135deg,#6366f1,#f97316);
+    color: #ffffff;
+    box-shadow: 0 8px 18px rgba(99,102,241,0.35);
+}
+
+.page-btn:hover:not(.active) {
+    background: #f3f4f6;
+}

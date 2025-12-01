@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>자유게시판 - YB WEB</title>
+
+    <!-- 폰트 -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+
+    <!-- 공통 레이아웃 CSS -->
+    <link rel="stylesheet" th:href="@{/css/layout/header.css}">
+    <link rel="stylesheet" th:href="@{/css/layout/footer.css}">
+
+    <!-- 자유게시판 전용 CSS -->
+    <link rel="stylesheet" th:href="@{/css/board/freeboard.css}">
+</head>
+<body class="board-page">
+
+<div class="page">
+
+    <!-- 공통 헤더 -->
+    <th:block th:replace="layout/header :: header"></th:block>
+
+    <!-- 메인 영역 -->
+    <main class="board-main">
+
+        <!-- 상단 헤더 / 타이틀 -->
+        <section class="board-header">
+            <div class="board-header-inner">
+
+                <div class="board-title-wrap">
+                    <p class="breadcrumb">커뮤니티 &gt; 자유게시판</p>
+                    <h1>자유게시판</h1>
+                    <p class="board-desc">
+                        모험가님들의 다양한 이야기를 자유롭게 나누는 공간입니다.
+                    </p>
+                </div>
+
+                <!-- 필요하면 커뮤니티 탭 (예: 자유/스크린샷/팬아트 등) -->
+                <div class="board-tabs">
+                    <button class="active" type="button">자유게시판</button>
+                    <button type="button">스크린샷 게시판</button>
+                    <button type="button">팬아트</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 검색 / 필터 영역 -->
+        <section class="board-toolbar-section">
+            <div class="board-toolbar-inner">
+
+                <div class="board-count">
+                    총 <span>128</span>개의 글이 있습니다.
+                </div>
+
+                <form class="board-search" method="get">
+                    <select name="type">
+                        <option value="title">제목</option>
+                        <option value="writer">작성자</option>
+                        <option value="content">내용</option>
+                    </select>
+
+                    <input type="text" name="keyword" placeholder="검색어를 입력해 주세요">
+                    <button type="submit">검색</button>
+                </form>
+
+            </div>
+        </section>
+
+        <!-- 게시글 리스트 -->
+        <section class="board-list-section">
+            <div class="board-inner">
+
+                <table class="board-table">
+                    <colgroup>
+                        <col style="width:80px;">
+                        <col>
+                        <col style="width:120px;">
+                        <col style="width:120px;">
+                        <col style="width:90px;">
+                        <col style="width:80px;">
+                    </colgroup>
+                    <thead>
+                    <tr>
+                        <th>번호</th>
+                        <th>제목</th>
+                        <th>작성자</th>
+                        <th>작성일</th>
+                        <th>조회수</th>
+                        <th>추천</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    <!-- 🔹 공지 고정 글 (예시) -->
+                    <tr class="row-pin">
+                        <td class="no">공지</td>
+                        <td class="title-cell">
+                            <span class="category-tag">공지</span>
+                            <a href="#">[안내] 자유게시판 이용 수칙 및 운영 정책 안내</a>
+                        </td>
+                        <td>운영자</td>
+                        <td>2025.11.30</td>
+                        <td>1,230</td>
+                        <td>25</td>
+                    </tr>
+
+                    <!-- 🔹 일반 글 (더미 데이터) -->
+                    <tr>
+                        <td class="no">128</td>
+                        <td class="title-cell">
+                            <span class="category-tag">잡담</span>
+                            <a href="#">오늘 새로 나온 레이드 해보신 분?</a>
+                            <span class="comment-count">12</span>
+                        </td>
+                        <td>빙결검사</td>
+                        <td>2025.12.01</td>
+                        <td>320</td>
+                        <td>18</td>
+                    </tr>
+
+                    <tr>
+                        <td class="no">127</td>
+                        <td class="title-cell">
+                            <span class="category-tag">질문</span>
+                            <a href="#">복귀 유저인데, 요즘 메타 어떤가요?</a>
+                            <span class="comment-count">5</span>
+                        </td>
+                        <td>복귀중</td>
+                        <td>2025.12.01</td>
+                        <td>210</td>
+                        <td>7</td>
+                    </tr>
+
+                    <tr>
+                        <td class="no">126</td>
+                        <td class="title-cell">
+                            <span class="category-tag">자랑</span>
+                            <a href="#">드디어 전설 장비 풀세트 맞췄습니다 🎉</a>
+                            <span class="comment-count">21</span>
+                        </td>
+                        <td>루나나</td>
+                        <td>2025.11.30</td>
+                        <td>540</td>
+                        <td>40</td>
+                    </tr>
+
+                    <tr>
+                        <td class="no">125</td>
+                        <td class="title-cell">
+                            <span class="category-tag">잡담</span>
+                            <a href="#">겨울 이벤트 BGM 너무 좋다…</a>
+                            <span class="comment-count">3</span>
+                        </td>
+                        <td>겨울바람</td>
+                        <td>2025.11.30</td>
+                        <td>150</td>
+                        <td>9</td>
+                    </tr>
+
+                    <tr>
+                        <td class="no">124</td>
+                        <td class="title-cell">
+                            <span class="category-tag">공략</span>
+                            <a href="#">신규 레이드 1페이즈 간단 요약 공략</a>
+                            <span class="comment-count">10</span>
+                        </td>
+                        <td>레이드장인</td>
+                        <td>2025.11.29</td>
+                        <td>780</td>
+                        <td>52</td>
+                    </tr>
+
+                    </tbody>
+                </table>
+
+                <!-- 하단: 글쓰기 버튼 + 페이징 -->
+                <div class="board-bottom-bar">
+                    <div class="pagination">
+                        <button class="page-btn prev" type="button">&lt;</button>
+                        <button class="page-btn active" type="button">1</button>
+                        <button class="page-btn" type="button">2</button>
+                        <button class="page-btn" type="button">3</button>
+                        <button class="page-btn next" type="button">&gt;</button>
+                    </div>
+
+                    <div class="write-wrap">
+                        <!-- 나중에 권한 체크해서 th:if로 감싸면 됨 -->
+                        <a href="#" class="btn-write">글쓰기</a>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- 공통 푸터 -->
+    <th:block th:replace="layout/footer :: footer"></th:block>
+</div>
+
+</body>
+</html>

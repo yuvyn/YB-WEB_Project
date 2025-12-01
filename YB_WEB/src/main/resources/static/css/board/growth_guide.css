@@ -1,0 +1,384 @@
+@charset "UTF-8";
+
+/* 기본 폰트 */
+body {
+    font-family: 'Noto Sans KR', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* 전체 배경 / 레이아웃 (다른 페이지 톤과 맞춤) */
+body.board-page {
+    min-height: 100vh;
+    background:
+        radial-gradient(circle at 10% 0%, #e0f2fe 0%, transparent 55%),
+        radial-gradient(circle at 90% 0%, #fef3c7 0%, transparent 60%),
+        linear-gradient(to bottom, #eff6ff 0%, #e5e7eb 70%, #e5e7eb 100%);
+    color: #111827;
+    padding-top: 76px; /* 헤더 높이 */
+}
+
+.page {
+    min-width: 1320px;
+}
+
+.board-main {
+    padding-bottom: 140px;
+}
+
+.board-inner,
+.board-header-inner {
+    width: 1320px;
+    margin: 0 auto;
+}
+
+/* =========================
+   상단 헤더
+   ========================= */
+
+.board-header {
+    padding: 26px 0 16px;
+}
+
+.board-title-wrap .breadcrumb {
+    font-size: 12px;
+    color: #9ca3af;
+    margin-bottom: 4px;
+}
+
+.board-title-wrap h1 {
+    font-size: 22px;
+    font-weight: 800;
+    color: #111827;
+}
+
+.board-title-wrap .board-desc {
+    margin-top: 6px;
+    font-size: 13px;
+    color: #6b7280;
+}
+
+/* =========================
+   성장 가이드 책 영역
+   ========================= */
+
+.growth-section {
+    padding: 10px 0 80px;
+}
+
+.growth-layout {
+    display: grid;
+    grid-template-columns: 0.9fr 1.4fr;
+    gap: 24px;
+    align-items: stretch;
+}
+
+/* 왼쪽 사이드 카드 */
+
+.growth-side-card {
+    border-radius: 18px;
+    padding: 18px 20px 16px;
+    background: rgba(255,255,255,0.9);
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 16px 30px rgba(148,163,184,0.45);
+}
+
+.growth-side-card h2 {
+    font-size: 18px;
+    font-weight: 800;
+    color: #111827;
+    margin-bottom: 8px;
+}
+
+.growth-side-card p {
+    font-size: 13px;
+    color: #4b5563;
+    line-height: 1.6;
+    margin-bottom: 10px;
+}
+
+.growth-summary {
+    list-style: none;
+    padding-left: 0;
+    margin: 6px 0 0;
+    font-size: 12px;
+    color: #6b7280;
+}
+
+.growth-summary li + li {
+    margin-top: 4px;
+}
+
+/* 탭 */
+
+.growth-tabs {
+    margin-top: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.growth-tab {
+    border-radius: 999px;
+    border: 1px solid #d1d5db;
+    padding: 8px 14px;
+    font-size: 12px;
+    background: rgba(255,255,255,0.95);
+    color: #4b5563;
+    cursor: pointer;
+    user-select: none;
+}
+
+.growth-tab:hover {
+    background: #f3f4f6;
+}
+
+/* 탭 활성화 효과 (페이지 라디오 체크에 따라) */
+
+.page-radio {
+    display: none;
+}
+
+#growth-page-1:checked ~ .growth-layout .tab-1,
+#growth-page-2:checked ~ .growth-layout .tab-2,
+#growth-page-3:checked ~ .growth-layout .tab-3 {
+    border-color: transparent;
+    background: linear-gradient(135deg,#6366f1,#f97316);
+    color: #ffffff;
+    box-shadow: 0 8px 18px rgba(99,102,241,0.35);
+}
+
+/* =========================
+   책 전체 영역
+   ========================= */
+
+.book-toggle {
+    display: none;
+}
+
+.growth-book-area {
+    position: relative;
+    min-height: 320px;
+}
+
+/* 책 표지 (닫힌 상태) */
+
+.growth-book-cover {
+    display: block;
+    height: 100%;
+    min-height: 320px;
+    border-radius: 22px;
+    padding: 22px 24px 20px;
+    background:
+        linear-gradient(135deg, #e0f2fe, #bfdbfe);
+    border: 1px solid rgba(191,219,254,0.9);
+    box-shadow: 0 18px 40px rgba(148,163,184,0.6);
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+
+.cover-inner {
+    position: relative;
+    z-index: 1;
+}
+
+.cover-tag {
+    display: inline-block;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.96);
+    color: #1f2937;
+    margin-bottom: 12px;
+}
+
+.growth-book-cover h2 {
+    font-size: 19px;
+    font-weight: 800;
+    color: #111827;
+    margin-bottom: 6px;
+}
+
+.growth-book-cover p {
+    font-size: 13px;
+    color: #374151;
+    margin-bottom: 16px;
+}
+
+.cover-meta {
+    display: flex;
+    gap: 10px;
+    font-size: 11px;
+    color: #4b5563;
+    margin-bottom: 10px;
+}
+
+.cover-meta span {
+    padding: 4px 10px;
+    border-radius: 999px;
+    border: 1px solid rgba(148,163,184,0.7);
+    background: rgba(255,255,255,0.9);
+}
+
+.cover-hint {
+    font-size: 11px;
+    color: #6b7280;
+}
+
+/* 표지 위 광원 */
+
+.growth-book-cover::before {
+    content: "";
+    position: absolute;
+    inset: -40%;
+    background:
+        radial-gradient(circle at 20% 80%, rgba(129,140,248,0.4), transparent 65%),
+        radial-gradient(circle at 80% 20%, rgba(248,250,252,0.8), transparent 60%);
+    opacity: 0.9;
+}
+
+/* 열린 책 */
+
+.growth-book {
+    position: relative;
+    display: none; /* 기본은 숨김 (표지만 보임) */
+    border-radius: 22px;
+    padding: 20px 26px 20px;
+    background: rgba(255,255,255,0.96);
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 18px 40px rgba(148,163,184,0.6);
+    overflow: hidden;
+    display: flex;
+}
+
+/* book-open 체크되면: 표지 숨기고 책 보여주기 */
+
+#growth-book-open:checked ~ .growth-layout .growth-book-cover {
+    display: none;
+}
+
+#growth-book-open:checked ~ .growth-layout .growth-book {
+    display: flex;
+}
+
+/* 책의 좌/우 페이지 */
+
+.book-page {
+    flex: 1;
+    padding: 12px 16px;
+    position: relative;
+}
+
+.page-left {
+    border-right: 1px solid #e5e7eb;
+}
+
+.page-right {
+    padding-left: 20px;
+}
+
+/* 실제 내용 박스 (페이지별) */
+
+.page-content {
+    display: none;
+    animation: pageFade 0.25s ease-out;
+}
+
+.page-content h3 {
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: #111827;
+}
+
+.page-content ul {
+    padding-left: 16px;
+    font-size: 13px;
+    color: #4b5563;
+    line-height: 1.6;
+}
+
+.page-content ol {
+    padding-left: 18px;
+    font-size: 13px;
+    color: #4b5563;
+    line-height: 1.6;
+}
+
+.page-tip {
+    margin-top: 8px;
+    font-size: 12px;
+    color: #6b7280;
+}
+
+/* 페이지 전환 애니메이션 */
+
+@keyframes pageFade {
+    from { opacity: 0; transform: translateX(4px); }
+    to   { opacity: 1; transform: translateX(0); }
+}
+
+/* 라디오에 따른 페이지 표시 */
+
+#growth-page-1:checked ~ .growth-layout .page-1-left,
+#growth-page-1:checked ~ .growth-layout .page-1-right {
+    display: block;
+}
+
+#growth-page-2:checked ~ .growth-layout .page-2-left,
+#growth-page-2:checked ~ .growth-layout .page-2-right {
+    display: block;
+}
+
+#growth-page-3:checked ~ .growth-layout .page-3-left,
+#growth-page-3:checked ~ .growth-layout .page-3-right {
+    display: block;
+}
+
+/* =========================
+   화살표 버튼
+   ========================= */
+
+.arrow-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    border-radius: 999px;
+    border: 1px solid #d1d5db;
+    background: #ffffff;
+    padding: 6px 12px;
+    font-size: 11px;
+    cursor: pointer;
+    color: #4b5563;
+    display: none; /* 기본은 숨김, 페이지 상태에 따라 보이게 */
+    user-select: none;
+}
+
+.arrow-btn:hover {
+    background: #f3f4f6;
+}
+
+.arrow-prev {
+    left: 12px;
+}
+
+.arrow-next {
+    right: 12px;
+}
+
+/* 페이지 1일 때: CH.2 → 화살표만 보이게 */
+#growth-page-1:checked ~ .growth-layout .arrow-next-1 {
+    display: inline-flex;
+}
+
+/* 페이지 2일 때: CH.1 / CH.3 둘 다 */
+#growth-page-2:checked ~ .growth-layout .arrow-prev-2,
+#growth-page-2:checked ~ .growth-layout .arrow-next-2 {
+    display: inline-flex;
+}
+
+/* 페이지 3일 때: CH.2 ← 만 */
+#growth-page-3:checked ~ .growth-layout .arrow-prev-3 {
+    display: inline-flex;
+}

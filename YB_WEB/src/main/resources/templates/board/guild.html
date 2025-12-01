@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>길드 모집 - YB WEB</title>
+
+    <!-- 폰트 -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+
+    <!-- 공통 레이아웃 CSS -->
+    <link rel="stylesheet" th:href="@{/css/layout/header.css}">
+    <link rel="stylesheet" th:href="@{/css/layout/footer.css}">
+
+    <!-- 길드 모집 전용 CSS -->
+    <link rel="stylesheet" th:href="@{/css/board/guild.css}">
+</head>
+<body class="board-page">
+
+<div class="page">
+
+    <!-- 공통 헤더 -->
+    <th:block th:replace="layout/header :: header"></th:block>
+
+    <!-- 메인 영역 -->
+    <main class="board-main">
+
+        <!-- 상단 타이틀 -->
+        <section class="board-header">
+            <div class="board-header-inner">
+                <div class="board-title-wrap">
+                    <p class="breadcrumb">커뮤니티 &gt; 길드 모집</p>
+                    <h1>길드 모집 게시판</h1>
+                    <p class="board-desc">
+                        함께 플레이할 모험가들을 모집하는 공간입니다.<br>
+                        길드 성향과 플레이 스타일을 확인하고, 나에게 맞는 길드를 찾아보세요.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 검색 / 필터 -->
+        <section class="board-toolbar-section">
+            <div class="board-toolbar-inner">
+
+                <div class="board-count">
+                    총 <span>18</span>개의 길드 모집 글이 있습니다.
+                </div>
+
+                <form class="board-search" method="get">
+                    <select name="server">
+                        <option value="">서버 전체</option>
+                        <option value="frost">프로스트 서버</option>
+                        <option value="abyss">어비스 서버</option>
+                        <option value="legacy">레거시 서버</option>
+                    </select>
+
+                    <select name="style">
+                        <option value="">길드 성향</option>
+                        <option value="casual">캐주얼</option>
+                        <option value="hardcore">하드코어</option>
+                        <option value="raid">레이드 중심</option>
+                        <option value="social">소셜 / 친목</option>
+                    </select>
+
+                    <input type="text" name="keyword" placeholder="길드명 또는 키워드를 입력해 주세요">
+                    <button type="submit">검색</button>
+                </form>
+
+            </div>
+        </section>
+
+        <!-- 길드 모집 리스트 -->
+        <section class="board-list-section">
+            <div class="board-inner">
+
+                <!-- 상단 안내 배너 (간단 카드) -->
+                <article class="guild-info-card">
+                    <h2>길드 모집 안내</h2>
+                    <p>
+                        길드 홍보 시 서버 / 최소 레벨 / 주 활동 시간 / 디스코드 여부 등을
+                        명확하게 작성해 주시면 더 많은 모험가들이 지원할 수 있습니다.
+                    </p>
+                    <ul>
+                        <li>길드 홍보 글은 1일 1회 등록을 권장합니다.</li>
+                        <li>비방, 욕설, 분란 조장 게시글은 사전 통보 없이 삭제될 수 있습니다.</li>
+                    </ul>
+                </article>
+
+                <!-- 리스트 테이블 -->
+                <table class="board-table">
+                    <colgroup>
+                        <col style="width: 110px;"> <!-- 서버/구분 -->
+                        <col>                        <!-- 제목 -->
+                        <col style="width: 140px;"> <!-- 길드 마스터 -->
+                        <col style="width: 110px;"> <!-- 등록일 -->
+                        <col style="width: 90px;">  <!-- 조회수 -->
+                    </colgroup>
+                    <thead>
+                    <tr>
+                        <th>서버</th>
+                        <th>길드명 / 모집 내용</th>
+                        <th>길드 마스터</th>
+                        <th>등록일</th>
+                        <th>조회수</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    <!-- 더미 데이터 (하드코딩) -->
+
+                    <tr class="row-pin">
+                        <td>
+                            <span class="tag server-frost">프로스트</span>
+                        </td>
+                        <td class="title-cell">
+                            <a href="#">
+                                [하드 레이드] &lt;FROSTBOUND&gt; 길원 모집 (평일 저녁 레이드)
+                            </a>
+                            <div class="title-meta">
+                                <span class="label label-raid">레이드</span>
+                                <span class="label label-hardcore">하드코어</span>
+                                <span class="label label-voice">음성 채널 필수</span>
+                            </div>
+                        </td>
+                        <td>아이스블레이드</td>
+                        <td>2025.12.01</td>
+                        <td>1,204</td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <span class="tag server-abyss">어비스</span>
+                        </td>
+                        <td class="title-cell">
+                            <a href="#">
+                                [친목 / 라이트] &lt;달빛정원&gt; 신규/복귀 모험가 상시 모집합니다
+                            </a>
+                            <div class="title-meta">
+                                <span class="label label-social">소셜</span>
+                                <span class="label label-casual">캐주얼</span>
+                            </div>
+                        </td>
+                        <td>루나가든</td>
+                        <td>2025.11.30</td>
+                        <td>842</td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <span class="tag server-legacy">레거시</span>
+                        </td>
+                        <td class="title-cell">
+                            <a href="#">
+                                [자유 참여] &lt;별빛항해단&gt; 출석 자유, 주말 레이드 진행
+                            </a>
+                            <div class="title-meta">
+                                <span class="label label-raid">레이드</span>
+                                <span class="label label-casual">캐주얼</span>
+                            </div>
+                        </td>
+                        <td>스텔라노트</td>
+                        <td>2025.11.28</td>
+                        <td>612</td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <span class="tag server-frost">프로스트</span>
+                        </td>
+                        <td class="title-cell">
+                            <a href="#">
+                                [PVP / 길드전] &lt;황혼의 서약&gt; 경쟁 컨텐츠 좋아하시는 분 환영
+                            </a>
+                            <div class="title-meta">
+                                <span class="label label-pvp">PVP</span>
+                                <span class="label label-hardcore">하드코어</span>
+                            </div>
+                        </td>
+                        <td>다크오스</td>
+                        <td>2025.11.26</td>
+                        <td>990</td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <span class="tag server-abyss">어비스</span>
+                        </td>
+                        <td class="title-cell">
+                            <a href="#">
+                                [디스코드 친목] &lt;따뜻한모닥불&gt; 복귀/뉴비 환영, 질문 환영 길드
+                            </a>
+                            <div class="title-meta">
+                                <span class="label label-social">소셜</span>
+                                <span class="label label-relax">편안한 분위기</span>
+                            </div>
+                        </td>
+                        <td>캠프파이어</td>
+                        <td>2025.11.25</td>
+                        <td>734</td>
+                    </tr>
+
+                    </tbody>
+                </table>
+
+                <!-- 페이징 + 글쓰기 -->
+                <div class="board-bottom-bar">
+                    <div class="pagination">
+                        <button class="page-btn prev" type="button">&lt;</button>
+                        <button class="page-btn active" type="button">1</button>
+                        <button class="page-btn" type="button">2</button>
+                        <button class="page-btn" type="button">3</button>
+                        <button class="page-btn next" type="button">&gt;</button>
+                    </div>
+
+                    <!-- 글쓰기 버튼 (나중에 권한 체크해서 타임리프로 바꿔도 됨) -->
+                    <div class="write-wrap">
+                        <a href="#" class="btn-write">길드 모집 글쓰기</a>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- 공통 푸터 -->
+    <th:block th:replace="layout/footer :: footer"></th:block>
+
+</div>
+
+</body>
+</html>

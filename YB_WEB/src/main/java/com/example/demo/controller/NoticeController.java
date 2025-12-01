@@ -15,4 +15,24 @@ public class NoticeController {
     public String update() {
         return "board/update";
     }
+    
+    @GetMapping("/freeboard")
+    public String freeboard() {
+        return "board/freeboard";
+    }
+    
+    @GetMapping("/guild")
+    public String guild() {
+        return "board/guild";
+    }
+    
+    @GetMapping("/growth_guide")
+    public String growth_guide() {
+        return "board/growth_guide";
+    }
+    
+    @GetMapping("/news/event")
+    public String event() {
+        return "board/event";
+    }
 }
