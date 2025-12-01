@@ -1,20 +1,23 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
 <title>YB WEB 헤더</title>
 </head>
 <body>
-    <!-- 상단 헤더 -->
-    <header th:fragment="header" class="main-header">
+<header th:fragment="header" class="main-header">
     <div class="header-inner">
+
+        <!-- 로고 -->
         <div class="logo">
             <span class="logo-mark">◆</span>
             <a class="logo-text" th:href="@{/}">YB WEB</a>
         </div>
 
+        <!-- GNB + 메가메뉴 -->
         <nav class="gnb">
-            <ul>
+            <!-- 상단 1차 메뉴 -->
+            <ul class="gnb-list">
                 <li><a href="#">새소식</a></li>
                 <li><a href="#">게임정보</a></li>
                 <li><a href="#">가이드</a></li>
@@ -24,8 +27,71 @@
                 <li><a href="#">샵</a></li>
                 <li><a href="#">고객센터</a></li>
             </ul>
+
+            <!-- 하단 메가메뉴 (한번에 쫙 뜨는 영역) -->
+            <div class="mega-panel">
+    <div class="mega-inner">
+
+        <!-- 새소식 -->
+        <div class="mega-col">
+            <h4>새소식</h4>
+            <ul>
+                <li><a href="/news/notice">공지사항</a></li>
+                <li><a href="/news/update">업데이트</a></li>
+                <li><a href="#">이벤트</a></li>
+                <li><a href="#">GM/개발자 편지</a></li>
+            </ul>
+        </div>
+
+        <!-- 게임정보 -->
+        <div class="mega-col">
+            <h4>게임정보</h4>
+            <ul>
+                <li><a href="#">전투 정보</a></li>
+                <li><a href="#">클래스</a></li>
+                <li><a href="#">던전 / 레이드</a></li>
+                <li><a href="#">월드 / 지역</a></li>
+            </ul>
+        </div>
+
+        <!-- 가이드 -->
+        <div class="mega-col">
+            <h4>가이드</h4>
+            <ul>
+                <li><a href="#">시작하기</a></li>
+                <li><a href="#">성장 가이드</a></li>
+                <li><a href="#">시스템 안내</a></li>
+                <li><a href="#">자주 묻는 팁</a></li>
+            </ul>
+        </div>
+
+        <!-- 커뮤니티 -->
+        <div class="mega-col">
+            <h4>커뮤니티</h4>
+            <ul>
+                <li><a href="#">자유 게시판</a></li>
+                <li><a href="#">길드 모집</a></li>
+                <li><a href="#">공략 / 팁</a></li>
+                <li><a href="#">Q&amp;A</a></li>
+            </ul>
+        </div>
+
+        <!-- 고객센터 -->
+        <div class="mega-col">
+            <h4>고객센터</h4>
+            <ul>
+                <li><a href="#">FAQ</a></li>
+                <li><a href="/QnA">버그 / 문의</a></li>
+                <li><a href="#">보안센터</a></li>
+                <li><a href="#">클라이언트</a></li>
+            </ul>
+        </div>
+
+    </div>
+</div>
         </nav>
 
+        <!-- 우측 로그인 / 게임시작 -->
         <div class="header-actions">
             <!-- 로그인 상태 -->
             <div th:if="${session.loginMember != null}">
@@ -42,7 +108,8 @@
                 </a>
             </div>
 
-            <button class="btn-game-start" type="button"th:onclick="|location.href='@{/game}'|">GAME START</button>
+            <button class="btn-game-start" type="button"
+                    th:onclick="|location.href='@{/game}'|">GAME START</button>
         </div>
     </div>
 

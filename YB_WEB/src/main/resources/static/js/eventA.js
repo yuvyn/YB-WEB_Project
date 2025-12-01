@@ -28,10 +28,25 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let spinning = false;
     let chances = 3; // 남은 기회
-    let currentRotation = 0;
+    let currentRotation = 0; // 누적 회전각
 
-    // 남은 기회 UI 초기화
     chanceCountEl.textContent = chances;
+
+    /* ---------------------------
+       1. 라벨 위치 세팅
+    --------------------------- */
+    const labels = wheel.querySelectorAll(".segment-label");
+    labels.forEach((label, idx) => {
+        const angleCenter = idx * SEGMENT_ANGLE + SEGMENT_ANGLE / 2;
+        // 중앙 기준으로 위쪽 방향으로 배치 (반지름 약 135px)
+        const radius = 135;
+        label.style.transform =
+            `rotate(${angleCenter}deg) translate(-50%, -${radius}px)`;
+    });
+
+    /* ---------------------------
+       2. 버튼 클릭 → 스핀 시작
+    --------------------------- */
 
     btnStart.addEventListener("click", () => {
         if (spinning) return;
@@ -49,46 +64,48 @@ document.addEventListener("DOMContentLoaded", () => {
         btnStart.disabled = true;
         wheel.classList.add("spinning");
 
-        // 0~9 랜덤 인덱스
+        // 0 ~ 9 랜덤 인덱스
         const index = Math.floor(Math.random() * SEGMENT_COUNT);
 
-        // 화살표가 항상 선택된 칸의 중앙을 가리키도록 각도 계산
-        const extraRotations = 4; // 최소 4바퀴
-        const stopAngle =
-            360 - (index * SEGMENT_ANGLE + SEGMENT_ANGLE / 2); // 선택칸 중앙이 위로 오도록
+        const angleCenter = index * SEGMENT_ANGLE + SEGMENT_ANGLE / 2;
+        const spins = 4; // 최소 회전 바퀴 수
 
-        const targetRotation = extraRotations * 360 + stopAngle;
+        // 현재 회전각을 0~360 범위로 정리
+        const normalizedCurrent = ((currentRotation % 360) + 360) % 360;
 
-        currentRotation += targetRotation;
+        // 최종 회전각: pointer(0deg)가 선택 칸 중앙(angleCenter)을 향하도록
+        const finalRotation = spins * 360 + (360 - angleCenter) - normalizedCurrent;
+
+        currentRotation += finalRotation;
         wheel.style.transform = `rotate(${currentRotation}deg)`;
 
         const reward = rewards[index];
 
-        // 애니메이션이 끝나면 결과 처리 (CSS transition 시간과 맞춤: 3.2s)
+        // transition 시간(3.4s)과 약간 여유를 둬서 결과 처리
         setTimeout(() => {
             onSpinEnd(reward);
-        }, 3300);
+        }, 3500);
     }
 
     function onSpinEnd(reward) {
         wheel.classList.remove("spinning");
 
-        // 꽝이 아니면 기회 1 감소
+        // 꽝이 아니면 기회 차감
         if (reward !== "꽝 (재도전)") {
             chances = Math.max(0, chances - 1);
             chanceCountEl.textContent = chances;
         }
 
-        // 참여 내역 추가
         addHistory(reward);
-
-        // 결과 팝업 표시
         showResultPopup(reward);
 
         spinning = false;
         btnStart.disabled = false;
     }
 
+    /* ---------------------------
+       3. 참여 내역
+    --------------------------- */
     function addHistory(reward) {
         if (historyEmptyText) {
             historyEmptyText.style.display = "none";
@@ -102,6 +119,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const rightSpan = document.createElement("span");
         rightSpan.className = "history-item-time";
+
         const now = new Date();
         const timeStr = now.toLocaleTimeString("ko-KR", {
             hour: "2-digit",
@@ -112,9 +130,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
         li.appendChild(leftSpan);
         li.appendChild(rightSpan);
+
+        // 최근 기록이 위로 오도록
         historyList.prepend(li);
     }
 
+    /* ---------------------------
+       4. 팝업
+    --------------------------- */
     function showResultPopup(reward) {
         resultTextEl.textContent = reward;
         overlay.classList.remove("hidden");
@@ -124,7 +147,6 @@ document.addEventListener("DOMContentLoaded", () => {
         overlay.classList.add("hidden");
     });
 
-    // 바깥(어두운 영역) 클릭시 닫기
     overlay.addEventListener("click", (e) => {
         if (e.target === overlay) {
             overlay.classList.add("hidden");

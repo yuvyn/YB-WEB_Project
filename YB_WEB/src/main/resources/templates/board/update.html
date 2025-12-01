@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>업데이트 안내 - YB WEB</title>
+
+    <!-- 폰트 -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+
+    <!-- 공통 레이아웃 CSS -->
+    <link rel="stylesheet" th:href="@{/css/layout/header.css}">
+    <link rel="stylesheet" th:href="@{/css/layout/footer.css}">
+
+    <!-- 업데이트 전용 CSS -->
+    <link rel="stylesheet" th:href="@{/css/board/update.css}">
+</head>
+<body class="board-page">
+
+<div class="page">
+
+    <!-- 공통 헤더 -->
+    <th:block th:replace="layout/header :: header"></th:block>
+
+    <!-- 메인 영역 -->
+    <main class="board-main">
+
+        <!-- 상단 타이틀 / 서브탭 -->
+        <section class="board-header">
+            <div class="board-header-inner">
+
+                <div class="board-title-wrap">
+                    <p class="breadcrumb">새소식 &gt; 업데이트</p>
+                    <h1>업데이트 안내</h1>
+                    <p class="board-desc">
+                        YB WEB의 최신 패치 노트와 시스템 변경사항을 확인하실 수 있습니다.
+                    </p>
+                </div>
+
+                <div class="board-tabs">
+                    <button class="active">전체</button>
+                    <button>패치 노트</button>
+                    <button>시스템 개선</button>
+                    <button>이벤트 / 시즌</button>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- 검색/필터 영역 -->
+        <section class="board-toolbar-section">
+            <div class="board-toolbar-inner">
+
+                <div class="board-count">
+                    총 <span>12</span>건의 업데이트가 있습니다.
+                </div>
+
+                <form class="board-search" method="get">
+                    <select name="type">
+                        <option value="">구분 전체</option>
+                        <option value="patch">패치 노트</option>
+                        <option value="system">시스템</option>
+                        <option value="event">이벤트</option>
+                        <option value="etc">기타</option>
+                    </select>
+
+                    <input type="text" name="keyword" placeholder="업데이트 내용 검색">
+                    <button type="submit">검색</button>
+                </form>
+
+            </div>
+        </section>
+
+        <!-- 상단 주요 업데이트 카드 -->
+        <section class="update-featured-section">
+            <div class="board-inner">
+
+                <article class="update-featured-card">
+                    <div class="badge-line">
+                        <span class="badge badge-type">패치 노트</span>
+                        <span class="badge badge-new">NEW</span>
+                    </div>
+
+                    <h2 class="featured-title">
+                        [정식 서버] 겨울 시즌 대규모 업데이트 안내
+                    </h2>
+
+                    <p class="featured-desc">
+                        신규 레이드 &lt;프로스트 로드&gt;, 신규 클래스, 장비 성장 동선 개편과
+                        각종 편의성 개선 사항이 적용됩니다. 자세한 내용은 아래 본문을 통해 확인해 주세요.
+                    </p>
+
+                    <div class="featured-meta">
+                        <span class="date">2025.12.01</span>
+                        <span class="divider">|</span>
+                        <span class="view">조회 3,250</span>
+                    </div>
+                </article>
+
+            </div>
+        </section>
+
+        <!-- 업데이트 목록 테이블 -->
+        <section class="board-list-section">
+            <div class="board-inner">
+
+                <table class="board-table">
+                    <colgroup>
+                        <col style="width: 110px;">
+                        <col>
+                        <col style="width: 120px;">
+                        <col style="width: 110px;">
+                    </colgroup>
+                    <thead>
+                    <tr>
+                        <th>구분</th>
+                        <th>제목</th>
+                        <th>등록일</th>
+                        <th>조회수</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    <!-- 고정 상단 공지 스타일 (예시) -->
+                    <tr class="row-pin">
+                        <td>
+                            <span class="tag pin">중요</span>
+                        </td>
+                        <td class="title-cell">
+                            <a href="#">
+                                [안내] 업데이트 사전 다운로드 및 점검 시간 안내
+                            </a>
+                        </td>
+                        <td>2025.11.29</td>
+                        <td>4,120</td>
+                    </tr>
+
+                    <!-- 일반 업데이트 (더미 데이터) -->
+                    <tr>
+                        <td>
+                            <span class="tag type-patch">패치 노트</span>
+                        </td>
+                        <td class="title-cell">
+                            <a href="#">
+                                [정식 서버] 12/01(월) 업데이트 내역 안내
+                            </a>
+                            <span class="badge-mini">NEW</span>
+                        </td>
+                        <td>2025.12.01</td>
+                        <td>3,250</td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <span class="tag type-system">시스템</span>
+                        </td>
+                        <td class="title-cell">
+                            <a href="#">
+                                [시스템] 매칭 대기 시간 및 매칭 로직 개선 안내
+                            </a>
+                        </td>
+                        <td>2025.11.25</td>
+                        <td>1,820</td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <span class="tag type-event">이벤트</span>
+                        </td>
+                        <td class="title-cell">
+                            <a href="#">
+                                [이벤트] 겨울 한정 출석 및 성장 버프 이벤트 안내
+                            </a>
+                        </td>
+                        <td>2025.11.20</td>
+                        <td>2,430</td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <span class="tag type-patch">패치 노트</span>
+                        </td>
+                        <td class="title-cell">
+                            <a href="#">
+                                [정식 서버] 클래스 밸런스 조정 사항 안내
+                            </a>
+                        </td>
+                        <td>2025.11.12</td>
+                        <td>5,012</td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <span class="tag type-etc">기타</span>
+                        </td>
+                        <td class="title-cell">
+                            <a href="#">
+                                [안내] 보안 정책 변경 및 2차 인증 강화
+                            </a>
+                        </td>
+                        <td>2025.11.05</td>
+                        <td>980</td>
+                    </tr>
+
+                    </tbody>
+                </table>
+
+                <!-- 페이징 (더미) -->
+                <div class="pagination">
+                    <button class="page-btn prev" type="button">&lt;</button>
+                    <button class="page-btn active" type="button">1</button>
+                    <button class="page-btn" type="button">2</button>
+                    <button class="page-btn" type="button">3</button>
+                    <button class="page-btn next" type="button">&gt;</button>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- 공통 푸터 -->
+    <th:block th:replace="layout/footer :: footer"></th:block>
+</div>
+
+</body>
+</html>

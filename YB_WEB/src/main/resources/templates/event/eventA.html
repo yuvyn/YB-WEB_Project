@@ -1,12 +1,13 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
 <title>룰렛 이벤트</title>
 
     <!-- 폰트 -->
     <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap"
+          rel="stylesheet">
 
     <!-- CSS -->
     <link rel="stylesheet" th:href="@{/css/eventA.css}">
@@ -14,7 +15,7 @@
 <body>
 
 <div class="event-bg">
-    <!-- 은은한 광원 -->
+    <!-- 눈 내리는 배경 + 빛 -->
     <div class="bg-glow bg-glow-1"></div>
     <div class="bg-glow bg-glow-2"></div>
 
@@ -25,8 +26,8 @@
                 <h1>겨울 스페셜 룰렛 이벤트</h1>
             </div>
             <p class="event-sub">
-                룰렛을 돌리고 <strong>인게임 보상</strong>을 획득하세요!<br/>
-                매일 주어지는 기회를 소진하기 전에 꼭 참여해 보세요.
+                눈 내리는 겨울밤, 룰렛을 돌려 <strong>인게임 보상</strong>을 획득해 보세요.<br/>
+                매일 주어지는 기회를 모두 사용하기 전에 꼭 참여해 보세요.
             </p>
 
             <div class="event-meta">
@@ -39,15 +40,17 @@
             <!-- 룰렛 영역 -->
             <section class="panel-card roulette-card">
                 <div class="panel-header">
-                    <h2>룰렛</h2>
-                    <span>버튼을 눌러 운을 시험해 보세요!</span>
+                    <h2>WINTER ROULETTE</h2>
+                    <span>START 버튼을 눌러 운을 시험해 보세요!</span>
                 </div>
 
                 <div class="roulette-container">
+                    <!-- 포인터 -->
                     <div class="roulette-pointer"></div>
 
+                    <!-- 룰렛 본체 -->
                     <div class="roulette-wheel" id="rouletteWheel">
-                        <!-- 10개 보상 텍스트 -->
+                        <!-- 10개 보상 텍스트 (각각 JS에서 위치 잡음) -->
                         <span class="segment-label">골드 100</span>
                         <span class="segment-label">크리스탈 50</span>
                         <span class="segment-label">강화 재료 상자</span>
@@ -60,16 +63,17 @@
                         <span class="segment-label">꽝 (재도전)</span>
                     </div>
 
+                    <!-- 중앙 버튼 -->
                     <div class="roulette-center">
-                        <span class="center-text">EVENT ROULETTE</span>
+                        <span class="center-text">WINTER EVENT</span>
                         <button id="btnStart" class="btn-start">START</button>
-                        <span class="center-sub">클릭하여 룰렛 시작</span>
+                        <span class="center-sub">클릭하여 룰렛을 시작하세요</span>
                     </div>
                 </div>
 
                 <p class="roulette-info">
-                    룰렛이 멈추면 해당 보상이 당첨됩니다.<br/>
-                    <span class="highlight">꽝 (재도전)</span>이 나올 경우 참여 기회가 차감되지 않습니다.
+                    룰렛이 멈추면 포인터가 가리키는 보상이 당첨됩니다.<br/>
+                    <span class="highlight">꽝 (재도전)</span>은 참여 기회가 차감되지 않습니다.
                 </p>
             </section>
 
@@ -108,7 +112,7 @@
                         <span id="historyEmptyText">아직 참여 내역이 없습니다.</span>
                     </div>
                     <ul id="historyList" class="history-list">
-                        <!-- JS에서 채워짐 -->
+                        <!-- JS에서 추가됨 -->
                     </ul>
                 </div>
             </section>
@@ -116,7 +120,7 @@
     </div>
 </div>
 
-<!-- 팝업 오버레이 -->
+<!-- 결과 팝업 -->
 <div id="resultOverlay" class="overlay hidden">
     <div class="overlay-backdrop"></div>
     <div class="overlay-dialog">

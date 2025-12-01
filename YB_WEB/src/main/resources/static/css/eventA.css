@@ -13,44 +13,82 @@ html, body {
 body {
     font-family: 'Noto Sans KR', system-ui, -apple-system, BlinkMacSystemFont;
     color: #e5e7eb;
+    background: radial-gradient(circle at top, #e0f2fe 0%, #93c5fd 40%, #1f2937 100%);
+    overflow-x: hidden;
+    position: relative;
 }
 
-/* ===== 배경 전체 ===== */
+/* 눈 효과 (전역) */
+body::before,
+body::after {
+    content: "";
+    position: fixed;
+    inset: -10%;
+    pointer-events: none;
+    z-index: 0;
+    background-repeat: repeat;
+}
+
+/* 빠른 눈 */
+body::before {
+    background-image:
+        radial-gradient(2px 2px at 10px 10px, rgba(255,255,255,0.9) 0%, transparent 60%),
+        radial-gradient(2px 2px at 50px 80px, rgba(255,255,255,0.8) 0%, transparent 60%),
+        radial-gradient(3px 3px at 140px 40px, rgba(255,255,255,0.9) 0%, transparent 60%);
+    background-size: 200px 200px, 260px 260px, 320px 320px;
+    animation: snowFast 14s linear infinite;
+}
+
+/* 느린 눈 */
+body::after {
+    background-image:
+        radial-gradient(3px 3px at 30px 50px, rgba(255,255,255,0.6) 0%, transparent 60%),
+        radial-gradient(3px 3px at 100px 130px, rgba(255,255,255,0.5) 0%, transparent 60%),
+        radial-gradient(4px 4px at 170px 30px, rgba(255,255,255,0.6) 0%, transparent 60%);
+    background-size: 260px 260px, 320px 320px, 380px 380px;
+    animation: snowSlow 26s linear infinite;
+}
+
+@keyframes snowFast {
+    0% { transform: translateY(-60px); }
+    100% { transform: translateY(60px); }
+}
+
+@keyframes snowSlow {
+    0% { transform: translateY(-80px); }
+    100% { transform: translateY(80px); }
+}
+
+/* ===========================
+   BACKGROUND WRAPPER
+=========================== */
 
 .event-bg {
     min-height: 100vh;
-    background:
-        radial-gradient(circle at top, rgba(56,189,248,0.18), transparent 55%),
-        radial-gradient(circle at 20% 80%, rgba(251,191,36,0.16), transparent 55%),
-        radial-gradient(circle at 80% 70%, rgba(94,234,212,0.18), transparent 50%),
-        #020617;
     display: flex;
     align-items: center;
     justify-content: center;
     position: relative;
-    overflow: hidden;
 }
 
+/* 양쪽 빛나는 그라데이션 */
 .bg-glow {
     position: absolute;
     border-radius: 999px;
-    filter: blur(90px);
+    filter: blur(100px);
     opacity: 0.7;
     pointer-events: none;
+    z-index: 1;
 }
 .bg-glow-1 {
-    width: 340px;
-    height: 340px;
-    background: #38bdf8;
-    top: -80px;
-    left: -60px;
+    width: 360px; height: 360px;
+    background: #60a5fa;
+    top: -80px; left: -60px;
 }
 .bg-glow-2 {
-    width: 320px;
-    height: 320px;
-    background: #f97316;
-    bottom: -90px;
-    right: -60px;
+    width: 340px; height: 340px;
+    background: #fbbf24;
+    bottom: -90px; right: -70px;
 }
 
 .page-wrap {
@@ -58,15 +96,17 @@ body {
     max-width: 100%;
     padding: 32px 24px 48px;
     position: relative;
-    z-index: 10;
+    z-index: 5;
 }
 
-/* ===== 헤더 ===== */
+/* ===========================
+   HEADER
+=========================== */
 
 .event-header {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 10px;
 }
 
 .event-title-wrap {
@@ -94,46 +134,47 @@ body {
     font-size: 30px;
     font-weight: 900;
     letter-spacing: 0.02em;
-    text-shadow: 0 8px 26px rgba(0,0,0,0.8);
+    text-shadow: 0 10px 28px rgba(0,0,0,0.8);
 }
 
 .event-sub {
     font-size: 14px;
-    color: #9ca3af;
-    line-height: 1.5;
+    color: #cbd5f5;
+    line-height: 1.6;
 }
 .event-sub strong {
     color: #facc15;
-    font-weight: 700;
 }
 
 .event-meta {
-    margin-top: 6px;
+    margin-top: 4px;
     font-size: 11px;
-    color: #6b7280;
+    color: #9ca3af;
     display: flex;
     flex-wrap: wrap;
     gap: 8px 16px;
 }
 
-/* ===== 메인 레이아웃 ===== */
+/* ===========================
+   MAIN LAYOUT
+=========================== */
 
 .event-layout {
-    margin-top: 24px;
+    margin-top: 26px;
     display: grid;
-    grid-template-columns: 440px minmax(0, 1fr);
+    grid-template-columns: 460px minmax(0, 1fr);
     gap: 28px;
 }
 
-/* ===== 패널 카드 공통 ===== */
+/* 공통 패널 카드 */
 
 .panel-card {
-    background: linear-gradient(135deg, rgba(15,23,42,0.95), rgba(2,6,23,0.97));
+    background: radial-gradient(circle at top, rgba(30,64,175,0.9), #020617);
     border-radius: 24px;
     padding: 22px 22px 24px;
     box-shadow:
-        0 24px 60px rgba(0,0,0,0.75),
-        0 0 0 1px rgba(148,163,184,0.12);
+        0 24px 60px rgba(0,0,0,0.9),
+        0 0 0 1px rgba(148,163,184,0.18);
     position: relative;
     overflow: hidden;
 }
@@ -143,8 +184,8 @@ body {
     position: absolute;
     inset: 0;
     border-radius: inherit;
-    border: 1px solid rgba(148,163,184,0.3);
-    opacity: 0.4;
+    border: 1px solid rgba(148,163,184,0.4);
+    opacity: 0.45;
     pointer-events: none;
 }
 
@@ -154,16 +195,20 @@ body {
     justify-content: space-between;
     margin-bottom: 16px;
 }
+
 .panel-header h2 {
     font-size: 16px;
-    font-weight: 700;
-}
-.panel-header span {
-    font-size: 11px;
-    color: #6b7280;
+    font-weight: 800;
 }
 
-/* ===== 룰렛 카드 ===== */
+.panel-header span {
+    font-size: 11px;
+    color: #9ca3af;
+}
+
+/* ===========================
+   ROULETTE
+=========================== */
 
 .roulette-card {
     display: flex;
@@ -178,50 +223,49 @@ body {
     margin: 6px auto 0;
 }
 
-/* 바깥 빛나는 링 */
+/* 룰렛 본체 */
 .roulette-wheel {
     width: 100%;
     height: 100%;
     border-radius: 50%;
     background: conic-gradient(
-        #f97316 0deg 36deg,
-        #facc15 36deg 72deg,
-        #22c55e 72deg 108deg,
-        #0ea5e9 108deg 144deg,
-        #6366f1 144deg 180deg,
-        #ec4899 180deg 216deg,
-        #f97316 216deg 252deg,
-        #facc15 252deg 288deg,
-        #22c55e 288deg 324deg,
-        #0ea5e9 324deg 360deg
+        #3b82f6 0deg    36deg,
+        #60a5fa 36deg   72deg,
+        #22c55e 72deg   108deg,
+        #a3e635 108deg  144deg,
+        #facc15 144deg  180deg,
+        #f97316 180deg  216deg,
+        #ef4444 216deg  252deg,
+        #ec4899 252deg  288deg,
+        #8b5cf6 288deg  324deg,
+        #0ea5e9 324deg  360deg
     );
-    border: 8px solid #020617;
+    border: 10px solid #020617;
     box-shadow:
-        0 0 25px rgba(250,204,21,0.3),
-        0 24px 40px rgba(0,0,0,0.8);
-    transition: transform 3.2s cubic-bezier(0.23, 1, 0.32, 1);
+        0 0 26px rgba(191,219,254,0.7),
+        0 24px 40px rgba(0,0,0,0.9);
+    transition: transform 3.4s cubic-bezier(0.23, 1, 0.32, 1);
     position: relative;
     overflow: hidden;
 }
 
-/* 안쪽 어두운 링 */
 .roulette-wheel::before {
     content: "";
     position: absolute;
-    inset: 18px;
+    inset: 20px;
     border-radius: 50%;
-    background: radial-gradient(circle at center, rgba(15,23,42,0.1), rgba(15,23,42,0.85));
-    box-shadow: inset 0 0 25px rgba(0,0,0,0.7);
+    background: radial-gradient(circle at center, rgba(15,23,42,0.1), rgba(15,23,42,0.9));
+    box-shadow: inset 0 0 24px rgba(0,0,0,0.85);
 }
 
-/* 회전 시 살짝 빛나는 효과 */
+/* 스핀 중 하이라이트 */
 .roulette-wheel.spinning {
     box-shadow:
-        0 0 35px rgba(250,204,21,0.75),
-        0 26px 50px rgba(0,0,0,0.9);
+        0 0 40px rgba(191,219,254,0.9),
+        0 28px 52px rgba(0,0,0,1);
 }
 
-/* 룰렛 텍스트 10개 */
+/* 각 보상 라벨 (위치는 JS에서 세팅) */
 .segment-label {
     position: absolute;
     left: 50%;
@@ -229,38 +273,25 @@ body {
     transform-origin: center bottom;
     font-size: 11px;
     font-weight: 700;
-    color: #020617;
-    text-shadow: 0 0 6px rgba(255,255,255,0.7);
+    color: #0f172a;
+    text-shadow: 0 0 6px rgba(255,255,255,0.8);
     white-space: nowrap;
 }
-
-/* 36도씩 배치 (텍스트는 위쪽으로 배치되도록 반지름 조정) */
-.segment-label:nth-child(1)  { transform: rotate(18deg)  translate(-50%, -148px); }
-.segment-label:nth-child(2)  { transform: rotate(54deg)  translate(-50%, -148px); }
-.segment-label:nth-child(3)  { transform: rotate(90deg)  translate(-50%, -148px); }
-.segment-label:nth-child(4)  { transform: rotate(126deg) translate(-50%, -148px); }
-.segment-label:nth-child(5)  { transform: rotate(162deg) translate(-50%, -148px); }
-.segment-label:nth-child(6)  { transform: rotate(198deg) translate(-50%, -148px); }
-.segment-label:nth-child(7)  { transform: rotate(234deg) translate(-50%, -148px); }
-.segment-label:nth-child(8)  { transform: rotate(270deg) translate(-50%, -148px); }
-.segment-label:nth-child(9)  { transform: rotate(306deg) translate(-50%, -148px); }
-.segment-label:nth-child(10) { transform: rotate(342deg) translate(-50%, -148px); }
 
 /* 포인터 */
 .roulette-pointer {
     position: absolute;
     left: 50%;
-    top: -10px;
+    top: -8px;
     transform: translateX(-50%);
     width: 0;
     height: 0;
     border-left: 14px solid transparent;
     border-right: 14px solid transparent;
-    border-bottom: 26px solid #f9fafb;
-    filter: drop-shadow(0 6px 8px rgba(0,0,0,0.7));
-    z-index: 5;
+    border-bottom: 28px solid #f9fafb;
+    filter: drop-shadow(0 6px 10px rgba(0,0,0,0.9));
+    z-index: 6;
 }
-
 .roulette-pointer::before {
     content: "";
     position: absolute;
@@ -272,11 +303,11 @@ body {
     border-radius: 999px;
     background: radial-gradient(circle, #facc15, #f97316);
     box-shadow:
-        0 0 12px rgba(252,211,77,0.7),
-        0 8px 14px rgba(0,0,0,0.8);
+        0 0 14px rgba(250,204,21,0.9),
+        0 8px 14px rgba(0,0,0,1);
 }
 
-/* 중앙 버튼 영역 */
+/* 중앙 버튼 */
 .roulette-center {
     position: absolute;
     left: 50%;
@@ -285,29 +316,29 @@ body {
     width: 130px;
     height: 130px;
     border-radius: 50%;
-    background: radial-gradient(circle, #f9fafb, #d1d5db);
+    background: radial-gradient(circle at top, #f9fafb, #cbd5f5);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     box-shadow:
-        0 10px 25px rgba(0,0,0,0.75),
+        0 12px 26px rgba(0,0,0,0.9),
         0 0 0 4px rgba(15,23,42,0.95);
-    z-index: 6;
+    z-index: 7;
 }
 
 .center-text {
     font-size: 10px;
-    letter-spacing: 0.15em;
+    letter-spacing: 0.16em;
     text-transform: uppercase;
     color: #6b7280;
     margin-bottom: 4px;
 }
 
 .center-sub {
-    margin-top: 2px;
+    margin-top: 4px;
     font-size: 10px;
-    color: #9ca3af;
+    color: #94a3b8;
 }
 
 .btn-start {
@@ -318,11 +349,11 @@ body {
     font-weight: 800;
     cursor: pointer;
     background: linear-gradient(135deg, #22d3ee, #a855f7, #f97316);
-    background-size: 200% 200%;
+    background-size: 220% 220%;
     color: #020617;
     box-shadow:
-        0 0 15px rgba(96,165,250,0.9),
-        0 10px 20px rgba(0,0,0,0.8);
+        0 0 18px rgba(96,165,250,0.9),
+        0 12px 24px rgba(0,0,0,0.9);
     transition:
         transform 0.12s ease-out,
         box-shadow 0.12s ease-out,
@@ -333,24 +364,22 @@ body {
     transform: translateY(-1px) scale(1.02);
     background-position: 100% 0;
 }
-
 .btn-start:active:not([disabled]) {
-    transform: translateY(1px) scale(0.98);
+    transform: translateY(1px) scale(0.97);
     box-shadow:
-        0 0 8px rgba(96,165,250,0.7),
-        0 5px 14px rgba(0,0,0,0.9);
+        0 0 10px rgba(96,165,250,0.8),
+        0 7px 16px rgba(0,0,0,1);
 }
-
 .btn-start[disabled] {
     opacity: 0.45;
     cursor: default;
-    box-shadow: 0 5px 12px rgba(0,0,0,0.7);
+    box-shadow: 0 7px 16px rgba(0,0,0,0.8);
 }
 
 .roulette-info {
     margin-top: 18px;
     font-size: 12px;
-    color: #9ca3af;
+    color: #cbd5f5;
     text-align: center;
     line-height: 1.6;
 }
@@ -359,7 +388,9 @@ body {
     font-weight: 600;
 }
 
-/* ===== 정보 카드 / 참여 내역 ===== */
+/* ===========================
+   INFO CARD / HISTORY
+=========================== */
 
 .info-card {
     display: flex;
@@ -391,7 +422,7 @@ body {
 .chance-value strong {
     font-size: 28px;
     color: #facc15;
-    text-shadow: 0 0 12px rgba(250,204,21,0.8);
+    text-shadow: 0 0 12px rgba(250,204,21,0.85);
 }
 .chance-unit {
     font-size: 13px;
@@ -409,15 +440,15 @@ body {
 .user-name {
     font-size: 14px;
     font-weight: 700;
-    color: #e5e7eb;
+    color: #f9fafb;
 }
 
 .info-desc ul {
     list-style: disc;
     padding-left: 18px;
     font-size: 12px;
-    color: #9ca3af;
-    line-height: 1.6;
+    color: #cbd5f5;
+    line-height: 1.7;
 }
 
 .history-wrap {
@@ -433,19 +464,17 @@ body {
     align-items: center;
     margin-bottom: 8px;
 }
-
 .history-header h3 {
     font-size: 14px;
 }
-
 #historyEmptyText {
     font-size: 11px;
-    color: #6b7280;
+    color: #9ca3af;
 }
 
 .history-list {
     list-style: none;
-    max-height: 210px;
+    max-height: 220px;
     overflow-y: auto;
     padding-right: 4px;
 }
@@ -463,10 +492,12 @@ body {
     color: #e5e7eb;
 }
 .history-item-time {
-    color: #6b7280;
+    color: #9ca3af;
 }
 
-/* ===== 팝업 ===== */
+/* ===========================
+   POPUP
+=========================== */
 
 .overlay {
     position: fixed;
@@ -481,7 +512,7 @@ body {
 .overlay-backdrop {
     position: absolute;
     inset: 0;
-    background: radial-gradient(circle at center, rgba(15,23,42,0.4), rgba(0,0,0,0.9));
+    background: radial-gradient(circle at center, rgba(15,23,42,0.4), rgba(0,0,0,0.95));
     backdrop-filter: blur(4px);
 }
 
@@ -491,7 +522,7 @@ body {
     top: 50%;
     transform: translate(-50%, -50%);
     width: 360px;
-    max-width: 90%;
+    max-width: 92%;
     background: radial-gradient(circle at top, #111827, #020617);
     border-radius: 18px;
     padding: 24px 22px 22px;
@@ -571,7 +602,9 @@ body {
     }
 }
 
-/* ===== 반응형 (태블릿 이하) ===== */
+/* ===========================
+   RESPONSIVE
+=========================== */
 
 @media (max-width: 960px) {
     .event-layout {
@@ -582,28 +615,13 @@ body {
         width: 300px;
         height: 300px;
     }
-
-    .segment-label:nth-child(n) {
-        transform: none; /* 아래서 다시 정의 */
-    }
-    .segment-label:nth-child(1)  { transform: rotate(18deg)  translate(-50%, -130px); }
-    .segment-label:nth-child(2)  { transform: rotate(54deg)  translate(-50%, -130px); }
-    .segment-label:nth-child(3)  { transform: rotate(90deg)  translate(-50%, -130px); }
-    .segment-label:nth-child(4)  { transform: rotate(126deg) translate(-50%, -130px); }
-    .segment-label:nth-child(5)  { transform: rotate(162deg) translate(-50%, -130px); }
-    .segment-label:nth-child(6)  { transform: rotate(198deg) translate(-50%, -130px); }
-    .segment-label:nth-child(7)  { transform: rotate(234deg) translate(-50%, -130px); }
-    .segment-label:nth-child(8)  { transform: rotate(270deg) translate(-50%, -130px); }
-    .segment-label:nth-child(9)  { transform: rotate(306deg) translate(-50%, -130px); }
-    .segment-label:nth-child(10) { transform: rotate(342deg) translate(-50%, -130px); }
 }
 
 @media (max-width: 640px) {
     .page-wrap {
-        padding: 20px 16px 32px;
+        padding: 22px 14px 32px;
     }
-
     .event-header h1 {
-        font-size: 22px;
+        font-size: 24px;
     }
 }
