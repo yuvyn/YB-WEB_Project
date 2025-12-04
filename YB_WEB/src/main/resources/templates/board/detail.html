@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title th:text="${post.title} + ' - YB WEB'">게시글 상세 - YB WEB</title>
+
+    <!-- 폰트 -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+
+    <!-- 공통 헤더/푸터 -->
+    <link rel="stylesheet" th:href="@{/css/layout/header.css}">
+    <link rel="stylesheet" th:href="@{/css/layout/footer.css}">
+
+    <!-- 상세 전용 CSS -->
+    <link rel="stylesheet" th:href="@{/css/board/detail.css}">
+</head>
+<body class="board-page">
+
+<div class="page">
+
+    <!-- 헤더 -->
+    <th:block th:replace="layout/header :: header"></th:block>
+
+    <main class="board-main">
+
+        <!-- 상단 영역 -->
+        <section class="board-header">
+            <div class="board-inner">
+
+                <div class="board-title-wrap">
+                    <p class="breadcrumb">
+                        <span th:switch="${boardType}">
+                            <span th:case="${T(com.example.demo.domain.BoardType).NOTICE}">새소식 &gt; 공지사항</span>
+                            <span th:case="${T(com.example.demo.domain.BoardType).UPDATE}">새소식 &gt; 업데이트</span>
+                            <span th:case="${T(com.example.demo.domain.BoardType).FREE}">커뮤니티 &gt; 자유게시판</span>
+                            <span th:case="${T(com.example.demo.domain.BoardType).QNA}">고객센터 &gt; 문의게시판</span>
+                            <span th:case="*">게시판</span>
+                        </span>
+                    </p>
+
+                    <h1 class="board-main-title"
+                        th:text="${post.title}">
+                        게시글 제목
+                    </h1>
+
+                    <div class="board-meta">
+
+                        <span class="meta-badge"
+                              th:switch="${boardType}">
+                            <span th:case="${T(com.example.demo.domain.BoardType).NOTICE}">공지사항</span>
+                            <span th:case="${T(com.example.demo.domain.BoardType).UPDATE}">업데이트</span>
+                            <span th:case="${T(com.example.demo.domain.BoardType).FREE}">자유게시판</span>
+                            <span th:case="${T(com.example.demo.domain.BoardType).QNA}">문의</span>
+                            <span th:case="*">게시글</span>
+                        </span>
+
+                        <span class="meta-item">
+                            작성자
+                            <strong th:text="${post.writer}">관리자</strong>
+                        </span>
+
+                        <span class="meta-divider">|</span>
+
+                        <span class="meta-item">
+                            작성일
+                            <strong th:text="${#temporals.format(post.createdAt, 'yyyy.MM.dd HH:mm')}">
+                                2025.12.01 12:00
+                            </strong>
+                        </span>
+
+                        <span class="meta-divider">|</span>
+
+                        <span class="meta-item">
+                            조회
+                            <strong th:text="${post.viewCount}">123</strong>
+                        </span>
+
+                        <!-- 공지 고정 표시 -->
+                        <span class="meta-pin"
+                              th:if="${post.noticePin}">
+                            상단고정
+                        </span>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- 내용 영역 -->
+        <section class="detail-section">
+            <div class="board-inner">
+
+                <article class="detail-card">
+
+                    <div class="detail-content"
+                         th:utext="${#strings.replace(post.content, '\n', '<br/>')}">
+                        내용이 들어갑니다.
+                    </div>
+
+                </article>
+
+                <!-- 버튼들 -->
+                <div class="detail-actions">
+
+                    <a class="btn-secondary"
+                       th:href="@{'/board/' + ${#strings.toLowerCase(boardType.name())}}">
+                        목록으로
+                    </a>
+
+                    <!-- 수정/삭제는 나중에 기능 만들면 링크 연결하면 됨 -->
+                    <!--
+                    <div class="btn-right">
+                        <a class="btn-outline" href="#">수정</a>
+                        <form method="post" th:action="@{'/board/' + ${boardType} + '/' + ${post.id} + '/delete'}">
+                            <button type="submit" class="btn-danger">삭제</button>
+                        </form>
+                    </div>
+                    -->
+
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- 푸터 -->
+    <th:block th:replace="layout/footer :: footer"></th:block>
+
+</div>
+
+</body>
+</html>

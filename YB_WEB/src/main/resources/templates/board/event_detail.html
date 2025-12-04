@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title th:text="${event.title} + ' - YB WEB'">이벤트 상세 - YB WEB</title>
+
+    <!-- 폰트 -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap"
+          rel="stylesheet">
+
+    <!-- 공통 CSS -->
+    <link rel="stylesheet" th:href="@{/css/layout/header.css}">
+    <link rel="stylesheet" th:href="@{/css/layout/footer.css}">
+
+    <!-- 상세 전용 CSS -->
+    <link rel="stylesheet" th:href="@{/css/board/event_detail.css}">
+</head>
+<body class="board-page">
+
+<div class="page">
+
+    <!-- 헤더 -->
+    <th:block th:replace="layout/header :: header"></th:block>
+
+    <main class="board-main">
+
+        <!-- 상단 히어로 -->
+        <section class="event-hero">
+            <div class="board-inner hero-inner">
+
+                <div class="hero-text">
+                    <p class="breadcrumb">새소식 &gt; 이벤트</p>
+                    <h1 th:text="${event.title}">이벤트 제목</h1>
+
+                    <div class="hero-meta">
+                        <span class="badge status-open"
+                              th:if="${event.status} == 'OPEN'">진행 중</span>
+                        <span class="badge status-upcoming"
+                              th:if="${event.status} == 'UPCOMING'">진행 예정</span>
+                        <span class="badge status-closed"
+                              th:if="${event.status} == 'CLOSED'">종료</span>
+
+                        <span class="badge type-web"
+                              th:if="${event.category} == 'WEB'">웹 이벤트</span>
+                        <span class="badge type-ingame"
+                              th:if="${event.category} == 'INGAME'">인게임</span>
+                        <span class="badge type-pc"
+                              th:if="${event.category} == 'PC'">PC방</span>
+                        <span class="badge type-event"
+                              th:if="${event.category} == 'COMMUNITY'">커뮤니티</span>
+                    </div>
+
+                    <div class="hero-info">
+                        <div class="info-item">
+                            <span class="label">진행 기간</span>
+                            <span class="value"
+                                  th:text="${event.periodText}">2025.12.01 ~ 2025.12.31</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">플랫폼</span>
+                            <span class="value"
+                                  th:text="${event.platform} ?: '-'">PC / 모바일</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">조회수</span>
+                            <span class="value"
+                                  th:text="${event.viewCount}">123</span>
+                        </div>
+                        <div class="info-item" th:if="${event.dDayLabel} != ''">
+                            <span class="label">D-DAY</span>
+                            <span class="value strong"
+                                  th:text="${event.dDayLabel}">D-5</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 썸네일 -->
+                <div class="hero-thumb" th:if="${event.thumbnailUrl}">
+                    <img th:src="@{${event.thumbnailUrl}}"
+                         alt="이벤트 썸네일">
+                </div>
+
+            </div>
+        </section>
+
+        <!-- 본문 -->
+        <section class="event-detail-section">
+            <div class="board-inner">
+
+                <article class="event-detail-card">
+                    <div class="event-content"
+                         th:utext="${#strings.replace(event.content, '\n', '<br/>')}">
+                        이벤트 상세 내용이 들어갑니다.
+                    </div>
+                </article>
+
+                <!-- 버튼 -->
+                <div class="detail-actions">
+                    <a th:href="@{/event}" class="btn-secondary">목록으로</a>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- 푸터 -->
+    <th:block th:replace="layout/footer :: footer"></th:block>
+</div>
+
+</body>
+</html>

@@ -185,10 +185,10 @@
                         <button class="page-btn next" type="button">&gt;</button>
                     </div>
 
-                    <div class="write-wrap">
-                        <!-- 나중에 권한 체크해서 th:if로 감싸면 됨 -->
-                        <a href="#" class="btn-write">글쓰기</a>
-                    </div>
+                    <div class="board-write-wrap">
+                    <!-- 공지사항은 BoardType.NOTICE 이므로 대문자 NOTICE 사용 -->
+                    <a th:href="@{'/board/FREE/write'}" class="btn-write">글쓰기</a>
+                	</div>
                 </div>
 
             </div>

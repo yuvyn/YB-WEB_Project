@@ -48,7 +48,7 @@
             <div class="event-toolbar-inner">
 
                 <div class="event-count">
-                    총 <span>8</span>개의 이벤트가 있습니다.
+                    총 <span th:text="${#lists.size(events)}">0</span>개의 이벤트가 있습니다.
                 </div>
 
                 <div class="event-filters">
@@ -69,6 +69,9 @@
                         <input type="text" name="keyword" placeholder="이벤트 제목 검색">
                         <button type="submit">검색</button>
                     </form>
+                    
+                    <!-- ★ 이벤트 등록 버튼 -->
+    				<a th:href="@{/event/write}" class="btn-write">이벤트 등록</a>
                 </div>
 
             </div>
@@ -80,139 +83,97 @@
 
                 <div class="event-grid">
 
-                    <!-- 카드 1 : 진행중 / 웹이벤트 -->
-                    <article class="event-card status-open type-web">
-                        <div class="event-thumb thumb-1">
-                            <span class="d-day">D-5</span>
-                        </div>
-                        <div class="event-body">
-                            <div class="event-top">
-                                <span class="badge badge-status open">진행 중</span>
-                                <span class="badge badge-type web">웹 이벤트</span>
-                            </div>
-                            <h2 class="event-title">
-                                겨울 스페셜 출석 이벤트
-                            </h2>
-                            <p class="event-desc">
-                                매일 접속만 해도 성장 재화와 한정 코스튬 조각을 획득할 수 있는 겨울 한정 출석 이벤트!
-                            </p>
-                            <div class="event-meta">
-                                <span class="period">2025.12.01 ~ 2025.12.31</span>
-                                <span class="platform">플랫폼 : PC / 모바일</span>
-                            </div>
-                            <div class="event-actions">
-                                <a href="#" class="btn-detail">이벤트 상세 보기</a>
-                            </div>
-                        </div>
-                    </article>
+    <!-- ★ DB 이벤트 카드 반복 -->
+    <article class="event-card"
+         th:each="event : ${events}"
+         th:classappend="
+            ' ' +
+            (${event.status} == 'OPEN' ? 'status-open' :
+                (${event.status} == 'UPCOMING' ? 'status-upcoming' : 'status-closed')) +
+            ' ' +
+            (${event.category} == 'WEB' ? 'type-web' :
+                (${event.category} == 'INGAME' ? 'type-ingame' :
+                (${event.category} == 'PC' ? 'type-pc' : 'type-event')))
+         ">
 
-                    <!-- 카드 2 : 진행중 / 인게임 -->
-                    <article class="event-card status-open type-ingame">
-                        <div class="event-thumb thumb-2">
-                            <span class="d-day">D-12</span>
-                        </div>
-                        <div class="event-body">
-                            <div class="event-top">
-                                <span class="badge badge-status open">진행 중</span>
-                                <span class="badge badge-type ingame">인게임 이벤트</span>
-                            </div>
-                            <h2 class="event-title">
-                                프로스트 로드 레이드 클리어 챌린지
-                            </h2>
-                            <p class="event-desc">
-                                신규 군단장 &lt;프로스트 로드&gt; 레이드를 클리어하고 칭호와 전용 코스튬을 획득하세요.
-                            </p>
-                            <div class="event-meta">
-                                <span class="period">2025.12.05 ~ 2026.01.09</span>
-                                <span class="platform">플랫폼 : 인게임</span>
-                            </div>
-                            <div class="event-actions">
-                                <a href="#" class="btn-detail">레이드 공략 보기</a>
-                            </div>
-                        </div>
-                    </article>
+        <!-- 썸네일 -->
+        <div class="event-thumb"
+             th:style="${event.thumbnailUrl} != null ? 'background-image:url(' + event.thumbnailUrl + ');' : null">
+            <!-- D-day 표시 (endDate 있을 때만) -->
+            <span class="d-day"
+                  th:if="${event.endDate != null}"
+                  th:text="'D-' + ${T(java.time.temporal.ChronoUnit).DAYS.between(T(java.time.LocalDate).now(), event.endDate)}">
+                D-5
+            </span>
+            <span class="d-day end"
+                  th:if="${event.endDate != null and T(java.time.LocalDate).now().isAfter(event.endDate)}">
+                종료
+            </span>
+        </div>
 
-                    <!-- 카드 3 : 진행중 / PC방 -->
-                    <article class="event-card status-open type-pc">
-                        <div class="event-thumb thumb-3">
-                            <span class="d-day">D-3</span>
-                        </div>
-                        <div class="event-body">
-                            <div class="event-top">
-                                <span class="badge badge-status open">진행 중</span>
-                                <span class="badge badge-type pc">PC방 이벤트</span>
-                            </div>
-                            <h2 class="event-title">
-                                겨울 시즌 PC방 접속 보상
-                            </h2>
-                            <p class="event-desc">
-                                PC방에서 접속만 해도 전용 버프와 강화 재료, 한정 탈것을 받을 수 있는 스페셜 이벤트.
-                            </p>
-                            <div class="event-meta">
-                                <span class="period">2025.11.20 ~ 2025.12.15</span>
-                                <span class="platform">플랫폼 : 지정 PC방</span>
-                            </div>
-                            <div class="event-actions">
-                                <a href="#" class="btn-detail">참여 PC방 보기</a>
-                            </div>
-                        </div>
-                    </article>
+        <div class="event-body">
 
-                    <!-- 카드 4 : 예정 -->
-                    <article class="event-card status-upcoming type-web">
-                        <div class="event-thumb thumb-4">
-                            <span class="d-day">D-30</span>
-                        </div>
-                        <div class="event-body">
-                            <div class="event-top">
-                                <span class="badge badge-status upcoming">진행 예정</span>
-                                <span class="badge badge-type web">웹 이벤트</span>
-                            </div>
-                            <h2 class="event-title">
-                                7주년 기념 사전 예약 이벤트
-                            </h2>
-                            <p class="event-desc">
-                                7주년 기념 업데이트를 앞두고 사전 예약 보상을 미리 받아볼 수 있는 특별 이벤트입니다.
-                            </p>
-                            <div class="event-meta">
-                                <span class="period">2026.01.01 ~ 2026.01.31</span>
-                                <span class="platform">플랫폼 : 웹 / 인게임</span>
-                            </div>
-                            <div class="event-actions">
-                                <a href="#" class="btn-detail disabled">오픈 예정</a>
-                            </div>
-                        </div>
-                    </article>
+            <!-- 상태/카테고리 뱃지 -->
+            <div class="event-top">
+                <span class="badge badge-status"
+                      th:classappend="${event.status} == 'OPEN' ? ' open' :
+                                      (${event.status} == 'UPCOMING' ? ' upcoming' : ' closed')"
+                      th:text="${event.status} == 'OPEN' ? '진행 중' :
+                               (${event.status} == 'UPCOMING' ? '진행 예정' : '종료')">
+                    진행 중
+                </span>
 
-                    <!-- 카드 5 : 종료 -->
-                    <article class="event-card status-closed type-event">
-                        <div class="event-thumb thumb-5">
-                            <span class="d-day end">종료</span>
-                        </div>
-                        <div class="event-body">
-                            <div class="event-top">
-                                <span class="badge badge-status closed">종료</span>
-                                <span class="badge badge-type event">커뮤니티 이벤트</span>
-                            </div>
-                            <h2 class="event-title">
-                                아트 콘테스트 : 겨울의 순간
-                            </h2>
-                            <p class="event-desc">
-                                모험가 여러분이 직접 그린 팬아트와 스크린샷을 공유하는 아트 콘테스트 이벤트였습니다.
-                            </p>
-                            <div class="event-meta">
-                                <span class="period">2025.10.10 ~ 2025.11.10</span>
-                                <span class="platform">플랫폼 : 웹 커뮤니티</span>
-                            </div>
-                            <div class="event-actions">
-                                <a href="#" class="btn-detail">당첨자 보기</a>
-                            </div>
-                        </div>
-                    </article>
+                <span class="badge badge-type"
+                      th:classappend="${event.category} == 'WEB' ? ' web' :
+                                      (${event.category} == 'INGAME' ? ' ingame' :
+                                      (${event.category} == 'PC' ? ' pc' : ' event'))"
+                      th:text="${event.category} == 'WEB' ? '웹 이벤트' :
+                               (${event.category} == 'INGAME' ? '인게임 이벤트' :
+                               (${event.category} == 'PC' ? 'PC방 이벤트' : '커뮤니티 이벤트'))">
+                    웹 이벤트
+                </span>
+            </div>
 
-                    <!-- 필요하면 더 많은 카드 추가 가능 -->
+            <!-- 제목 -->
+            <h2 class="event-title"
+                th:text="${event.title}">
+                이벤트 제목
+            </h2>
 
-                </div>
+            <!-- 내용 요약 -->
+            <p class="event-desc"
+    th:text="${#strings.isEmpty(event.content) ? '' 
+               : (#strings.length(event.content) > 80 
+                    ? event.content.substring(0,80) + '...' 
+                    : event.content)}">
+    설명 80자 미리보기
+</p>
+
+            <!-- 기간 / 플랫폼 -->
+            <div class="event-meta">
+                <span class="period"
+                      th:if="${event.startDate != null and event.endDate != null}"
+                      th:text="${#temporals.format(event.startDate, 'yyyy.MM.dd')} + ' ~ ' +
+                               ${#temporals.format(event.endDate, 'yyyy.MM.dd')}">
+                    2025.12.01 ~ 2025.12.31
+                </span>
+                <span class="period"
+                      th:if="${event.startDate == null or event.endDate == null}">
+                    상시 진행
+                </span>
+
+                <span class="platform"
+                      th:text="'플랫폼 : ' + (${event.platform} != null ? event.platform : '기타')">
+                    플랫폼 : PC / 모바일
+                </span>
+            </div>
+
+            <!-- 상세보기 -->
+            <div class="event-actions"><a th:href="@{|/event/${event.id}|}" class="btn-detail">이벤트 상세 보기</a></div>
+        </div>
+    </article>
+
+</div>
 
                 <!-- 페이징 (더미) -->
                 <div class="pagination">

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title th:text="'글쓰기 - ' + ${boardType} + ' - YB WEB'">글쓰기 - YB WEB</title>
+
+    <!-- 폰트 -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap"
+          rel="stylesheet">
+
+    <!-- 공통 레이아웃 -->
+    <link rel="stylesheet" th:href="@{/css/layout/header.css}">
+    <link rel="stylesheet" th:href="@{/css/layout/footer.css}">
+
+    <!-- 게시판 글쓰기 전용 CSS -->
+    <link rel="stylesheet" th:href="@{/css/board/write.css}">
+</head>
+<body class="board-page">
+
+<div class="page">
+
+    <!-- ✅ fragment 표현식 최신 문법으로 수정 -->
+    <th:block th:replace="~{layout/header :: header}"></th:block>
+
+    <main class="board-main">
+
+        <!-- 상단 타이틀 -->
+        <section class="board-header">
+            <div class="board-header-inner">
+                <div class="board-title-wrap">
+
+                    <!-- 상단 breadcrumb -->
+                    <p class="breadcrumb"
+                       th:text="${
+                           boardType.name() == 'NOTICE' } ? '새소식 > 공지사항' :
+                          (${boardType.name() == 'UPDATE' } ? '새소식 > 업데이트' :
+                          (${boardType.name() == 'FREE'   } ? '커뮤니티 > 자유게시판' :
+                                                             '고객센터 > 문의게시판'))">
+                        새소식 &gt; 공지사항
+                    </p>
+
+                    <!-- 상단 제목 -->
+                    <h1 th:text="${
+                           boardType.name() == 'NOTICE' } ? '공지사항 글쓰기' :
+                          (${boardType.name() == 'UPDATE' } ? '업데이트 글쓰기' :
+                          (${boardType.name() == 'FREE'   } ? '자유게시판 글쓰기' :
+                                                             '문의글 작성'))">
+                        게시글 작성
+                    </h1>
+
+                    <p class="board-desc">
+                        게시글 내용을 입력 후 등록 버튼을 눌러 주세요.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 글쓰기 폼 -->
+        <section class="write-section">
+            <div class="board-inner">
+
+                <!-- ✅ boardType 그대로 사용해서 action 동적으로 -->
+                <form th:action="@{'/board/' + ${boardType} + '/write'}"
+                      method="post"
+                      class="write-form">
+
+                    <!-- 제목 -->
+                    <div class="form-row">
+                        <label for="title">제목</label>
+                        <input type="text" id="title" name="title"
+                               placeholder="제목을 입력해 주세요" required>
+                    </div>
+
+                    <!-- 작성자 -->
+                    <div class="form-row">
+                        <label for="writer">작성자</label>
+                        <span th:text="${loginMember.nickname}">닉네임</span>
+                    </div>
+
+                    <!-- 상단 고정 (공지사항에서만 보이게) -->
+                    <div class="form-row pin-row"
+                         th:if="${boardType.name() == 'NOTICE' || boardType.name() == 'QNA'}">
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="noticePin">
+                            <span>상단 공지로 고정하기</span>
+                        </label>
+                    </div>
+
+                    <!-- 내용 -->
+                    <div class="form-row">
+                        <label for="content">내용</label>
+                        <textarea id="content" name="content" rows="12"
+                                  placeholder="내용을 입력해 주세요" required></textarea>
+                    </div>
+
+                    <!-- 버튼 영역 -->
+                    <div class="form-actions">
+                        <!-- 목록으로 버튼: boardType에 따라 목록 URL 변경 -->
+                        <a th:href="@{${boardType.name() == 'NOTICE'} ? '/board/notice' :
+                                      (${boardType.name() == 'UPDATE'} ? '/board/update' :
+                                      (${boardType.name() == 'FREE'}   ? '/board/free' :
+                                                                         '/board/qna'))}"
+                           class="btn-cancel">
+                            목록으로
+                        </a>
+
+                        <button type="submit" class="btn-submit">등록하기</button>
+                    </div>
+
+                </form>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ✅ footer fragment도 새 문법 -->
+    <th:block th:replace="~{layout/footer :: footer}"></th:block>
+
+</div>
+
+</body>
+</html>

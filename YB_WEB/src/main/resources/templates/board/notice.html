@@ -112,89 +112,34 @@
                     </tr>
                     </thead>
                     <tbody>
-
-                    <!-- 고정 상단 공지 스타일 (예시) -->
-                    <tr class="row-pin">
-                        <td>
-                            <span class="tag pin">공지</span>
-                        </td>
-                        <td class="title-cell">
-                            <a href="#">
-                                [안내] 업데이트 사전 다운로드 및 점검 시간 안내
-                            </a>
-                        </td>
-                        <td>2025.11.29</td>
-                        <td>4,120</td>
-                    </tr>
-
-                    <!-- 일반 업데이트 (더미 데이터) -->
-                    <tr>
-                        <td>
-                            <span class="tag type-etc">-</span>
-                        </td>
-                        <td class="title-cell">
-                            <a href="#">
-                                [정식 서버] 12/01(월) 업데이트 내역 안내
-                            </a>
-                            <span class="badge-mini">NEW</span>
-                        </td>
-                        <td>2025.12.01</td>
-                        <td>3,250</td>
-                    </tr>
-
-                    <tr>
-                        <td>
-                            <span class="tag type-etc">-</span>
-                        </td>
-                        <td class="title-cell">
-                            <a href="#">
-                                [시스템] 매칭 대기 시간 및 매칭 로직 개선 안내
-                            </a>
-                        </td>
-                        <td>2025.11.25</td>
-                        <td>1,820</td>
-                    </tr>
-
-                    <tr>
-                        <td>
-                            <span class="tag type-etc">-</span>
-                        </td>
-                        <td class="title-cell">
-                            <a href="#">
-                                [이벤트] 겨울 한정 출석 및 성장 버프 이벤트 안내
-                            </a>
-                        </td>
-                        <td>2025.11.20</td>
-                        <td>2,430</td>
-                    </tr>
-
-                    <tr>
-                        <td>
-                            <span class="tag type-etc">-</span>
-                        </td>
-                        <td class="title-cell">
-                            <a href="#">
-                                [정식 서버] 클래스 밸런스 조정 사항 안내
-                            </a>
-                        </td>
-                        <td>2025.11.12</td>
-                        <td>5,012</td>
-                    </tr>
-
-                    <tr>
-                        <td>
-                            <span class="tag type-etc">-</span>
-                        </td>
-                        <td class="title-cell">
-                            <a href="#">
-                                [안내] 보안 정책 변경 및 2차 인증 강화
-                            </a>
-                        </td>
-                        <td>2025.11.05</td>
-                        <td>980</td>
-                    </tr>
-
-                    </tbody>
+						<tr th:each="post : ${posts}"
+						    th:classappend="${post.noticePin} ? ' row-pin'">
+						
+						    <!-- 구분 -->
+						    <td>
+						        <span class="tag"
+						              th:classappend="${post.noticePin} ? ' pin' : ' type-etc'"
+						              th:text="${post.noticePin} ? '공지' : '-'">
+						            공지
+						        </span>
+						    </td>
+						
+						    <!-- 제목 -->
+						    <td class="title-cell">
+							    <a th:href="@{'/board/NOTICE/' + ${post.id}}"
+							       th:text="${post.title}">
+						            제목
+						        </a>
+						        <span class="badge-mini" th:if="${post.isNew}">NEW</span>
+						    </td>
+						
+						    <!-- 날짜 -->
+						    <td th:text="${#temporals.format(post.createdAt, 'yyyy.MM.dd')}">2025.11.29</td>
+						
+						    <!-- 조회수 -->
+						    <td th:text="${post.viewCount}">0</td>
+						</tr>
+						</tbody>
                 </table>
 
                 <!-- 페이징 (더미) -->
@@ -204,6 +149,12 @@
                     <button class="page-btn" type="button">2</button>
                     <button class="page-btn" type="button">3</button>
                     <button class="page-btn next" type="button">&gt;</button>
+                </div>
+                
+                <!-- ✅ 글쓰기 버튼 영역 추가 -->
+                <div class="board-write-wrap">
+                    <!-- 공지사항은 BoardType.NOTICE 이므로 대문자 NOTICE 사용 -->
+                    <a th:href="@{'/board/NOTICE/write'}" class="btn-write">글쓰기</a>
                 </div>
 
             </div>

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>이벤트 등록 - YB WEB</title>
+
+    <!-- 폰트 -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap"
+          rel="stylesheet">
+
+    <!-- 공통 레이아웃 CSS -->
+    <link rel="stylesheet" th:href="@{/css/layout/header.css}">
+    <link rel="stylesheet" th:href="@{/css/layout/footer.css}">
+
+    <!-- 이벤트 작성 전용 CSS -->
+    <link rel="stylesheet" th:href="@{/css/board/event_write.css}">
+</head>
+<body class="board-page">
+
+<div class="page">
+
+    <!-- 공통 헤더 -->
+    <th:block th:replace="layout/header :: header"></th:block>
+
+    <main class="board-main">
+
+        <!-- 상단 타이틀 -->
+        <section class="board-header">
+            <div class="board-header-inner">
+                <div class="board-title-wrap">
+                    <p class="breadcrumb">새소식 &gt; 이벤트 &gt; 이벤트 등록</p>
+                    <h1>이벤트 등록</h1>
+                    <p class="board-desc">
+                        웹 / 인게임 / PC방 등 다양한 이벤트를 등록합니다.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 작성 폼 -->
+        <section class="event-write-section">
+            <div class="board-inner">
+
+                <form class="event-write-form"
+                      method="post"
+                      th:action="@{/event/write}">
+
+                    <!-- 제목 -->
+                    <div class="form-row">
+                        <label for="title">이벤트 제목<span class="req">*</span></label>
+                        <input type="text" id="title" name="title"
+                               placeholder="예) 겨울 스페셜 출석 이벤트"
+                               required>
+                    </div>
+
+                    <!-- 썸네일 URL -->
+                    <div class="form-row">
+                        <label for="thumbnailUrl">썸네일 이미지 경로<span class="req">*</span></label>
+                        <input type="text" id="thumbnailUrl" name="thumbnailUrl"
+                               placeholder="/img/event/event1.png"
+                               required>
+                        <p class="help-text">정적 리소스 경로나 CDN URL을 입력하세요.</p>
+                    </div>
+
+                    <!-- 상태 / 카테고리 / 플랫폼 -->
+                    <div class="form-row form-row-3col">
+                        <div>
+                            <label for="status">진행 상태<span class="req">*</span></label>
+                            <select id="status" name="status" required>
+                                <option value="OPEN">진행 중</option>
+                                <option value="UPCOMING">진행 예정</option>
+                                <option value="CLOSED">종료</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label for="category">이벤트 유형<span class="req">*</span></label>
+                            <select id="category" name="category" required>
+                                <option value="WEB">웹 이벤트</option>
+                                <option value="INGAME">인게임 이벤트</option>
+                                <option value="PC">PC방 이벤트</option>
+                                <option value="COMMUNITY">커뮤니티 이벤트</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label for="platform">플랫폼</label>
+                            <input type="text" id="platform" name="platform"
+                                   placeholder="예) PC / 모바일">
+                        </div>
+                    </div>
+
+                    <!-- 기간 -->
+                    <div class="form-row form-row-2col">
+                        <div>
+                            <label for="startDate">시작일</label>
+                            <input type="date" id="startDate" name="startDate">
+                        </div>
+                        <div>
+                            <label for="endDate">종료일</label>
+                            <input type="date" id="endDate" name="endDate">
+                        </div>
+                    </div>
+
+                    <!-- 내용 -->
+                    <div class="form-row">
+                        <label for="content">이벤트 상세 내용<span class="req">*</span></label>
+                        <textarea id="content" name="content" rows="12"
+                                  placeholder="이벤트 상세 안내, 보상, 참여 방법 등을 작성해 주세요."
+                                  required></textarea>
+                    </div>
+
+                    <!-- 버튼 -->
+                    <div class="form-actions">
+                        <a th:href="@{/event}" class="btn-secondary">목록으로</a>
+                        <button type="submit" class="btn-primary">등록하기</button>
+                    </div>
+                </form>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- 공통 푸터 -->
+    <th:block th:replace="layout/footer :: footer"></th:block>
+</div>
+
+</body>
+</html>
