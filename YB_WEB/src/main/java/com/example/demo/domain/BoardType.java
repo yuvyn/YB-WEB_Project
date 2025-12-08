@@ -6,5 +6,6 @@ public enum BoardType {
     FREE,     // 자유게시판
     QNA,       // 문의게시판
     GROWTH_GUIDE,
-    EVENT
+    EVENT,
+    guild
 }

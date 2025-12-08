@@ -15,3 +15,13 @@ spring:
 
   thymeleaf:
     cache: false
+    
+    spring:
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: youbin5412@gmail.com
+    password: wxeh iajm crfg iygy  # \uad6c\uae00 MFA \uc0ac\uc6a9\uc2dc \uc571\ube44\ubc00\ubc88\ud638 \ud544\uc694
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true

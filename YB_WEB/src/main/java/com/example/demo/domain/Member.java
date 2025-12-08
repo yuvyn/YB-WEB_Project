@@ -58,6 +58,18 @@ public class Member {
 
     @Column(name = "updated_at", insertable = false, updatable = false)
     private LocalDateTime updatedAt;
+    
+    @Column(name = "verify_question")
+    private String verifyQuestion;
+
+    @Column(name = "verify_answer")
+    private String verifyAnswer;
+
+    @Column(name = "two_factor_enabled")
+    private Boolean twoFactorEnabled = false;   // 기본 false
+
+    @Column(name = "two_factor_type")
+    private String twoFactorType;
 
     protected Member() {}
 
@@ -107,6 +119,10 @@ public class Member {
     public LocalDateTime getLastLoginAt() { return lastLoginAt; }
     public LocalDateTime getCreatedAt() { return createdAt; }
     public LocalDateTime getUpdatedAt() { return updatedAt; }
+    public String getVerifyQuestion() { return verifyQuestion; }
+    public String getVerifyAnswer() { return verifyAnswer; }
+    public Boolean getTwoFactorEnabled() { return twoFactorEnabled; }
+    public String getTwoFactorType() { return twoFactorType; }
 
     // === Setter ===
     public void setLoginId(String loginId) { this.loginId = loginId; }
@@ -122,4 +138,8 @@ public class Member {
     public void setLastLoginAt(LocalDateTime lastLoginAt) { this.lastLoginAt = lastLoginAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
     public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
+    public void setVerifyQuestion(String verifyQuestion) { this.verifyQuestion = verifyQuestion; }
+    public void setVerifyAnswer(String verifyAnswer) { this.verifyAnswer = verifyAnswer; }
+    public void setTwoFactorEnabled(Boolean twoFactorEnabled) { this.twoFactorEnabled = twoFactorEnabled; }
+    public void setTwoFactorType(String twoFactorType) { this.twoFactorType = twoFactorType; }
 }

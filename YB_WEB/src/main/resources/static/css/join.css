@@ -261,6 +261,46 @@ body.register-page {
         0 0 14px rgba(129,140,248,0.30);
 }
 
+/* 공통 인풋이랑 거의 동일하게 */
+.field select {
+    border-radius: 11px;
+    border: 1px solid #d1d5db;
+    background: #f9fafb;
+    padding: 9px 12px;
+    font-size: 14px;
+    color: #111827;
+    outline: none;
+    width: 100%;
+    transition: border-color 0.15s ease,
+                box-shadow 0.15s ease,
+                background 0.15s ease;
+    appearance: none;           /* 기본 브라우저 스타일 최소화 */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+
+/* placeholder 느낌으로 첫 줄 흐리게 보이고 싶으면: 
+   <option value="" disabled selected>질문을 선택해 주세요</option> 같은 식으로 넣고 사용 */
+.field select:invalid,
+.field select option[disabled] {
+    color: #9ca3af;
+}
+
+/* 포커스 스타일 (input과 동일) */
+.field select:focus {
+    border-color: #6366f1;
+    box-shadow:
+        0 0 0 1px rgba(99,102,241,0.2),
+        0 0 18px rgba(129,140,248,0.25);
+    background: #ffffff;
+}
+
+/* 옵션 목록 폰트 */
+.field select option {
+    font-size: 14px;
+    color: #111827;
+}
+
 /* ========= 반응형 ========= */
 
 @media (max-width: 768px) {

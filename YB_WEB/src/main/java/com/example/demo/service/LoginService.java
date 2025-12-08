@@ -47,7 +47,9 @@ public class LoginService {
                        String email,
                        String birth,
                        String gender,
-                       String password) {
+                       String password,
+                       String verifyQuestion,
+                       String verifyAnswer) {
 
         // 아이디 중복 체크
         if (memberRepository.findByLoginId(loginId).isPresent()) {
@@ -86,6 +88,18 @@ public class LoginService {
                 birthDate,
                 gender
         );
+        
+     // 2단계 인증 정보 세팅 (질문을 적은 경우에만 활성화)
+        if (verifyQuestion != null && !verifyQuestion.isBlank()
+                && verifyAnswer != null && !verifyAnswer.isBlank()) {
+            member.setVerifyQuestion(verifyQuestion);
+            member.setVerifyAnswer(verifyAnswer);
+            member.setTwoFactorEnabled(true);
+            member.setTwoFactorType("QUESTION");
+        } else {
+            member.setTwoFactorEnabled(false);
+            member.setTwoFactorType(null);
+        }
 
         return memberRepository.save(member);
     }

@@ -68,11 +68,18 @@ public class BoardController {
         return listPage(BoardType.QNA, "board/QnAboard", keyword, model);
     }
     
- // 문의게시판
+    // 가이드 게시판
     @GetMapping("/growth_guide")
     public String growth_guideList(@RequestParam(name = "keyword", required = false) String keyword,
                           Model model) {
         return listPage(BoardType.GROWTH_GUIDE, "board/growth_guide", keyword, model);
+    }
+    
+    // 길드 게시판
+    @GetMapping("/guild")
+    public String guild(@RequestParam(name = "keyword", required = false) String keyword,
+                          Model model) {
+        return listPage(BoardType.guild, "board/guild", keyword, model);
     }
 
     // ===== 글쓰기 / 상세 =====

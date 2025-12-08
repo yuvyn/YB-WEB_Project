@@ -271,6 +271,60 @@ body.login-page {
     line-height: 1;
 }
 
+.second-method-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 14px;
+}
+
+.second-method-option {
+    flex: 1;
+    cursor: pointer;
+}
+
+/* 라디오 숨기기 */
+.second-method-option input[type="radio"] {
+    display: none;
+}
+
+/* 탭 비주얼 */
+.second-method-option span {
+    display: block;
+    text-align: center;
+    padding: 8px 0;
+    border-radius: 999px;
+    border: 1px solid #d1d5db;
+    background: #f9fafb;
+    font-size: 13px;
+    color: #4b5563;
+    transition:
+        border-color 0.15s ease,
+        box-shadow 0.15s ease,
+        background 0.15s ease,
+        color 0.15s ease;
+}
+
+/* 선택된 탭 */
+.second-method-option input[type="radio"]:checked + span {
+    border-color: #6366f1;
+    background: #eef2ff;
+    color: #111827;
+    box-shadow:
+        0 0 0 1px rgba(99,102,241,0.18),
+        0 0 14px rgba(129,140,248,0.30);
+}
+
+/* 질문/이메일 텍스트 영역 */
+.second-question,
+.second-email {
+    padding: 9px 12px;
+    border-radius: 11px;
+    background: #f3f4f6;
+    border: 1px solid #e5e7eb;
+    font-size: 13px;
+    color: #374151;
+}
+
 /* 모바일 여백 */
 @media (max-width: 480px) {
     .login-card {
