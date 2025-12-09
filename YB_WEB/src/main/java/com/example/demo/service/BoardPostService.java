@@ -24,9 +24,10 @@ public class BoardPostService {
                            String title,
                            String content,
                            String writer,
+                           Long memberId,
                            boolean noticePin) {
 
-        BoardPost post = new BoardPost(boardType, title, content, writer);
+        BoardPost post = new BoardPost(boardType, title, content, writer, memberId);
         post.setNoticePin(noticePin);
         return boardPostRepository.save(post);
     }

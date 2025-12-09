@@ -113,19 +113,25 @@ public class BoardController {
                         @RequestParam(name = "noticePin", required = false, defaultValue = "false") boolean noticePin,
                         HttpSession session) {
 
-        // 1. 세션에서 로그인 회원 꺼내기
         Member loginMember = (Member) session.getAttribute("loginMember");
         if (loginMember == null) {
-            // 로그인 안 되어 있으면 로그인 페이지로 보내기
             return "redirect:/member/login";
         }
 
-        // 2. 닉네임을 writer 로 사용
+        // ✅ 여기! getId() 말고 getIdx()
+        Long memberId = loginMember.getIdx();
         String writer = loginMember.getNickname();
 
-        // 3. 나머지는 기존 로직 그대로
         BoardType boardType = BoardType.valueOf(type.toUpperCase());
-        BoardPost post = boardPostService.write(boardType, title, content, writer, noticePin);
+
+        BoardPost post = boardPostService.write(
+                boardType,
+                title,
+                content,
+                writer,
+                memberId,
+                noticePin
+        );
 
         return "redirect:/board/" + type.toLowerCase() + "/" + post.getId();
     }

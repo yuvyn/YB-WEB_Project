@@ -19,12 +19,15 @@ public class BoardPost {
     private String title;
 
     @Lob
-    @Column(nullable = false)
+    @Column(columnDefinition = "LONGTEXT", nullable = false)
     private String content;
 
     @Column(length = 50)
     private String writer;
 
+    @Column(name = "member_id")
+    private Long memberId;
+    
     @Column(name = "view_count", nullable = false)
     private int viewCount = 0;
 
@@ -40,11 +43,12 @@ public class BoardPost {
     // === 생성자 ===
     protected BoardPost() {}
 
-    public BoardPost(BoardType boardType, String title, String content, String writer) {
+    public BoardPost(BoardType boardType, String title, String content, String writer, Long memberId) {
         this.boardType = boardType;
         this.title = title;
         this.content = content;
         this.writer = writer;
+        this.memberId = memberId;
     }
 
     // === getter/setter ===
@@ -62,6 +66,9 @@ public class BoardPost {
 
     public String getWriter() { return writer; }
     public void setWriter(String writer) { this.writer = writer; }
+    
+    public Long getMemberId() { return memberId; }
+    public void setMemberId(Long memberId) { this.memberId = memberId; }
 
     public int getViewCount() { return viewCount; }
     public void increaseViewCount() { this.viewCount++; }

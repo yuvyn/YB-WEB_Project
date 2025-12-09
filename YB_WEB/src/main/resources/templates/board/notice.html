@@ -12,8 +12,8 @@
     <link rel="stylesheet" th:href="@{/css/layout/header.css}">
     <link rel="stylesheet" th:href="@{/css/layout/footer.css}">
 
-    <!-- 업데이트 전용 CSS -->
-    <link rel="stylesheet" th:href="@{/css/board/update.css}">
+    <!-- 공지사항도 업데이트 CSS 재사용 -->
+    <link rel="stylesheet" th:href="@{/css/board/notice.css}">
 </head>
 <body class="board-page">
 
@@ -25,10 +25,9 @@
     <!-- 메인 영역 -->
     <main class="board-main">
 
-        <!-- 상단 타이틀 / 서브탭 -->
+        <!-- 상단 타이틀 -->
         <section class="board-header">
             <div class="board-header-inner">
-
                 <div class="board-title-wrap">
                     <p class="breadcrumb">새소식 &gt; 공지사항</p>
                     <h1>공지사항 안내</h1>
@@ -43,8 +42,9 @@
         <section class="board-toolbar-section">
             <div class="board-toolbar-inner">
 
+                <!-- 총 건수 동적 처리 -->
                 <div class="board-count">
-                    총 <span>12</span>건의 공지사항이 있습니다.
+                    총 <span th:text="${totalCount}">0</span>건의 공지사항이 있습니다.
                 </div>
 
                 <form class="board-search" method="get">
@@ -56,43 +56,62 @@
                         <option value="etc">기타</option>
                     </select>
 
-                    <input type="text" name="keyword" placeholder="업데이트 내용 검색">
+                    <input type="text" name="keyword"
+                           placeholder="공지 내용 검색"
+                           th:value="${keyword}">
                     <button type="submit">검색</button>
                 </form>
 
             </div>
         </section>
 
-        <!-- 상단 주요 업데이트 카드 -->
-        <section class="update-featured-section">
-            <div class="board-inner">
+        <!-- 🔹 상단 주요 공지 카드 (상단 공지 고정된 글) -->
+        <!-- posts 목록이 있고, 그 첫 번째 글이 noticePin=true 인 경우에만 노출 -->
+        <section class="update-featured-section"
+                 th:if="${!#lists.isEmpty(posts) and posts[0].noticePin}">
+            <div class="board-inner"
+                 th:with="featured=${posts[0]}">
 
                 <article class="update-featured-card">
                     <div class="badge-line">
                         <span class="badge badge-type">공지사항</span>
-                        <span class="badge badge-new">NEW</span>
+                        <span class="badge badge-new" th:if="${featured.isNew}">NEW</span>
                     </div>
 
                     <h2 class="featured-title">
-                        [정식 서버] 겨울 시즌 대규모 업데이트 안내
+                        <a th:href="@{/board/{type}/{id}(
+                                        type=${boardType.name()},
+                                        id=${featured.id}
+                                    )}"
+                           th:text="${featured.title}">
+                            [정식 서버] 겨울 시즌 대규모 업데이트 안내
+                        </a>
                     </h2>
 
-                    <p class="featured-desc">
+                    <!-- 내용 요약 : 줄바꿈 제거 후 150자 정도만 표시 -->
+                    <p class="featured-desc"
+                       th:text="${#strings.abbreviate(#strings.replace(featured.content, '\n', ' '), 150)}">
                         신규 레이드 &lt;프로스트 로드&gt;, 신규 클래스, 장비 성장 동선 개편과
                         각종 편의성 개선 사항이 적용됩니다. 자세한 내용은 아래 본문을 통해 확인해 주세요.
                     </p>
 
                     <div class="featured-meta">
-                        <span class="date">2025.12.01</span>
+                        <span class="date"
+                              th:text="${#temporals.format(featured.createdAt, 'yyyy.MM.dd')}">
+                            2025.12.01
+                        </span>
                         <span class="divider">|</span>
-                        <span class="view">조회 3,250</span>
+                        <span class="view"
+                              th:text="|조회 ${featured.viewCount}|">
+                            조회 3,250
+                        </span>
                     </div>
                 </article>
 
             </div>
         </section>
 
-        <!-- 업데이트 목록 테이블 -->
+        <!-- 공지 목록 테이블 -->
         <section class="board-list-section">
             <div class="board-inner">
 
@@ -112,34 +131,49 @@
                     </tr>
                     </thead>
                     <tbody>
-						<tr th:each="post : ${posts}"
-						    th:classappend="${post.noticePin} ? ' row-pin'">
-						
-						    <!-- 구분 -->
-						    <td>
-						        <span class="tag"
-						              th:classappend="${post.noticePin} ? ' pin' : ' type-etc'"
-						              th:text="${post.noticePin} ? '공지' : '-'">
-						            공지
-						        </span>
-						    </td>
-						
-						    <!-- 제목 -->
-						    <td class="title-cell">
-							    <a th:href="@{'/board/NOTICE/' + ${post.id}}"
-							       th:text="${post.title}">
-						            제목
-						        </a>
-						        <span class="badge-mini" th:if="${post.isNew}">NEW</span>
-						    </td>
-						
-						    <!-- 날짜 -->
-						    <td th:text="${#temporals.format(post.createdAt, 'yyyy.MM.dd')}">2025.11.29</td>
-						
-						    <!-- 조회수 -->
-						    <td th:text="${post.viewCount}">0</td>
-						</tr>
-						</tbody>
+
+                        <!-- 게시글이 없을 때 -->
+                        <tr th:if="${#lists.isEmpty(posts)}">
+                            <td colspan="4" class="no-data">
+                                등록된 공지사항이 없습니다.
+                            </td>
+                        </tr>
+
+                        <!-- 게시글 목록 -->
+                        <tr th:each="post : ${posts}"
+                            th:classappend="${post.noticePin} ? ' row-pin'">
+
+                            <!-- 구분 -->
+                            <td>
+							    <span class="tag"
+							          th:classappend="${post.noticePin} ? ' pin' : ' type-etc'">
+							        공지
+							    </span>
+							</td>
+
+                            <!-- 제목 -->
+                            <td class="title-cell">
+							    <a th:href="@{/board/{type}/{id}(
+							                    type=${boardType.name()},
+							                    id=${post.id}
+							                )}"
+							       th:text="${post.title}"
+							       class="title-link">
+							        제목
+							    </a>
+							    <span class="badge-mini" th:if="${post.isNew}">NEW</span>
+							</td>
+
+                            <!-- 날짜 -->
+                            <td th:text="${#temporals.format(post.createdAt, 'yyyy.MM.dd')}">
+                                2025.11.29
+                            </td>
+
+                            <!-- 조회수 -->
+                            <td th:text="${post.viewCount}">0</td>
+                        </tr>
+
+                    </tbody>
                 </table>
 
                 <!-- 페이징 (더미) -->
@@ -150,10 +184,9 @@
                     <button class="page-btn" type="button">3</button>
                     <button class="page-btn next" type="button">&gt;</button>
                 </div>
-                
-                <!-- ✅ 글쓰기 버튼 영역 추가 -->
+
+                <!-- 글쓰기 버튼 -->
                 <div class="board-write-wrap">
-                    <!-- 공지사항은 BoardType.NOTICE 이므로 대문자 NOTICE 사용 -->
                     <a th:href="@{'/board/NOTICE/write'}" class="btn-write">글쓰기</a>
                 </div>
 
