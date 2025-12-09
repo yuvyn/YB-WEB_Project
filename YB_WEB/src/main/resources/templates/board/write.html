@@ -78,6 +78,18 @@
                         <span th:text="${loginMember.nickname}">닉네임</span>
                     </div>
 
+					<div class="form-row" th:if="${boardType.name() == 'QNA'}">
+					    <label for="qnaCategory">문의 유형</label>
+					    <select id="qnaCategory" name="qnaCategory" required>
+					        <option value="">문의 유형을 선택해 주세요</option>
+					        <option value="ACCOUNT">계정/로그인</option>
+					        <option value="PAY">결제/캐시</option>
+					        <option value="BUG">게임 오류/버그</option>
+					        <option value="SUGGEST">건의/피드백</option>
+					        <option value="ETC">기타 문의</option>
+					    </select>
+					</div>
+					
                     <!-- 상단 고정 (공지사항에서만 보이게) -->
                     <div class="form-row pin-row"
                          th:if="${boardType.name() == 'NOTICE' || boardType.name() == 'QNA'}">

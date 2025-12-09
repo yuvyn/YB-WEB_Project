@@ -346,27 +346,56 @@ body.board-page {
    페이징
    ======================== */
 
-.pagination {
-    margin-top: 14px;
-    display: flex;
-    justify-content: center;
-    gap: 4px;
-}
+   .pagination {
+       margin-top: 20px;
+       display: flex;
+       gap: 6px;
+       justify-content: center;
+       align-items: center;
+   }
 
-.page-btn {
-    min-width: 32px;
-    padding: 6px 10px;
-    border-radius: 999px;
-    border: 1px solid #d1d5db;
-    background: #ffffff;
-    font-size: 12px;
-    cursor: pointer;
-    color: #4b5563;
-}
+   .page-btn {
+       min-width: 32px;
+       height: 32px;
+       padding: 0 8px;
+       border-radius: 999px;
+       border: 1px solid #d0d5e6;
+       background: #fff;
+       font-size: 13px;
+       cursor: pointer;
+       display: inline-flex;
+       justify-content: center;
+       align-items: center;
+       color: #333f6b;
+       text-decoration: none;
+   }
 
-.page-btn.active {
-    border-color: transparent;
-    background: linear-gradient(135deg,#6366f1,#f97316);
-    color: #ffffff;
-    box-shadow: 0 8px 18px rgba(99,102,241,0.35);
-}
+   .page-btn:hover {
+       background: #eef3ff;
+   }
+
+   .page-btn.active {
+       background: #3f6cff;
+       color: #fff;
+       border-color: #3f6cff;
+       font-weight: 600;
+   }
+
+   .page-btn.disabled {
+       opacity: 0.4;
+       cursor: default;
+       pointer-events: none;
+   }
+   
+   .btn-write {
+       display: inline-flex;
+       align-items: center;
+       justify-content: center;
+       padding: 8px 18px;
+       border-radius: 999px;
+       font-size: 12px;
+       font-weight: 600;
+       text-decoration: none;
+       background: #111827;
+       color: #f9fafb;
+   }

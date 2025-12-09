@@ -177,13 +177,62 @@
                 </table>
 
                 <!-- 페이징 (더미) -->
-                <div class="pagination">
-                    <button class="page-btn prev" type="button">&lt;</button>
-                    <button class="page-btn active" type="button">1</button>
-                    <button class="page-btn" type="button">2</button>
-                    <button class="page-btn" type="button">3</button>
-                    <button class="page-btn next" type="button">&gt;</button>
-                </div>
+				<div class="pagination" th:if="${totalPages > 1}">
+
+				    <!-- 맨 처음 페이지 (<<) -->
+				    <a class="page-btn"
+				       th:href="@{/board/{type}(type=${#strings.toLowerCase(boardType.name())},
+				                                page=1,
+				                                keyword=${keyword})}"
+				       th:classappend="${page == 1} ? ' disabled'">
+				        &laquo;
+				    </a>
+
+				    <!-- 이전 블록 (<) -->
+				    <a class="page-btn"
+				       th:if="${hasPrevBlock}"
+				       th:href="@{/board/{type}(type=${#strings.toLowerCase(boardType.name())},
+				                                page=${prevBlockPage},
+				                                keyword=${keyword})}">
+				        &lsaquo;
+				    </a>
+				    <span class="page-btn disabled"
+				          th:if="${!hasPrevBlock}">
+				        &lsaquo;
+				    </span>
+
+				    <!-- 페이지 숫자 5개 블록 -->
+				    <a class="page-btn"
+				       th:each="p : ${#numbers.sequence(startPage, endPage)}"
+				       th:text="${p}"
+				       th:classappend="${p == page} ? ' active'"
+				       th:href="@{/board/{type}(type=${#strings.toLowerCase(boardType.name())},
+				                                page=${p},
+				                                keyword=${keyword})}">
+				    </a>
+
+				    <!-- 다음 블록 (>) -->
+				    <a class="page-btn"
+				       th:if="${hasNextBlock}"
+				       th:href="@{/board/{type}(type=${#strings.toLowerCase(boardType.name())},
+				                                page=${nextBlockPage},
+				                                keyword=${keyword})}">
+				        &rsaquo;
+				    </a>
+				    <span class="page-btn disabled"
+				          th:if="${!hasNextBlock}">
+				        &rsaquo;
+				    </span>
+
+				    <!-- 맨 끝 페이지 (>>) -->
+				    <a class="page-btn"
+				       th:href="@{/board/{type}(type=${#strings.toLowerCase(boardType.name())},
+				                                page=${totalPages},
+				                                keyword=${keyword})}"
+				       th:classappend="${page == totalPages} ? ' disabled'">
+				        &raquo;
+				    </a>
+				</div>
 
                 <!-- 글쓰기 버튼 -->
                 <div class="board-write-wrap">

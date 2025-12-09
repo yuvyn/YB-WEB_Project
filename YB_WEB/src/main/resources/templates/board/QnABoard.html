@@ -54,14 +54,37 @@
             <aside class="inquiry-side">
                 <div class="side-card">
                     <h2>문의 유형</h2>
-                    <ul class="side-type-list">
-                        <li class="active">전체 문의</li>
-                        <li>계정/로그인</li>
-                        <li>결제/캐시</li>
-                        <li>게임 오류/버그</li>
-                        <li>건의/피드백</li>
-                        <li>기타 문의</li>
-                    </ul>
+					<ul class="side-type-list">
+					    <!-- 전체 -->
+					    <li th:classappend="${category == null or category == 'ALL'} ? ' active'">
+					        <a th:href="@{/board/qna(category='ALL', keyword=${keyword})}">전체 문의</a>
+					    </li>
+
+					    <!-- 계정/로그인 -->
+					    <li th:classappend="${category == 'ACCOUNT'} ? ' active'">
+					        <a th:href="@{/board/qna(category='ACCOUNT', keyword=${keyword})}">계정/로그인</a>
+					    </li>
+
+					    <!-- 결제/캐시 -->
+					    <li th:classappend="${category == 'PAY'} ? ' active'">
+					        <a th:href="@{/board/qna(category='PAY', keyword=${keyword})}">결제/캐시</a>
+					    </li>
+
+					    <!-- 게임 오류/버그 -->
+					    <li th:classappend="${category == 'BUG'} ? ' active'">
+					        <a th:href="@{/board/qna(category='BUG', keyword=${keyword})}">게임 오류/버그</a>
+					    </li>
+
+					    <!-- 건의/피드백 -->
+					    <li th:classappend="${category == 'SUGGEST'} ? ' active'">
+					        <a th:href="@{/board/qna(category='SUGGEST', keyword=${keyword})}">건의/피드백</a>
+					    </li>
+
+					    <!-- 기타 문의 -->
+					    <li th:classappend="${category == 'ETC'} ? ' active'">
+					        <a th:href="@{/board/qna(category='ETC', keyword=${keyword})}">기타 문의</a>
+					    </li>
+					</ul>
                 </div>
 
                 <div class="side-card notice">
@@ -92,11 +115,6 @@
                             <option>접수</option>
                             <option>처리중</option>
                             <option>답변완료</option>
-                        </select>
-                        <select class="select-small">
-                            <option>제목+내용</option>
-                            <option>제목</option>
-                            <option>작성자</option>
                         </select>
 
                         <form class="board-search" method="get" th:action="@{/board/qna}">
@@ -147,13 +165,18 @@
                             <td th:text="${post.noticePin} ? '공지' : (${totalCount - stat.index})">
 
                             <!-- 구분: 지금은 일단 기타로 고정, 나중에 필드 추가해서 바꾸면 됨 -->
-                            <td>
-                                <span class="badge"
-                                      th:classappend="${post.noticePin} ? ' type-notice' : ' type-etc'"
-                                      th:text="${post.noticePin} ? '안내' : '기타'">
-                                    기타
-                                </span>
-                            </td>
+							<td>
+							    <span class="badge"
+							          th:classappend="${
+							                post.noticePin} ? ' type-notice' :
+							                (post.qnaCategory == 'ACCOUNT' ? ' type-account' :
+							                (post.qnaCategory == 'PAY'     ? ' type-pay'     :
+							                (post.qnaCategory == 'BUG'     ? ' type-bug'     :
+							                (post.qnaCategory == 'SUGGEST' ? ' type-suggest' : ' type-etc'))))"
+							          th:text="${post.noticePin} ? '안내' : ${post.qnaCategoryLabel}">
+							        기타 문의
+							    </span>
+							</td>
 
                             <!-- 제목 -->
                             <td class="title">
@@ -164,9 +187,15 @@
                             </td>
 
                             <!-- 처리 상태: 데모라 일단 '접수' 고정 -->
-                            <td>
-                                <span class="badge status-new">접수</span>
-                            </td>
+							<td>
+							    <span class="badge"
+							          th:classappend="${
+							                post.qnaStatus} == 'DONE' ? ' status-done' :
+							                (${post.qnaStatus} == 'IN_PROGRESS' ? ' status-ing' : ' status-new')"
+							          th:text="${post.qnaStatusLabel}">
+							        접수
+							    </span>
+							</td>
 
                             <!-- 작성일 -->
                             <td th:text="${#temporals.format(post.createdAt, 'yyyy.MM.dd')}">
@@ -180,14 +209,62 @@
                     </table>
 
                     <!-- 페이지네이션: 아직 페이징 안 쓰면 더미로 유지 -->
-                    <div class="pagination">
-                        <button class="page-btn" type="button">&laquo;</button>
-                        <button class="page-btn active" type="button">1</button>
-                        <button class="page-btn" type="button">2</button>
-                        <button class="page-btn" type="button">3</button>
-                        <button class="page-btn" type="button">4</button>
-                        <button class="page-btn" type="button">&raquo;</button>
-                    </div>
+					<div class="pagination" th:if="${totalPages > 1}">
+
+					    <!-- 맨 처음 페이지 (<<) -->
+					    <a class="page-btn"
+					       th:href="@{/board/{type}(type=${#strings.toLowerCase(boardType.name())},
+					                                page=1,
+					                                keyword=${keyword})}"
+					       th:classappend="${page == 1} ? ' disabled'">
+					        &laquo;
+					    </a>
+
+					    <!-- 이전 블록 (<) -->
+					    <a class="page-btn"
+					       th:if="${hasPrevBlock}"
+					       th:href="@{/board/{type}(type=${#strings.toLowerCase(boardType.name())},
+					                                page=${prevBlockPage},
+					                                keyword=${keyword})}">
+					        &lsaquo;
+					    </a>
+					    <span class="page-btn disabled"
+					          th:if="${!hasPrevBlock}">
+					        &lsaquo;
+					    </span>
+
+					    <!-- 페이지 숫자 5개 블록 -->
+					    <a class="page-btn"
+					       th:each="p : ${#numbers.sequence(startPage, endPage)}"
+					       th:text="${p}"
+					       th:classappend="${p == page} ? ' active'"
+					       th:href="@{/board/{type}(type=${#strings.toLowerCase(boardType.name())},
+					                                page=${p},
+					                                keyword=${keyword})}">
+					    </a>
+
+					    <!-- 다음 블록 (>) -->
+					    <a class="page-btn"
+					       th:if="${hasNextBlock}"
+					       th:href="@{/board/{type}(type=${#strings.toLowerCase(boardType.name())},
+					                                page=${nextBlockPage},
+					                                keyword=${keyword})}">
+					        &rsaquo;
+					    </a>
+					    <span class="page-btn disabled"
+					          th:if="${!hasNextBlock}">
+					        &rsaquo;
+					    </span>
+
+					    <!-- 맨 끝 페이지 (>>) -->
+					    <a class="page-btn"
+					       th:href="@{/board/{type}(type=${#strings.toLowerCase(boardType.name())},
+					                                page=${totalPages},
+					                                keyword=${keyword})}"
+					       th:classappend="${page == totalPages} ? ' disabled'">
+					        &raquo;
+					    </a>
+					</div>
                 </div>
             </div>
         </div>

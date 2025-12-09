@@ -36,6 +36,66 @@ public class Coupon {
           🔥 핵심 메서드   
        ====================== */
 
+    public Long getId() {
+        return id;
+    }
+
+    public Long getMemberId() {
+        return memberId;
+    }
+    public void setMemberId(Long memberId) {
+        this.memberId = memberId;
+    }
+
+    public String getCode() {
+        return code;
+    }
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public String getName() {
+        return name;
+    }
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public CouponStatus getStatus() {
+        return status;
+    }
+    public void setStatus(CouponStatus status) {
+        this.status = status;
+    }
+
+    public LocalDateTime getIssuedAt() {
+        return issuedAt;
+    }
+    public void setIssuedAt(LocalDateTime issuedAt) {
+        this.issuedAt = issuedAt;
+    }
+
+    public LocalDateTime getUsedAt() {
+        return usedAt;
+    }
+    public void setUsedAt(LocalDateTime usedAt) {
+        this.usedAt = usedAt;
+    }
+
+    public LocalDateTime getExpiredAt() {
+        return expiredAt;
+    }
+    public void setExpiredAt(LocalDateTime expiredAt) {
+        this.expiredAt = expiredAt;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+    
     // 쿠폰 사용
     public void use() {
         this.status = CouponStatus.USED;

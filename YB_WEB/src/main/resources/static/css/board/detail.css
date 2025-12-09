@@ -174,3 +174,48 @@ body.board-page {
     display: flex;
     gap: 8px;
 }
+
+.qna-admin-status {
+    margin-top: 14px;
+	margin-bottom: 18px;
+    padding: 12px 18px;
+    background:#f6f9ff;
+    border:1px solid #d6e2ff;
+    border-radius:10px;
+    display:flex;
+    gap:12px;
+    align-items:center;
+    box-shadow:0 2px 6px rgba(0,0,0,0.05);
+}
+
+.qna-admin-status .label{
+    font-weight:700;
+    font-size:14px;
+    color:#2e5cff;
+    margin-right:6px;
+}
+
+.qna-admin-status form{
+    display:inline-block;
+}
+
+.qna-admin-status .btn-status{
+    padding:7px 14px;
+    border-radius:6px;
+    background:white;
+    border:1px solid #b7c7ff;
+    font-weight:600;
+    color:#3c4d85;
+    cursor:pointer;
+    transition:0.2s;
+}
+
+.qna-admin-status .btn-status:hover{
+    background:#e9efff;
+}
+
+.qna-admin-status .btn-status.active{
+    background:#4169ff;
+    color:white;
+    border-color:#4169ff;
+}

@@ -39,6 +39,12 @@ public class BoardPost {
 
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt = LocalDateTime.now();
+    
+    @Column(name = "qna_category", length = 20)
+    private String qnaCategory;
+    
+    @Column(name = "qna_status", length = 20)
+    private String qnaStatus = "RECEIVED";
 
     // === 생성자 ===
     protected BoardPost() {}
@@ -95,5 +101,46 @@ public class BoardPost {
     public boolean getIsNew() {
         if (createdAt == null) return false;
         return createdAt.isAfter(LocalDateTime.now().minusDays(3));
+    }
+    
+    public String getQnaCategory() {
+        return qnaCategory;
+    }
+
+    public void setQnaCategory(String qnaCategory) {
+        this.qnaCategory = qnaCategory;
+    }
+
+    // 🔹 화면에서 쓸 한글 라벨
+    @Transient
+    public String getQnaCategoryLabel() {
+        if (qnaCategory == null) return "기타 문의";
+        return switch (qnaCategory) {
+            case "ACCOUNT" -> "계정/로그인";
+            case "PAY"     -> "결제/캐시";
+            case "BUG"     -> "게임 오류/버그";
+            case "SUGGEST" -> "건의/피드백";
+            case "ETC"     -> "기타 문의";
+            default        -> "기타 문의";
+        };
+    }
+    
+    public String getQnaStatus() {
+        return qnaStatus;
+    }
+
+    public void setQnaStatus(String qnaStatus) {
+        this.qnaStatus = qnaStatus;
+    }
+
+    @Transient
+    public String getQnaStatusLabel() {
+        if (qnaStatus == null) return "접수";
+        return switch (qnaStatus) {
+            case "RECEIVED"    -> "접수";
+            case "IN_PROGRESS" -> "처리중";
+            case "DONE"        -> "답변완료";
+            default            -> "접수";
+        };
     }
 }
