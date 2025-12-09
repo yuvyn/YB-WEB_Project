@@ -36,12 +36,95 @@ public class LoginController {
 
     // 로그인 화면
     @GetMapping("/login")
-    public String loginForm() {
-        // Flash Attribute 로 넘어온 error 는 자동으로 Model 에 들어감
-        return "login/login";   // templates/login/login.html
+    public String loginForm(HttpServletRequest request, Model model) {
+
+        // 1) 우선 "모달 띄우라"는 플래시가 있는지 확인
+        Object flashFlag = model.asMap().get("showSecondModal");
+        boolean showSecondModal = (flashFlag instanceof Boolean) && (Boolean) flashFlag;
+
+        HttpSession session = request.getSession(false);
+
+        // 🔹 플래시 플래그가 없으면 → 무조건 초기 화면 + 2차인증 상태 초기화
+        if (!showSecondModal) {
+            if (session != null) {
+                // 이전에 남아 있던 tempMemberId 싹 제거 (새로 로그인 시작)
+                session.removeAttribute("tempMemberId");
+            }
+
+            // 모달 관련 값들 기본값
+            if (!model.containsAttribute("forceEmailTab")) {
+                model.addAttribute("forceEmailTab", false);
+            }
+            if (!model.containsAttribute("emailSent")) {
+                model.addAttribute("emailSent", false);
+            }
+            model.addAttribute("showSecondModal", false);
+
+            return "login/login";
+        }
+
+        // 🔹 여기까지 왔다는 건 "반드시 모달을 띄우고 싶다"는 의미 (POST 이후 redirect)
+
+        if (session == null || session.getAttribute("tempMemberId") == null) {
+            // 플래그는 있는데 세션이 없으면 이상한 상태 → 그냥 초기화해서 로그인만 보여줌
+            model.addAttribute("showSecondModal", false);
+            return "login/login";
+        }
+
+        Long memberId = (Long) session.getAttribute("tempMemberId");
+        Member member = memberRepository.findById(memberId).orElse(null);
+
+        if (member == null) {
+            // 회원도 없으면 초기화
+            session.removeAttribute("tempMemberId");
+            model.addAttribute("showSecondModal", false);
+            return "login/login";
+        }
+
+        // 질문/이메일 세팅
+        model.addAttribute("question", member.getVerifyQuestion());
+
+        String realEmail = member.getEmail();
+        String maskedEmail = realEmail;
+
+        if (realEmail != null) {
+            int atIndex = realEmail.indexOf("@");
+            if (atIndex > 1) {
+                String first = realEmail.substring(0, 1);
+                String hidden = "*".repeat(atIndex - 1);
+                String domain = realEmail.substring(atIndex);
+                maskedEmail = first + hidden + domain;
+            }
+        }
+
+        model.addAttribute("email", realEmail);
+        model.addAttribute("maskedEmail", maskedEmail);
+
+        // forceEmailTab / emailSent 가 플래시로 안 오면 기본값 세팅
+        if (!model.containsAttribute("forceEmailTab")) {
+            model.addAttribute("forceEmailTab", false);
+        }
+        if (!model.containsAttribute("emailSent")) {
+            model.addAttribute("emailSent", false);
+        }
+
+        // 🔹 emailSent == true인데 remainSec 이 안 왔으면 기본 180초로 타이머 활성화
+        boolean emailSent = false;
+        Object emailSentObj = model.asMap().get("emailSent");
+        if (emailSentObj instanceof Boolean && (Boolean) emailSentObj) {
+            emailSent = true;
+        }
+
+        if (emailSent && !model.containsAttribute("remainSec")) {
+            model.addAttribute("remainSec", 180);   // 3분
+        }
+        
+        model.addAttribute("showSecondModal", true);
+
+        return "login/login";
     }
 
-    //  로그인 처리
+	//  로그인 처리
     @PostMapping("/login")
     public String login(@RequestParam("loginId") String loginId,
                         @RequestParam("password") String password,
@@ -51,7 +134,6 @@ public class LoginController {
         Member member = loginService.login(loginId, password);
 
         if (member == null) {
-            // 실패 → 다음 /login 요청에서 한 번만 보이는 에러
             redirectAttributes.addFlashAttribute(
                     "error",
                     "아이디 또는 비밀번호가 일치하지 않아요.\n정확하게 입력해 주세요."
@@ -59,16 +141,18 @@ public class LoginController {
             return "redirect:/login";
         }
 
-        // 로그인 성공
         HttpSession session = request.getSession();
-     
-        // 2단계 인증 사용 여부 체크
+
+        // ✅ 2단계 인증 사용 여부 체크
         if (Boolean.TRUE.equals(member.getTwoFactorEnabled())
                 && "QUESTION".equals(member.getTwoFactorType())) {
 
-            // 아직 진짜 로그인은 안 하고, 임시로 member id만 저장
             session.setAttribute("tempMemberId", member.getIdx());
-            return "redirect:/login/second";    // 2차 인증 페이지로
+
+            // 🔥 다음 /login GET 에서만 모달 띄워라!
+            redirectAttributes.addFlashAttribute("showSecondModal", true);
+
+            return "redirect:/login";
         }
 
         // 2차 인증 안 쓰면 바로 로그인
@@ -157,48 +241,8 @@ public class LoginController {
         // 3) 가입 완료 → 로그인 페이지로
         return "redirect:/login";
     }
-    
- // 2단계 인증 페이지
-    @GetMapping("/login/second")
-    public String secondStepForm(HttpServletRequest request, Model model,
-                                 RedirectAttributes redirectAttributes) {
 
-        HttpSession session = request.getSession(false);
-        if (session == null || session.getAttribute("tempMemberId") == null) {
-            redirectAttributes.addFlashAttribute("error", "다시 로그인해 주세요.");
-            return "redirect:/login";
-        }
-
-        Long memberId = (Long) session.getAttribute("tempMemberId");
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new IllegalStateException("회원 정보를 찾을 수 없습니다."));
-
-        model.addAttribute("question", member.getVerifyQuestion());
-
-        // ✅ 실제 이메일 + 마스킹 처리
-        String realEmail = member.getEmail();
-        String maskedEmail = realEmail;
-
-        if (realEmail != null) {
-            int atIndex = realEmail.indexOf("@");
-            if (atIndex > 1) {
-                String first = realEmail.substring(0, 1);
-                String hidden = "*".repeat(atIndex - 1);
-                String domain = realEmail.substring(atIndex);
-                maskedEmail = first + hidden + domain;  // y*****@naver.com 이런식
-            }
-        }
-
-        model.addAttribute("email", realEmail);        // hidden value
-        model.addAttribute("maskedEmail", maskedEmail); // 화면에 보이는 값
-
-        // ⛔ 여기 아래 expire_time / remainSec / expired / emailSent 세팅하는 로직은
-        //     타이머 이상하게 남는 원인이라면 과감히 삭제하는 걸 추천
-
-        return "login/second-step-question";
-    }
-
- // 2단계 질문 답변 확인
+    // 2단계 질문 답변 확인
     @PostMapping("/login/second")
     public String secondStepVerify(@RequestParam("answer") String answer,
                                    HttpServletRequest request,
@@ -216,23 +260,24 @@ public class LoginController {
 
         if (!member.getVerifyAnswer().equals(answer)) {
             redirectAttributes.addFlashAttribute("error", "본인확인 답변이 일치하지 않습니다.");
-            return "redirect:/login/second";
+            redirectAttributes.addFlashAttribute("showSecondModal", true); // 🔹 모달 다시 열기
+            return "redirect:/login";
         }
 
         // 2차 인증 성공 → 실제 로그인 세션 완성
         session.removeAttribute("tempMemberId");
         session.setAttribute("loginMember", member);
 
+        // ✅ 성공할 때만 로그인 완료 후 메인으로
         return "redirect:/";
     }
     
- // 인증코드 이메일 발송
+    // 인증코드 이메일 발송
     @PostMapping("/email/send")
     public String sendEmailCode(@RequestParam("email") String email,
                                 HttpServletRequest request,
                                 RedirectAttributes ra) {
 
-        // 🔐 세션 / 회원 확인
         HttpSession session = request.getSession(false);
         if (session == null || session.getAttribute("tempMemberId") == null) {
             ra.addFlashAttribute("error", "다시 로그인해 주세요.");
@@ -244,16 +289,17 @@ public class LoginController {
                 .orElseThrow(() -> new IllegalStateException("회원 정보를 찾을 수 없습니다."));
 
         String realEmail = member.getEmail();
-
-        // 🔐 이메일 검증: null/공백 또는 회원 이메일과 다르면 전송 차단
         email = (email == null) ? null : email.trim();
+
+        // ❌ 이메일이 다르면 에러 + 모달 유지
         if (email == null || email.isBlank() || !email.equalsIgnoreCase(realEmail)) {
             ra.addFlashAttribute("error", "이메일 정보가 올바르지 않습니다. 다시 시도해 주세요.");
-            ra.addFlashAttribute("forceEmailTab", true); // 이메일 탭은 유지
-            return "redirect:/login/second";
+            ra.addFlashAttribute("forceEmailTab", true);
+            ra.addFlashAttribute("showSecondModal", true);   // 🔹 모달 다시 열기
+            return "redirect:/login";
         }
 
-        // ✅ 여기서부터는 검증 통과한 올바른 이메일일 때만 실행
+        // ✅ 여기서부터는 검증 통과
         String code = emailService.generateCode();
         emailService.sendAuthMail(email, code);
 
@@ -263,11 +309,12 @@ public class LoginController {
             ON DUPLICATE KEY UPDATE code=?, expire_time=DATE_ADD(NOW(), INTERVAL 3 MINUTE)
         """, email, code, code);
 
-        // 이메일 발송 완료 → 이메일 탭 + 타이머 활성화
+        // 이메일 발송 완료 → 이메일 탭 + 모달 유지
         ra.addFlashAttribute("emailSent", true);
         ra.addFlashAttribute("forceEmailTab", true);
+        ra.addFlashAttribute("showSecondModal", true);       // 🔹 모달 다시 열기
 
-        return "redirect:/login/second";
+        return "redirect:/login";
     }
     
     @PostMapping("/email/verify")
@@ -284,9 +331,9 @@ public class LoginController {
         // ① 인증번호 요청 안 됨
         if (rows.isEmpty()) {
             ra.addFlashAttribute("error", "인증번호를 먼저 요청해 주세요.");
-            ra.addFlashAttribute("forceEmailTab", true);   // 🔹 이메일 탭 유지
-            // emailSent 는 false 여도 됨 (안 보냈으니까)
-            return "redirect:/login/second";
+            ra.addFlashAttribute("forceEmailTab", true);
+            ra.addFlashAttribute("showSecondModal", true);
+            return "redirect:/login";
         }
 
         Map<String,Object> row = rows.get(0);
@@ -298,13 +345,10 @@ public class LoginController {
         if (!savedCode.equals(code)) {
             ra.addFlashAttribute("error",
                     "인증번호가 일치하지 않습니다. 다시 인증번호를 요청해 주세요.");
-            ra.addFlashAttribute("forceEmailTab", true);  // 이메일 탭은 유지
-            ra.addFlashAttribute("emailSent", false);     // 🔥 재입력 막기 (버튼 비활성 + 타이머 숨김)
-
-            // 옵션) 아예 DB 값도 삭제하고 싶으면:
-            // jdbcTemplate.update("DELETE FROM email_auth WHERE email = ?", email);
-
-            return "redirect:/login/second";
+            ra.addFlashAttribute("forceEmailTab", true);
+            ra.addFlashAttribute("emailSent", false);
+            ra.addFlashAttribute("showSecondModal", true);
+            return "redirect:/login";
         }
 
         // ③ 시간 만료
@@ -312,12 +356,9 @@ public class LoginController {
             ra.addFlashAttribute("error",
                     "인증번호가 만료되었습니다. 다시 인증번호를 요청해 주세요.");
             ra.addFlashAttribute("forceEmailTab", true);
-            ra.addFlashAttribute("emailSent", false);     // 🔥 재입력 막기
-
-            // 옵션) 여기서도 기존 코드 삭제하고 싶으면:
-            // jdbcTemplate.update("DELETE FROM email_auth WHERE email = ?", email);
-
-            return "redirect:/login/second";
+            ra.addFlashAttribute("emailSent", false);
+            ra.addFlashAttribute("showSecondModal", true);
+            return "redirect:/login";
         }
 
         // ④ 성공
@@ -326,13 +367,15 @@ public class LoginController {
             ra.addFlashAttribute("error", "해당 이메일의 회원 정보를 찾을 수 없습니다.");
             ra.addFlashAttribute("forceEmailTab", true);
             ra.addFlashAttribute("emailSent", true);
-            return "redirect:/login/second";
+            ra.addFlashAttribute("showSecondModal", true);
+            return "redirect:/login";
         }
 
         HttpSession session = request.getSession();
         session.removeAttribute("tempMemberId");
         session.setAttribute("loginMember", member);
 
+        // ✅ 여기서만 진짜 로그인 완료
         return "redirect:/";
     }
 }

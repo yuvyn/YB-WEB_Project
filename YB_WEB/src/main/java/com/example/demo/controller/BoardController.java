@@ -65,7 +65,7 @@ public class BoardController {
     @GetMapping("/qna")
     public String qnaList(@RequestParam(name = "keyword", required = false) String keyword,
                           Model model) {
-        return listPage(BoardType.QNA, "board/QnAboard", keyword, model);
+        return listPage(BoardType.QNA, "board/QnABoard", keyword, model);
     }
     
     // 가이드 게시판
@@ -121,7 +121,7 @@ public class BoardController {
         }
 
         // 2. 닉네임을 writer 로 사용
-        String writer = loginMember.getNickname();   // ← 여기 중요!
+        String writer = loginMember.getNickname();
 
         // 3. 나머지는 기존 로직 그대로
         BoardType boardType = BoardType.valueOf(type.toUpperCase());

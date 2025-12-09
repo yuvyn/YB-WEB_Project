@@ -23,122 +23,82 @@ public class EmailService {
             var helper = new org.springframework.mail.javamail.MimeMessageHelper(message, true, "UTF-8");
 
             helper.setTo(to);
-            helper.setFrom("YOUR_EMAIL@gmail.com", "YBWEB 관리자"); // 발신 이메일/이름
-
+            helper.setFrom("YOUR_EMAIL@gmail.com", "YBWEB 관리자");
             helper.setSubject("[YB WEB] 이메일 인증 코드 안내");
 
             String html = """
-                <!DOCTYPE html>
-                <html lang="ko">
-                <head>
-                    <meta charset="UTF-8">
-                    <title>YB WEB 이메일 인증</title>
-                    <style>
-                        body {
-                            margin: 0;
-                            padding: 0;
-                            background-color: #f3f4f6;
-                            font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue",
-                                         "맑은 고딕", "Malgun Gothic", system-ui, sans-serif;
-                        }
-                        .wrapper {
-                            max-width: 560px;
-                            margin: 40px auto;
-                            background-color: #ffffff;
-                            border-radius: 8px;
-                            box-shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
-                            overflow: hidden;
-                        }
-                        .header {
-                            background-color: #111827;
-                            padding: 18px 24px;
-                            text-align: center;
-                        }
-                        .header-logo {
-                            color: #ffffff;
-                            font-weight: 700;
-                            font-size: 20px;
-                            letter-spacing: 0.08em;
-                        }
-                        .content {
-                            padding: 28px 30px 32px 30px;
-                            color: #111827;
-                            font-size: 14px;
-                            line-height: 1.6;
-                        }
-                        .title {
-                            font-size: 20px;
-                            font-weight: 700;
-                            margin-bottom: 10px;
-                        }
-                        .desc {
-                            margin: 4px 0;
-                        }
-                        .code-box {
-                            margin: 26px 0 18px 0;
-                            text-align: center;
-                            border-top: 1px solid #e5e7eb;
-                            border-bottom: 1px solid #e5e7eb;
-                            padding: 18px 0 20px 0;
-                        }
-                        .code-label {
-                            font-size: 13px;
-                            color: #6b7280;
-                            margin-bottom: 6px;
-                        }
-                        .code-value {
-                            font-size: 32px;
-                            font-weight: 700;
-                            letter-spacing: 0.25em;
-                            color: #111827;
-                        }
-                        .expire-text {
-                            margin-top: 8px;
-                            font-size: 12px;
-                            color: #6b7280;
-                        }
-                        .footer {
-                            padding: 16px 30px 22px 30px;
-                            border-top: 1px solid #e5e7eb;
-                            font-size: 11px;
-                            color: #9ca3af;
-                            line-height: 1.5;
-                        }
-                    </style>
-                </head>
-                <body>
-                    <div class="wrapper">
-                        <div class="header">
-                            <div class="header-logo">YB WEB</div>
-                        </div>
-                        <div class="content">
-                            <div class="title">YB WEB 이메일 주소 확인</div>
-                            <p class="desc">안녕하세요.</p>
-                            <p class="desc">
-                                YB WEB 계정 보호를 위해 이메일 인증을 진행하고 있습니다.
-                                아래 인증 코드를 인증 화면에 입력해 주세요.
-                            </p>
+                <!-- 네이버/모바일 호환용: table + inline style -->
+                <table width="100%%" bgcolor="#f3f4f6" 
+                       style="margin:0;padding:20px 0;font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue','맑은 고딕',system-ui,sans-serif;">
+                  <tr>
+                    <td align="center">
 
-                            <div class="code-box">
-                                <div class="code-label">인증 코드</div>
-                                <div class="code-value">%s</div>
-                                <div class="expire-text">
-                                    이 코드는 발송 후 3분 동안만 유효합니다.
-                                </div>
+                      <!-- 메인 카드 -->
+                      <table width="560" cellpadding="0" cellspacing="0" bgcolor="#ffffff"
+                             style="max-width:560px;border-radius:8px;overflow:hidden;border:1px solid #e5e7eb;">
+                        <!-- 상단 헤더 -->
+                        <tr>
+                          <td align="center"
+                              style="background-color:#111827;padding:16px 24px;">
+                            <span style="color:#ffffff;font-weight:700;font-size:20px;letter-spacing:0.08em;">
+                              YB WEB
+                            </span>
+                          </td>
+                        </tr>
+
+                        <!-- 본문 -->
+                        <tr>
+                          <td style="padding:28px 30px 32px 30px;color:#111827;font-size:14px;line-height:1.6;">
+                            <div style="font-size:20px;font-weight:700;margin-bottom:12px;">
+                              YB WEB 이메일 주소 확인
                             </div>
 
-                            <p class="desc">
-                                만약 회원가입이나 로그인 인증을 시도한 적이 없다면
-                                이 메일을 무시하셔도 됩니다.
+                            <p style="margin:4px 0;">안녕하세요.</p>
+                            <p style="margin:4px 0;">
+                              YB WEB 계정 보호를 위해 이메일 인증을 진행하고 있습니다.
+                              아래 인증 코드를 인증 화면에 입력해 주세요.
                             </p>
-                        </div>
-                        <div class="footer">
+
+                            <!-- 코드 박스 -->
+                            <table width="100%%" cellpadding="0" cellspacing="0"
+                                   style="margin:26px 0 18px 0;border-top:1px solid #e5e7eb;border-bottom:1px solid #e5e7eb;">
+                              <tr>
+                                <td align="center" style="padding:18px 0 20px 0;">
+                                  <div style="font-size:13px;color:#6b7280;margin-bottom:6px;">
+                                    인증 코드
+                                  </div>
+                                  <div style="font-size:32px;font-weight:700;letter-spacing:8px;color:#111827;">
+                                    %s
+                                  </div>
+                                  <div style="margin-top:8px;font-size:12px;color:#6b7280;">
+                                    이 코드는 발송 후 3분 동안만 유효합니다.
+                                  </div>
+                                </td>
+                              </tr>
+                            </table>
+
+                            <p style="margin:4px 0;">
+                              만약 회원가입이나 로그인 인증을 시도한 적이 없다면
+                              이 메일을 무시하셔도 됩니다.
+                            </p>
+                          </td>
+                        </tr>
+
+                        <!-- 푸터 -->
+                        <tr>
+                          <td style="padding:14px 30px 18px 30px;
+                                     border-top:1px solid #e5e7eb;
+                                     font-size:11px;color:#9ca3af;line-height:1.5;">
                             이 메일은 발신 전용입니다. 비밀번호, 카드 번호, 계좌 번호와 같은
                             민감한 정보는 절대 메일로 요청하지 않습니다.
-                        </div>
-                    </div>
-                </body>
-                </html>
+                          </td>
+                        </tr>
+
+                      </table>
+
+                    </td>
+                  </tr>
+                </table>
                 """.formatted(code);
 
             helper.setText(html, true);
