@@ -1,0 +1,269 @@
+@charset "UTF-8";
+
+body {
+    font-family: 'Noto Sans KR', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* 전체 페이지 레이아웃 */
+body.board-page {
+    min-height: 100vh;
+    background:
+        radial-gradient(circle at 10% 0%, #e0f2fe 0%, transparent 55%),
+        radial-gradient(circle at 90% 0%, #fef3c7 0%, transparent 60%),
+        linear-gradient(to bottom, #eff6ff 0%, #e5e7eb 70%, #e5e7eb 100%);
+    color: #111827;
+    padding-top: 76px; /* 헤더 높이 */
+}
+
+/* 상단 HERO */
+.coupon-hero {
+    margin-top: 76px;
+    padding: 40px 0 32px;
+    /* background: url("/img/coupon-bg.jpg") center/cover no-repeat, #020617; ❌ */
+    
+    /* 🔥 밝은 톤으로 변경 */
+    background:
+        radial-gradient(circle at 10% 0%, #e0f2fe 0%, transparent 45%),
+        radial-gradient(circle at 90% 0%, #fef3c7 0%, transparent 45%),
+        linear-gradient(to bottom, #ffffff, #f3f4f6 65%, #e5e7eb 100%);
+}
+
+.coupon-hero-inner {
+    width: 1120px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 0.3fr 0.7fr;
+    gap: 24px;
+    align-items: center;
+}
+
+.coupon-mascot {
+    display: flex;
+    justify-content: center;
+}
+.coupon-mascot-circle {
+    width: 180px;
+    height: 220px;
+    border-radius: 999px;
+    background: radial-gradient(circle at 50% 0%, #fefce8 0, #fed7aa 40%, #f97316 75%, #7c2d12 100%);
+    box-shadow: 0 16px 40px rgba(0,0,0,0.7);
+}
+
+/* 오른쪽 검은 박스 */
+coupon-hero-right {
+    background: rgba(255,255,255,0.82); /* 🔥 반투명 화이트 */
+    backdrop-filter: blur(14px);
+    color: #111827;
+    border-radius: 18px;
+    border: 1px solid rgba(209,213,219,0.8);
+    box-shadow: 0 18px 38px rgba(148,163,184,0.45);
+}
+
+.coupon-hero-right h1 {
+    font-size: 20px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #111827;
+}
+
+.coupon-hero-sub {
+    margin-top: 8px;
+    font-size: 13px;
+    color: #374151;
+}
+
+/* 코드 입력 */
+.coupon-input-form {
+    margin-top: 18px;
+    display: flex;
+    gap: 8px;
+}
+
+.coupon-input-form input {
+    flex: 1;
+    height: 42px;
+    border-radius: 999px;
+    border: 1px solid #d1d5db; /* soft gray line */
+    background: #ffffff; /* white input */
+    color: #111827;
+    font-size: 14px;
+    padding: 0 16px;
+    box-shadow: 0 4px 14px rgba(148,163,184,0.25); /* LOGIN UI와 유사한 depth */
+    transition: 0.25s ease;
+}
+
+.coupon-input-form input:focus {
+    border-color: #a5b4fc;
+    box-shadow: 0 4px 16px rgba(99,102,241,0.35);
+}
+
+.coupon-input-form input::placeholder {
+    color: #9ca3af;
+}
+
+.coupon-input-form button {
+    width: 110px;
+    height: 42px;
+    border-radius: 999px;
+    border: none;
+    background: linear-gradient(135deg,#6366f1,#f97316); /* LOGIN 색상 그대로 */
+    color: #fff;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    box-shadow: 0 5px 18px rgba(99,102,241,0.35);
+    transition: .25s ease;
+}
+
+.coupon-input-form button:hover {
+    filter: brightness(1.07);
+    transform: translateY(-2px);
+}
+
+.coupon-guide-text {
+    margin-top: 12px;
+    font-size: 11px;
+    color: #9ca3af;
+    line-height: 1.6;
+}
+
+/* 메시지 */
+.coupon-message {
+    padding: 14px 0 4px;
+    background: #020617;
+}
+.coupon-alert {
+    padding: 10px 12px;
+    border-radius: 8px;
+    background: rgba(37,99,235,0.1);
+    border: 1px solid rgba(59,130,246,0.6);
+    color: #e5e7eb;
+    font-size: 12px;
+}
+
+/* 목록 영역 */
+.coupon-list-section {
+    background:#f9fafb; /* 🔥 다크 → 라이트 */
+    padding: 30px 0 60px;
+}
+
+.content-inner {
+    width: 1120px;
+    margin: 0 auto;
+}
+
+/* 탭 */
+.coupon-tabs {
+    display: flex;
+    margin-bottom: 12px;
+}
+
+.coupon-tabs .tab-btn {
+    flex: 1;
+    padding: 10px 0;
+    border: none;
+    font-size: 13px;
+    cursor: pointer;
+    background: #111827;
+    color: #e5e7eb;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+    border-bottom: 1px solid #1f2937;
+}
+
+.coupon-tabs .tab-btn + .tab-btn {
+    margin-left: 2px;
+}
+
+.coupon-tabs .tab-btn.active {
+    background: #1f2937;
+    color: #fbbf24;
+    border-bottom: 1px solid transparent;
+}
+
+/* 패널 */
+.coupon-panel {
+    display: none;
+    background: #1f2937;
+    border-radius: 0 12px 12px 12px;
+    border: 1px solid #111827;
+    overflow: hidden;
+}
+.coupon-panel.active {
+    display: block;
+}
+
+/* 테이블 */
+.coupon-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+    color: #e5e7eb;
+}
+
+.coupon-table thead {
+    background: #111827;
+}
+
+.coupon-table th,
+.coupon-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid #111827;
+}
+
+.coupon-table th {
+    font-weight: 500;
+    color: #9ca3af;
+    text-align: left;
+}
+
+.th-type { width: 80px; }
+.th-name { width: auto; }
+.th-date { width: 150px; }
+.th-action { width: 110px; text-align: center; }
+
+.td-type { color: #facc15; }
+.td-name strong { font-weight: 600; }
+
+.coupon-code {
+    margin-top: 2px;
+    font-size: 11px;
+    color: #9ca3af;
+}
+
+/* 사용 버튼 */
+.btn-use {
+    padding: 6px 16px;
+    border-radius: 999px;
+    border: none;
+    background: linear-gradient(135deg,#22c55e,#4ade80);
+    color: #022c22;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+}
+.btn-use:hover {
+    filter: brightness(1.07);
+}
+
+.empty-row {
+    text-align: center;
+    padding: 26px 0;
+    color: #9ca3af;
+}
+
+/* 상태 뱃지 */
+.badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+}
+.badge-used {
+    background: rgba(59,130,246,0.18);
+    color: #bfdbfe;
+}
+.badge-expired {
+    background: rgba(248,113,113,0.18);
+    color: #fecaca;
+}
