@@ -18,6 +18,14 @@
 <div class="page">
 
 	<th:block th:replace="layout/header :: header"></th:block>
+	
+	<!-- 🔔 2차 인증 성공 / 전역 알림 -->
+    <div th:if="${globalMsg}" id="globalAlert" class="global-alert">
+        <span th:text="${globalMsg}">
+            2단계 본인 인증이 완료되었습니다. 안전하게 로그인되었어요.
+        </span>
+    </div>
+	
     <!-- 상단 큰 비주얼 영역 -->
     <section class="hero-area">
         <div class="hero-bg"></div>
@@ -285,5 +293,14 @@
     <th:block th:replace="layout/footer :: footer"></th:block>
 </div>
 <script th:src="@{/js/main.js}"></script>
+<script th:inline="javascript">
+    // 🔔 2차 인증 완료 알림 자동 숨김
+    const globalAlert = document.getElementById("globalAlert");
+    if (globalAlert) {
+        setTimeout(() => {
+            globalAlert.classList.add("hide");
+        }, 3000); // 3초 후 hide 클래스 추가
+    }
+</script>
 </body>
 </html>

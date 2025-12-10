@@ -13,9 +13,11 @@ import com.example.demo.repository.MemberRepository;
 public class LoginService {
 
     private final MemberRepository memberRepository;
+    private final EmailService emailService;
 
-    public LoginService(MemberRepository memberRepository) {
+    public LoginService(MemberRepository memberRepository, EmailService emailService) {
         this.memberRepository = memberRepository;
+        this.emailService = emailService;
     }
 
     /**
@@ -102,5 +104,43 @@ public class LoginService {
         }
 
         return memberRepository.save(member);
+    }
+    
+    /**
+     * 비밀번호 찾기: 아이디 + 이메일로 회원 찾고
+     * 임시 비밀번호 발급 후 DB 저장 + 메일 발송
+     *
+     * @return 성공 여부 (true: 발급 완료, false: 일치하는 계정 없음)
+     */
+    public boolean resetPasswordWithTemp(String loginId, String email) {
+        return memberRepository.findByLoginIdAndEmail(loginId, email)
+                .map(member -> {
+                    // 1) 임시 비밀번호 생성
+                    String tempPassword = generateTempPassword();
+
+                    // 2) DB 비밀번호를 임시 비밀번호로 변경
+                    //    (지금은 평문 저장 기준. 나중에 PasswordEncoder 도입하면 여기서 encode)
+                    member.setPassword(tempPassword);
+                    memberRepository.save(member);
+
+                    // 3) 이메일 발송
+                    emailService.sendTempPasswordMail(member.getEmail(), tempPassword);
+
+                    return true;
+                })
+                .orElse(false);   // 회원 없음
+    }
+
+    // 🔹 영문+숫자 섞인 10자리 임시 비밀번호 생성
+    private String generateTempPassword() {
+        String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        StringBuilder sb = new StringBuilder();
+        java.security.SecureRandom random = new java.security.SecureRandom();
+
+        for (int i = 0; i < 10; i++) {
+            int idx = random.nextInt(chars.length());
+            sb.append(chars.charAt(idx));
+        }
+        return sb.toString();
     }
 }

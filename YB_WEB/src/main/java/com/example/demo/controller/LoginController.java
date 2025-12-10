@@ -60,6 +60,11 @@ public class LoginController {
             }
             model.addAttribute("showSecondModal", false);
 
+            // 🔹 비밀번호 찾기 모달도 기본값 세팅
+            if (!model.containsAttribute("showPwModal")) {
+                model.addAttribute("showPwModal", false);
+            }
+            
             return "login/login";
         }
 
@@ -267,6 +272,12 @@ public class LoginController {
         // 2차 인증 성공 → 실제 로그인 세션 완성
         session.removeAttribute("tempMemberId");
         session.setAttribute("loginMember", member);
+        
+        // 🔔 메인 화면에서 중앙 팝업으로 보여줄 메시지
+        redirectAttributes.addFlashAttribute(
+                "globalMsg",
+                "2단계 본인 인증이 완료되었습니다. 안전하게 로그인되었어요."
+        );
 
         // ✅ 성공할 때만 로그인 완료 후 메인으로
         return "redirect:/";
@@ -374,8 +385,54 @@ public class LoginController {
         HttpSession session = request.getSession();
         session.removeAttribute("tempMemberId");
         session.setAttribute("loginMember", member);
+        
+        // 🔔 메인 화면에 인증 완료 팝업 띄우기
+        ra.addFlashAttribute(
+                "globalMsg",
+                "이메일 2단계 인증이 완료되었습니다. 안전하게 로그인되었어요."
+        );
 
         // ✅ 여기서만 진짜 로그인 완료
         return "redirect:/";
+    }
+    
+ // 🔹 비밀번호 찾기 (임시 비밀번호 발급)
+    @PostMapping("/password/reset")
+    public String resetPassword(@RequestParam("loginId") String loginId,
+                                @RequestParam("email") String email,
+                                RedirectAttributes ra) {
+
+        // 양쪽 공백 제거
+        String trimmedLoginId = loginId == null ? null : loginId.trim();
+        String trimmedEmail   = email == null ? null : email.trim();
+
+        if (trimmedLoginId == null || trimmedLoginId.isBlank()
+                || trimmedEmail == null || trimmedEmail.isBlank()) {
+
+            ra.addFlashAttribute("pwError", "아이디와 이메일을 모두 입력해 주세요.");
+            ra.addFlashAttribute("showPwModal", true);   // 비밀번호 찾기 모달 다시 열기
+            ra.addFlashAttribute("pwLoginId", loginId);
+            ra.addFlashAttribute("pwEmail", email);
+            return "redirect:/login";
+        }
+
+        boolean success = loginService.resetPasswordWithTemp(trimmedLoginId, trimmedEmail);
+
+        if (!success) {
+            // 아이디+이메일 일치하는 회원 없음
+            ra.addFlashAttribute("pwError", "일치하는 계정을 찾을 수 없습니다.\n아이디와 이메일을 다시 확인해 주세요.");
+            ra.addFlashAttribute("showPwModal", true);
+            ra.addFlashAttribute("pwLoginId", loginId);
+            ra.addFlashAttribute("pwEmail", email);
+            return "redirect:/login";
+        }
+
+        // 성공
+        ra.addFlashAttribute("pwMsg",
+                "입력하신 이메일로 임시 비밀번호를 발급했습니다.\n로그인 후 반드시 비밀번호를 변경해 주세요.");
+        // 필요하면 모달을 또 열 수도 있지만, 성공 후엔 굳이 안 열어도 됨
+        // ra.addFlashAttribute("showPwModal", true);
+
+        return "redirect:/login";
     }
 }

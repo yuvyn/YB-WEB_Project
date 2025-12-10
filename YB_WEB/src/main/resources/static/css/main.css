@@ -747,3 +747,37 @@ body {
     color: #ffffff;
     box-shadow: 0 6px 16px rgba(99,102,241,0.35);
 }
+
+/* 🔔 중앙 팝업 알림 (2차 인증 성공 등) */
+.global-alert {
+    position: fixed;
+    top: 50%;                     /* 화면 정중앙 위치 */
+    left: 50%;
+    transform: translate(-50%, -50%); /* 정확한 중앙 정렬 */
+
+    background: rgba(0,0,0,0.82);  /* 반투명 블랙 */
+    color: #fff;
+    padding: 18px 28px;
+    font-size: 15px;
+    font-weight: 500;
+    border-radius: 10px;
+    text-align: center;
+    z-index: 9999;
+
+    opacity: 1;
+    animation: fadeOut 4s ease forwards; /* 4초 후 자동 사라짐 */
+    box-shadow: 0 10px 35px rgba(0,0,0,0.3);
+}
+
+/* 사라질 때 */
+.global-alert.hide {
+    opacity: 0;
+    transform: translateY(-8px);
+}
+
+@keyframes fadeOutCenter {
+    0%   { opacity: 0; transform: translate(-50%, -55%); }
+    10%  { opacity: 1; transform: translate(-50%, -50%); }
+    80%  { opacity: 1; }
+    100% { opacity: 0; transform: translate(-50%, -45%); }
+}
