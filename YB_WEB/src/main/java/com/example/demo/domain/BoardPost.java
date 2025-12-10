@@ -47,7 +47,7 @@ public class BoardPost {
     private String qnaStatus = "RECEIVED";
 
     // === 생성자 ===
-    protected BoardPost() {}
+    public BoardPost() {}
 
     public BoardPost(BoardType boardType, String title, String content, String writer, Long memberId) {
         this.boardType = boardType;

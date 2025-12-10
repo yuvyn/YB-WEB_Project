@@ -185,15 +185,21 @@ public class BoardController {
 
         BoardType boardType = BoardType.valueOf(type.toUpperCase());
 
-        // 로그인 회원 가져오기
         Member loginMember = (Member) session.getAttribute("loginMember");
         if (loginMember == null) {
-            // 로그인 안 돼 있으면 로그인 페이지로
             return "redirect:/member/login";
         }
 
+        // 🔹 새 글용 비어 있는 BoardPost 하나 만들어서 넘기기
+        BoardPost emptyPost = new BoardPost();  // ← 아래 2번 참고 (기본 생성자 필요)
+
+        // 필요하면 기본값도 여기서 세팅 가능
+        emptyPost.setNoticePin(false);
+
         model.addAttribute("boardType", boardType);
-        model.addAttribute("loginMember", loginMember); // ★ 템플릿에서 쓸 수 있게 추가
+        model.addAttribute("loginMember", loginMember);
+        model.addAttribute("post", emptyPost);   // ★ write.html에서 ${post.xxx} 사용 가능
+        model.addAttribute("isEdit", false);     // ★ 신규 작성 모드
 
         return "board/write";
     }
