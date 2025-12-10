@@ -155,4 +155,47 @@ public class BoardPostService {
         post.increaseViewCount();
         return post;
     }
+    
+ // 🔹 게시글 수정
+    public BoardPost updatePost(BoardType boardType,
+                                Long id,
+                                String title,
+                                String content,
+                                boolean noticePin,
+                                String qnaCategory) {
+
+        BoardPost post = boardPostRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
+
+        // URL 상의 타입과 실제 타입이 다른 경우 방어
+        if (post.getBoardType() != boardType) {
+            throw new IllegalStateException("게시판 유형이 일치하지 않습니다.");
+        }
+
+        post.setTitle(title);
+        post.setContent(content);
+        post.setNoticePin(noticePin);
+
+        // QNA일 때만 카테고리 유지 / 수정, 나머지는 null
+        if (boardType == BoardType.QNA) {
+            post.setQnaCategory(qnaCategory);
+        } else {
+            post.setQnaCategory(null);
+        }
+
+        // @Transactional 이라 save 안 해도 dirty checking 되지만, 명시적으로 해도 무방
+        return post;
+    }
+
+    // 🔹 게시글 삭제
+    public void deletePost(BoardType boardType, Long id) {
+        BoardPost post = boardPostRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
+
+        if (post.getBoardType() != boardType) {
+            throw new IllegalStateException("게시판 유형이 일치하지 않습니다.");
+        }
+
+        boardPostRepository.delete(post);
+    }
 }

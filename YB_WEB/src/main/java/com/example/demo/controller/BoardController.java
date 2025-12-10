@@ -197,6 +197,41 @@ public class BoardController {
 
         return "board/write";
     }
+    
+    // 🔹 수정 폼
+    @GetMapping("/{type}/{id}/edit")
+    public String editForm(@PathVariable("type") String type,
+                           @PathVariable("id") Long id,
+                           HttpSession session,
+                           Model model) {
+
+        BoardType boardType = BoardType.valueOf(type.toUpperCase());
+        Member loginMember = (Member) session.getAttribute("loginMember");
+
+        if (loginMember == null) {
+            return "redirect:/member/login";
+        }
+
+        BoardPost post = boardPostService.getPost(id);
+
+        // 권한 체크: 작성자 또는 ADMIN만
+        boolean isOwner = post.getMemberId() != null
+                && post.getMemberId().equals(loginMember.getIdx());
+        boolean isAdmin = "ADMIN".equalsIgnoreCase(loginMember.getRole());
+
+        if (!isOwner && !isAdmin) {
+            // 권한 없으면 상세 페이지로 돌려보내기
+            return "redirect:/board/" + type.toLowerCase() + "/" + id;
+        }
+
+        model.addAttribute("boardType", boardType);
+        model.addAttribute("post", post);
+        model.addAttribute("loginMember", loginMember);
+        model.addAttribute("isEdit", true);   // 수정 모드
+
+        // 글쓰기 폼 재사용
+        return "board/write";
+    }
 
     // 글쓰기 처리
     @PostMapping("/{type}/write")
@@ -233,6 +268,70 @@ public class BoardController {
         );
 
         return "redirect:/board/" + type.toLowerCase() + "/" + post.getId();
+    }
+    
+    // 🔹 수정 처리
+    @PostMapping("/{type}/{id}/edit")
+    public String edit(@PathVariable("type") String type,
+                       @PathVariable("id") Long id,
+                       @RequestParam("title") String title,
+                       @RequestParam("content") String content,
+                       @RequestParam(name = "noticePin", required = false, defaultValue = "false") boolean noticePin,
+                       @RequestParam(name = "qnaCategory", required = false) String qnaCategory,
+                       HttpSession session) {
+
+        Member loginMember = (Member) session.getAttribute("loginMember");
+        if (loginMember == null) {
+            return "redirect:/member/login";
+        }
+
+        BoardType boardType = BoardType.valueOf(type.toUpperCase());
+
+        BoardPost post = boardPostService.getPost(id);
+
+        boolean isOwner = post.getMemberId() != null
+                && post.getMemberId().equals(loginMember.getIdx());
+        boolean isAdmin = "ADMIN".equalsIgnoreCase(loginMember.getRole());
+
+        if (!isOwner && !isAdmin) {
+            return "redirect:/board/" + type.toLowerCase() + "/" + id;
+        }
+
+        if (boardType != BoardType.QNA) {
+            qnaCategory = null;
+        }
+
+        boardPostService.updatePost(boardType, id, title, content, noticePin, qnaCategory);
+
+        return "redirect:/board/" + type.toLowerCase() + "/" + id;
+    }
+    
+    // 🔹 삭제 처리
+    @PostMapping("/{type}/{id}/delete")
+    public String delete(@PathVariable("type") String type,
+                         @PathVariable("id") Long id,
+                         HttpSession session) {
+
+        Member loginMember = (Member) session.getAttribute("loginMember");
+        if (loginMember == null) {
+            return "redirect:/member/login";
+        }
+
+        BoardType boardType = BoardType.valueOf(type.toUpperCase());
+        BoardPost post = boardPostService.getPost(id);
+
+        boolean isOwner = post.getMemberId() != null
+                && post.getMemberId().equals(loginMember.getIdx());
+        boolean isAdmin = "ADMIN".equalsIgnoreCase(loginMember.getRole());
+
+        if (!isOwner && !isAdmin) {
+            return "redirect:/board/" + type.toLowerCase() + "/" + id;
+        }
+
+        boardPostService.deletePost(boardType, id);
+
+        // 삭제 후 목록으로
+        return "redirect:/board/" + type.toLowerCase();
     }
 
     // 상세 페이지

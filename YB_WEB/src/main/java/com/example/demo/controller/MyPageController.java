@@ -59,7 +59,7 @@ public class MyPageController {
         String activeTab = (tab != null && !tab.isBlank()) ? tab : "profile";
         model.addAttribute("activeTab", activeTab);
 
-        return "/login/mypage";   // templates/mypage.html
+        return "login/mypage";   // templates/mypage.html
     }
 
     // 🔹 프로필 / 정보 수정

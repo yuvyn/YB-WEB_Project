@@ -148,15 +148,23 @@
                     </a>
 
                     <!-- 수정/삭제는 나중에 기능 만들면 링크 연결하면 됨 -->
-                    <!--
-                    <div class="btn-right">
-                        <a class="btn-outline" href="#">수정</a>
-                        <form method="post" th:action="@{'/board/' + ${boardType} + '/' + ${post.id} + '/delete'}">
-                            <button type="submit" class="btn-danger">삭제</button>
-                        </form>
-                    </div>
-                    -->
+					<div class="btn-right"
+					 	th:if="${loginMember != null and (loginMember.role == 'ADMIN' or loginMember.idx == post.memberId)}">
 
+					 	<!-- 수정 버튼 -->
+					 	<a class="btn-outline"
+					    	th:href="@{|/board/${#strings.toLowerCase(boardType.name())}/${post.id}/edit|}">
+					        수정
+					    </a>
+
+					    <!-- 삭제 버튼 -->
+					    <form th:action="@{|/board/${#strings.toLowerCase(boardType.name())}/${post.id}/delete|}"
+					     	method="post"
+					     	onsubmit="return confirm('정말 이 게시글을 삭제하시겠습니까?');">
+					     <!-- Spring Security CSRF 쓰면 여기 csrf hidden 추가 -->
+					     <button type="submit" class="btn-danger">삭제</button>
+					     </form>
+					 </div>
                 </div>
 
             </div>

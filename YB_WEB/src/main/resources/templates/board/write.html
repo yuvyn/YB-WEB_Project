@@ -61,15 +61,19 @@
             <div class="board-inner">
 
                 <!-- ✅ boardType 그대로 사용해서 action 동적으로 -->
-                <form th:action="@{'/board/' + ${boardType} + '/write'}"
-                      method="post"
-                      class="write-form">
+				<form th:action="${isEdit} ?
+				                 @{|/board/${#strings.toLowerCase(boardType.name())}/${post.id}/edit|}
+				                 :
+				                 @{|/board/${#strings.toLowerCase(boardType.name())}/write|}"
+				      method="post"
+				      class="write-form">
 
                     <!-- 제목 -->
                     <div class="form-row">
                         <label for="title">제목</label>
-                        <input type="text" id="title" name="title"
-                               placeholder="제목을 입력해 주세요" required>
+						<input type="text" id="title" name="title"
+						       placeholder="제목을 입력해 주세요" required
+						       th:value="${post.title}">
                     </div>
 
                     <!-- 작성자 -->
@@ -81,29 +85,55 @@
 					<div class="form-row" th:if="${boardType.name() == 'QNA'}">
 					    <label for="qnaCategory">문의 유형</label>
 					    <select id="qnaCategory" name="qnaCategory" required>
-					        <option value="">문의 유형을 선택해 주세요</option>
-					        <option value="ACCOUNT">계정/로그인</option>
-					        <option value="PAY">결제/캐시</option>
-					        <option value="BUG">게임 오류/버그</option>
-					        <option value="SUGGEST">건의/피드백</option>
-					        <option value="ETC">기타 문의</option>
+					        <!-- placeholder -->
+					        <option value=""
+					                th:selected="${post.qnaCategory} == null or post.qnaCategory == ''">
+					            문의 유형을 선택해 주세요
+					        </option>
+
+					        <option value="ACCOUNT"
+					                th:selected="${post.qnaCategory} == 'ACCOUNT'">
+					            계정/로그인
+					        </option>
+
+					        <option value="PAY"
+					                th:selected="${post.qnaCategory} == 'PAY'">
+					            결제/캐시
+					        </option>
+
+					        <option value="BUG"
+					                th:selected="${post.qnaCategory} == 'BUG'">
+					            게임 오류/버그
+					        </option>
+
+					        <option value="SUGGEST"
+					                th:selected="${post.qnaCategory} == 'SUGGEST'">
+					            건의/피드백
+					        </option>
+
+					        <option value="ETC"
+					                th:selected="${post.qnaCategory} == 'ETC'">
+					            기타 문의
+					        </option>
 					    </select>
 					</div>
 					
                     <!-- 상단 고정 (공지사항에서만 보이게) -->
-                    <div class="form-row pin-row"
-                         th:if="${boardType.name() == 'NOTICE' || boardType.name() == 'QNA'}">
-                        <label class="checkbox-label">
-                            <input type="checkbox" name="noticePin">
-                            <span>상단 공지로 고정하기</span>
-                        </label>
-                    </div>
+					<div class="form-row pin-row"
+					     th:if="${boardType.name() == 'NOTICE' || boardType.name() == 'QNA'}">
+					    <label class="checkbox-label">
+					        <input type="checkbox" name="noticePin"
+					               th:checked="${post.noticePin}">
+					        <span>상단 공지로 고정하기</span>
+					    </label>
+					</div>
 
                     <!-- 내용 -->
                     <div class="form-row">
                         <label for="content">내용</label>
-                        <textarea id="content" name="content" rows="12"
-                                  placeholder="내용을 입력해 주세요" required></textarea>
+						<textarea id="content" name="content" rows="12"
+						          placeholder="내용을 입력해 주세요" required
+						          th:text="${post.content}"></textarea>
                     </div>
 
                     <!-- 버튼 영역 -->
