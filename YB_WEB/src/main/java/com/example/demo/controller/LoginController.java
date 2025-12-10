@@ -276,7 +276,7 @@ public class LoginController {
         // 🔔 메인 화면에서 중앙 팝업으로 보여줄 메시지
         redirectAttributes.addFlashAttribute(
                 "globalMsg",
-                "2단계 본인 인증이 완료되었습니다. 안전하게 로그인되었어요."
+                "2단계 본인 인증이 완료되었습니다."
         );
 
         // ✅ 성공할 때만 로그인 완료 후 메인으로
@@ -389,7 +389,7 @@ public class LoginController {
         // 🔔 메인 화면에 인증 완료 팝업 띄우기
         ra.addFlashAttribute(
                 "globalMsg",
-                "이메일 2단계 인증이 완료되었습니다. 안전하게 로그인되었어요."
+                "이메일 2단계 인증이 완료되었습니다."
         );
 
         // ✅ 여기서만 진짜 로그인 완료

@@ -428,6 +428,39 @@ body.login-page {
     transform: translateY(-8px);
 }
 
+/* 🔹 전체 화면 덮는 반투명 배경 */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+
+    opacity: 1;
+    transition: opacity 0.4s ease;
+}
+
+/* 🔹 숨김 상태 */
+.modal-overlay.hide {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* 🔹 가운데 흰색 박스 */
+.modal-box {
+    background: #ffffff;
+    padding: 20px 28px;
+    border-radius: 10px;
+    min-width: 260px;
+    max-width: 360px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    font-size: 14px;
+    color: #333;
+}
+
 /* 🔥 페이드 아웃 효과 */
 @keyframes fadeOut {
     0% { opacity: 0; transform: translate(-50%, -55%); } /* 부드럽게 등장 */
@@ -435,6 +468,8 @@ body.login-page {
     80% { opacity: 1; }
     100% { opacity: 0; transform: translate(-50%, -45%); } /* 위로 사라지듯 */
 }
+
+
 /* 모바일 여백 */
 @media (max-width: 480px) {
     .login-card {

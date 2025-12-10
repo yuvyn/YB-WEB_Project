@@ -90,11 +90,15 @@
         <div class="header-actions">
             <!-- 로그인 상태 -->
             <div th:if="${session.loginMember != null}">
-                <span th:text="${session.loginMember.name}">모험가</span>님 환영합니다.
-                <form th:action="@{/logout}" method="post" style="display:inline;">
-                    <button class="btn-login" type="submit">LOGOUT</button>
-                </form>
-            </div>
+		        <!-- 🔹 이름 클릭 시 마이페이지 이동 -->
+		        <a th:href="@{/mypage}" class="mypage-link">
+		            <span th:text="${session.loginMember.name}">모험가</span>
+		        </a>님 환영합니다.
+		        
+		        <form th:action="@{/logout}" method="post" style="display:inline;">
+		            <button class="btn-login" type="submit">LOGOUT</button>
+		        </form>
+		    </div>
 
             <!-- 비로그인 상태 -->
             <div th:if="${session.loginMember == null}">

@@ -289,6 +289,13 @@
         <button class="top-btn" onclick="window.scrollTo({top:0, behavior:'smooth'})">TOP</button>
     </aside>
 
+	<!-- 🔹 회원탈퇴 성공 모달 -->
+	<div th:if="${withdrawSuccess}" class="modal-overlay" id="withdraw-modal">
+	    <div class="modal-box">
+	        <p th:text="${withdrawMsg}">회원탈퇴가 정상적으로 처리되었습니다.</p>
+	    </div>
+	</div>
+
     <!-- 하단 푸터 -->
     <th:block th:replace="layout/footer :: footer"></th:block>
 </div>
@@ -301,6 +308,14 @@
             globalAlert.classList.add("hide");
         }, 3000); // 3초 후 hide 클래스 추가
     }
+    
+    // 회원탈퇴 시 모달 창
+    document.addEventListener('DOMContentLoaded', function () {
+    const modal = document.getElementById('withdraw-modal');
+    if (modal) {
+        setTimeout(() => modal.classList.add('hide'), 3000);
+    }
+});
 </script>
 </body>
 </html>

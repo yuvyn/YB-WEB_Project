@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>마이페이지 - YB WEB</title>
+
+    <!-- 폰트 -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+
+    <!-- 공통 레이아웃 CSS -->
+    <link rel="stylesheet" th:href="@{/css/layout/header.css}">
+    <link rel="stylesheet" th:href="@{/css/layout/footer.css}">
+
+    <!-- 마이페이지 전용 CSS -->
+    <link rel="stylesheet" th:href="@{/css/mypage.css}">
+</head>
+<body class="mypage-page">
+
+<div class="page">
+
+    <!-- 공통 헤더 -->
+    <th:block th:replace="layout/header :: header"></th:block>
+
+    <!-- 메인 영역 -->
+    <main class="mypage-main">
+
+        <!-- 상단 타이틀 영역 -->
+        <section class="mypage-header">
+            <div class="mypage-header-inner">
+                <div class="mypage-title-wrap">
+                    <p class="breadcrumb">계정 &gt; 마이페이지</p>
+                    <h1>마이페이지</h1>
+                    <p class="mypage-desc">
+                        회원님의 계정 정보, 보안 설정 및 활동 내역을 한 곳에서 관리할 수 있습니다.
+                    </p>
+                </div>
+
+                <!-- 상단 요약 카드 -->
+                <div class="mypage-summary-card" th:object="${member}">
+                    <div class="summary-top">
+                        <div class="summary-avatar">
+                            <span th:text="${#strings.substring(member.nickname, 0, 1)}">Y</span>
+                        </div>
+                        <div class="summary-info">
+                            <div class="summary-nick" th:text="${member.nickname}">YB모험가</div>
+                            <div class="summary-meta">
+                                <span th:text="${member.loginId}">ybuser01</span>
+                                <span class="divider">·</span>
+                                <span th:text="${member.email}">user@example.com</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="summary-bottom">
+                        <span class="chip"
+                              th:text="|가입일 ${#temporals.format(member.createdAt, 'yyyy.MM.dd')}|">
+                            가입일 2025.01.01
+                        </span>
+                        <span class="chip">
+                            보안 등급 : 일반
+                        </span>
+                        <span class="chip" th:if="${member.role != null}"
+                              th:text="|권한: ${member.role}|">
+                            권한: USER
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 본문 레이아웃 : 좌측 탭 + 우측 컨텐츠 -->
+        <section class="mypage-content">
+            <div class="mypage-inner">
+
+                <div class="mypage-layout">
+
+                    <!-- 좌측 탭 메뉴 -->
+                    <aside class="mypage-sidebar">
+				    <!-- 계정 정보 -->
+				    <button type="button"
+				            class="sidebar-tab"
+				            data-target="profile"
+				            th:classappend="${activeTab} == 'profile' ? ' active' : ''">
+				        계정 정보
+				        <span>닉네임, 이메일, 연락처</span>
+				    </button>
+				
+				    <!-- 비밀번호 & 보안 -->
+				    <button type="button"
+				            class="sidebar-tab"
+				            data-target="password"
+				            th:classappend="${activeTab} == 'password' ? ' active' : ''">
+				        비밀번호 & 보안
+				        <span>비밀번호 변경, 보안 설정</span>
+				    </button>
+				
+				    <!-- 활동 내역 -->
+				    <button type="button"
+				            class="sidebar-tab"
+				            data-target="activity"
+				            th:classappend="${activeTab} == 'activity' ? ' active' : ''">
+				        활동 내역
+				        <span>내가 쓴 글</span>
+				    </button>
+				
+				    <!-- 회원 탈퇴 -->
+				    <button type="button"
+				            class="sidebar-tab danger"
+				            data-target="withdraw"
+				            th:classappend="${activeTab} == 'withdraw' ? ' active' : ''">
+				        회원 탈퇴
+				        <span>계정 영구 삭제</span>
+				    </button>
+				</aside>
+
+                    <!-- 우측 패널들 -->
+                    <div class="mypage-panels">
+
+                        <!-- 1) 계정 정보 패널 -->
+                        <section class="mypage-panel"
+					         id="panel-profile"
+					         th:classappend="${activeTab} == 'profile' ? ' active' : ''">
+
+                            <h2 class="panel-title">계정 정보</h2>
+                            <p class="panel-desc">
+                                회원님의 기본 정보를 확인하고 수정할 수 있습니다.
+                            </p>
+                            
+                            <div th:if="${globalMsg}" id="global-msg" class="alert-msg">
+							    <p th:text="${globalMsg}"></p>
+							</div>
+
+                            <form class="card form-card"
+                                  th:action="@{/mypage/profile}"
+                                  th:object="${member}"
+                                  method="post">
+
+                                <div class="form-grid">
+
+                                    <!-- 아이디 (수정불가) -->
+                                    <div class="form-row">
+                                        <label>아이디</label>
+                                        <input type="text" th:field="*{loginId}" readonly>
+                                        <p class="field-hint">로그인에 사용하는 고유 아이디입니다.</p>
+                                    </div>
+
+                                    <!-- 닉네임 -->
+                                    <div class="form-row">
+                                        <label>닉네임</label>
+                                        <input type="text" th:field="*{nickname}" placeholder="닉네임을 입력하세요">
+                                    </div>
+
+                                    <!-- 이름 -->
+                                    <div class="form-row">
+                                        <label>이름</label>
+                                        <input type="text" th:field="*{name}" placeholder="이름을 입력하세요">
+                                    </div>
+
+                                    <!-- 이메일 -->
+                                    <div class="form-row">
+                                        <label>이메일</label>
+                                        <input type="email" th:field="*{email}" placeholder="example@domain.com">
+                                        <p class="field-hint">
+                                            비밀번호 찾기 및 2차 인증에 사용됩니다.
+                                        </p>
+                                    </div>
+
+                                    <!-- 휴대폰 번호 -->
+                                    <div class="form-row">
+                                        <label>휴대폰 번호</label>
+                                        <input type="text" th:field="*{phone}" placeholder="010-0000-0000">
+                                    </div>
+
+                                </div>
+
+                                <div class="form-actions">
+                                    <button type="submit" class="btn-primary">정보 수정 저장</button>
+                                </div>
+                            </form>
+
+                        </section>
+
+                        <!-- 2) 비밀번호 & 보안 패널 -->
+                        <section class="mypage-panel"
+					         id="panel-password"
+					         th:classappend="${activeTab} == 'password' ? ' active' : ''">
+
+                            <h2 class="panel-title">비밀번호 & 보안</h2>
+                            <p class="panel-desc">
+                                현재 비밀번호를 확인한 뒤, 새로운 비밀번호로 변경할 수 있습니다.
+                            </p>
+
+							<!-- 🔥 비밀번호 변경 오류 표시 -->
+							<div th:if="${passwordError}" id="pw-error" class="alert-error">
+						        <span th:text="${passwordError}">현재 비밀번호가 올바르지 않습니다.</span>
+						    </div>
+
+                            <!-- 비밀번호 변경 폼 -->
+                            <form class="card form-card"
+                                  th:action="@{/mypage/password}"
+                                  method="post">
+
+                                <div class="form-grid">
+
+                                    <div class="form-row">
+                                        <label>현재 비밀번호</label>
+                                        <input type="password" name="currentPassword"
+                                               placeholder="현재 비밀번호를 입력하세요" required>
+                                    </div>
+
+                                    <div class="form-row">
+                                        <label>새 비밀번호</label>
+                                        <input type="password" name="newPassword"
+                                               placeholder="영문/숫자/특수문자 조합 8자 이상" required>
+                                        <p class="field-hint">
+                                            비밀번호는 8~20자, 영문/숫자/특수문자를 모두 포함해야 합니다.
+                                        </p>
+                                    </div>
+
+                                    <div class="form-row">
+                                        <label>새 비밀번호 확인</label>
+                                        <input type="password" name="confirmPassword"
+                                               placeholder="새 비밀번호를 다시 입력하세요" required>
+                                    </div>
+
+                                </div>
+
+                                <div class="form-actions">
+                                    <button type="submit" class="btn-primary">비밀번호 변경</button>
+                                </div>
+                            </form>
+
+                            <!-- 2차 인증/보안 안내 (원하면 나중에 연동) -->
+                            <article class="card security-card">
+                                <h3>2단계 인증 안내</h3>
+                                <p>
+                                    로그인 시 이메일 기반 2단계 인증이 적용됩니다.
+                                    비밀번호 분실 시, 등록된 이메일 주소로 인증 코드를 발송하여
+                                    본인 확인 후 변경이 진행됩니다.
+                                </p>
+                            </article>
+
+                        </section>
+
+                        <!-- 3) 활동 내역 패널 : 내가 쓴 글만 -->
+                        <section class="mypage-panel"
+					         id="panel-activity"
+					         th:classappend="${activeTab} == 'activity' ? ' active' : ''">
+
+                            <h2 class="panel-title">활동 내역</h2>
+                            <p class="panel-desc">
+                                회원님이 작성한 게시글 내역을 확인할 수 있습니다.
+                            </p>
+
+                            <!-- 내가 작성한 게시글 -->
+                            <section class="activity-section">
+                                <div class="activity-header">
+                                    <h3>내가 작성한 게시글</h3>
+                                    <span class="count"
+                                          th:text="|총 ${#lists.size(myPosts)}건|">
+                                        총 0건
+                                    </span>
+                                </div>
+
+                                <table class="board-table activity-table">
+                                    <colgroup>
+                                        <col style="width: 140px;">
+                                        <col>
+                                        <col style="width: 120px;">
+                                        <col style="width: 80px;">
+                                    </colgroup>
+                                    <thead>
+                                    <tr>
+                                        <th>게시판</th>
+                                        <th>제목</th>
+                                        <th>작성일</th>
+                                        <th>조회</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    <tr th:if="${#lists.isEmpty(myPosts)}">
+                                        <td colspan="4" class="no-data">
+                                            작성한 게시글이 없습니다.
+                                        </td>
+                                    </tr>
+
+                                    <tr th:each="post : ${myPosts}">
+                                        <td th:text="${post.boardType}">공지</td>
+                                        <td class="title-cell">
+                                            <a th:href="@{/board/{type}/{id}(
+                                                            type=${post.boardType},
+                                                            id=${post.id}
+                                                         )}"
+                                               th:text="${post.title}"
+                                               class="title-link">
+                                                게시글 제목이 들어갑니다.
+                                            </a>
+                                        </td>
+                                        <td th:text="${#temporals.format(post.createdAt, 'yyyy.MM.dd')}">
+                                            2025.11.20
+                                        </td>
+                                        <td th:text="${post.viewCount}">0</td>
+                                    </tr>
+
+                                    </tbody>
+                                </table>
+                            </section>
+
+                        </section>
+
+                        <!-- 4) 회원 탈퇴 패널 -->
+                        <section class="mypage-panel"
+					         id="panel-withdraw"
+					         th:classappend="${activeTab} == 'withdraw' ? ' active' : ''">
+
+                            <h2 class="panel-title danger">회원 탈퇴</h2>
+                            <p class="panel-desc">
+                                계정을 탈퇴하면, 일부 데이터는 복구가 불가능할 수 있습니다.
+                                신중하게 결정해 주세요.
+                            </p>
+                            
+                            <!-- 🔹 탈퇴 에러 메시지 (중앙 정렬 + 3초 후 사라짐) -->
+						    <div th:if="${withdrawError}" id="withdraw-error" class="alert-error">
+						        <span th:text="${withdrawError}">비밀번호가 일치하지 않습니다.</span>
+						    </div>
+
+                            <article class="card withdraw-card">
+                                <h3>탈퇴 전 확인 사항</h3>
+                                <ul class="withdraw-list">
+                                    <li>계정 정보 및 개인 설정이 모두 삭제됩니다.</li>
+                                    <li>게시글은 정책에 따라 익명 처리되거나 유지될 수 있습니다.</li>
+                                    <li>보유 중인 쿠폰/이벤트 보상은 모두 소멸됩니다.</li>
+                                </ul>
+
+                                <form th:action="@{/mypage/withdraw}"
+                                      method="post"
+                                      onsubmit="return confirm('정말로 탈퇴하시겠습니까? 탈퇴 후에는 계정을 복구할 수 없습니다.');">
+
+                                    <div class="form-row">
+                                        <label>비밀번호 확인</label>
+                                        <input type="password" name="password"
+                                               placeholder="현재 비밀번호를 입력하세요" required>
+                                        <p class="field-hint">
+                                            본인 확인을 위해 비밀번호를 다시 입력해 주세요.
+                                        </p>
+                                    </div>
+
+                                    <div class="withdraw-confirm">
+                                        <label class="checkbox">
+                                            <input type="checkbox" name="agree" required>
+                                            <span>위 내용을 모두 확인하였으며, 계정 탈퇴에 동의합니다.</span>
+                                        </label>
+                                    </div>
+
+                                    <div class="form-actions">
+                                        <button type="submit" class="btn-danger">회원 탈퇴하기</button>
+                                    </div>
+                                </form>
+                            </article>
+
+                        </section>
+
+                    </div> <!-- /mypage-panels -->
+
+                </div> <!-- /mypage-layout -->
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- 공통 푸터 -->
+    <th:block th:replace="layout/footer :: footer"></th:block>
+
+</div>
+
+<!-- 간단 탭 전환 스크립트 -->
+<script th:inline="javascript">
+    const tabs = document.querySelectorAll('.sidebar-tab');
+    const panels = {
+        profile: document.getElementById('panel-profile'),
+        password: document.getElementById('panel-password'),
+        activity: document.getElementById('panel-activity'),
+        withdraw: document.getElementById('panel-withdraw')
+    };
+
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            const target = tab.getAttribute('data-target');
+
+            // 탭 active 처리
+            tabs.forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+
+            // 패널 노출 처리
+            Object.values(panels).forEach(panel => panel.classList.remove('active'));
+            panels[target].classList.add('active');
+        });
+    });
+    
+ // 🔹 글로벌 메시지 & 탈퇴 에러 3초 후 자동 숨김
+    window.addEventListener('load', () => {
+        const globalMsg = document.getElementById('global-msg');
+        const withdrawError = document.getElementById('withdraw-error');
+
+        [globalMsg, withdrawError].forEach(el => {
+            if (!el) return;
+            // 3초 후 서서히 사라지기
+            setTimeout(() => {
+                el.classList.add('hide');
+                // 애니메이션 시간(0.3s) 이후 DOM에서 제거(선택)
+                setTimeout(() => {
+                    if (el && el.parentNode) {
+                        el.parentNode.removeChild(el);
+                    }
+                }, 300);
+            }, 3000);
+        });
+    });
+ 
+ 	// 비밀번호 변경 시 일치 문구
+    document.addEventListener("DOMContentLoaded", () => {
+        const pwError = document.getElementById("pw-error");
+        if(pwError){
+            setTimeout(() => pwError.style.opacity = "0", 2500);
+            setTimeout(() => pwError.remove(), 3000);
+        }
+    });
+</script>
+
+</body>
+</html>

@@ -239,6 +239,15 @@
 	    </div>
 	</div>	
 	
+	<!-- 🔹 비밀번호 변경 완료 모달 -->
+	<div th:if="${passwordChanged}" class="modal-overlay" id="password-change-modal">
+	    <div class="modal-box">
+	        <p th:text="${passwordChangeMsg}">
+	            비밀번호가 정상적으로 변경되었습니다. 재 로그인해주세요.
+	        </p>
+	    </div>
+	</div>
+	
     </main>
 
     <!-- 공통 푸터 (login-wrap 밖으로 빼기) -->
@@ -347,6 +356,24 @@ if (globalAlert) {
         globalAlert.classList.add("hide");
     }, 3000); // 3초 뒤에 서서히 사라짐
 }
+
+// 비밀번호 변경 시 모달 창
+document.addEventListener('DOMContentLoaded', function () {
+    const modal = document.getElementById('password-change-modal');
+    if (modal) {
+        // 3초 후 서서히 사라짐
+        setTimeout(function () {
+            modal.classList.add('hide');
+        }, 3000);
+
+        // 애니메이션 끝난 후 완전히 제거 (선택)
+        modal.addEventListener('transitionend', function () {
+            if (modal.classList.contains('hide')) {
+                modal.remove();
+            }
+        });
+    }
+});
 </script>
 </body>
 </html>

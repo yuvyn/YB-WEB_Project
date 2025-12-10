@@ -1,6 +1,8 @@
 package com.example.demo.repository;
 
 import org.springframework.data.domain.Pageable;
+
+import com.example.demo.domain.Member;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -49,4 +51,7 @@ public interface BoardPostRepository extends JpaRepository<BoardPost, Long> {
             String keyword,
             Pageable pageable
     );
+    
+    // 🔹 내 게시글 조회 (memberId 기준)
+    List<BoardPost> findTop20ByMemberIdOrderByCreatedAtDesc(Long memberId);
 }
