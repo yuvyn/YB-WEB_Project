@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.domain.BoardComment;
 import com.example.demo.domain.BoardPost;
 import com.example.demo.domain.BoardType;
 import com.example.demo.domain.Member;
@@ -78,7 +79,11 @@ public class BoardController {
  // 공지사항
     @GetMapping("/notice")
     public String noticeList(@RequestParam(name = "keyword", required = false) String keyword,
-    						 @RequestParam(name = "page", defaultValue = "1") int page, Model model) {
+    						 @RequestParam(name = "page", defaultValue = "1") int page, HttpSession session, Model model) {
+    	
+    	Member loginMember = (Member) session.getAttribute("loginMember");
+        model.addAttribute("loginMember", loginMember);
+    	
         return listPage(BoardType.NOTICE, "board/notice", keyword, page, model);
     }
 
@@ -354,12 +359,10 @@ public class BoardController {
                          Model model) {
 
         BoardType boardType = BoardType.valueOf(type.toUpperCase());
-
-        BoardPost post = boardPostService.getPost(id);   // ← 네가 쓰던 코드
+        BoardPost post = boardPostService.getPost(id);
 
         Member loginMember = (Member) session.getAttribute("loginMember");
 
-        // ==== 여기가 새로 추가할 부분 ====
         boolean isOwner = false;
         boolean isAdmin = false;
 
@@ -370,33 +373,36 @@ public class BoardController {
             isAdmin = "ADMIN".equalsIgnoreCase(loginMember.getRole());
         }
 
-        boolean canViewSecretPost = true;   // 기본값: 비밀글 아니면 그냥 true
-
-        if (post.isSecret()) {  // post.getSecret()이면 get메서드에 맞게 수정
+        // 비밀글 조회 권한
+        boolean canViewSecretPost = true;
+        if (post.isSecret()) {
             canViewSecretPost = (loginMember != null) && (isOwner || isAdmin);
         }
 
+        // 댓글 작성 권한
         boolean canWriteComment;
         if (!post.isSecret()) {
-            // 일반 글: 로그인만 되어 있으면 댓글 작성 가능
             canWriteComment = (loginMember != null);
         } else {
-            // 비밀글: 볼 수 있는 사람만 댓글도 작성 가능
             canWriteComment = canViewSecretPost;
         }
-        // ==== 여기까지 계산 후 model에 추가 ====
-        model.addAttribute("canViewSecretPost", canViewSecretPost);
-        model.addAttribute("canWriteComment", canWriteComment);
 
-        // 이 아래는 네가 원래 쓰던 코드 그대로 두면 됨
+        // 댓글 목록 조회
+        List<BoardComment> comments;
+        if (canViewSecretPost) {
+            // getCommentsForPost 말고 getComments 사용
+            comments = boardCommentService.getComments(post.getId());
+        } else {
+            comments = java.util.List.of();
+        }
+
         model.addAttribute("boardType", boardType);
         model.addAttribute("post", post);
         model.addAttribute("loginMember", loginMember);
 
-        // ★ 댓글도 원래 쓰던 방식 그대로 ★
-        // 예시)
-        // List<BoardComment> comments = boardCommentRepository.findByPostIdOrderByCreatedAtDesc(post.getId());
-        // model.addAttribute("comments", comments);
+        model.addAttribute("canViewSecretPost", canViewSecretPost);
+        model.addAttribute("canWriteComment", canWriteComment);
+        model.addAttribute("comments", comments);  // detail.html 에서 쓰는 애
 
         return "board/detail";
     }

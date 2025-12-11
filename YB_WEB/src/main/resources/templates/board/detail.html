@@ -166,7 +166,8 @@
 					    </a>
 
 					    <!-- 삭제 버튼 -->
-					    <form th:action="@{|/board/${#strings.toLowerCase(boardType.name())}/${post.id}/delete|}"
+					    <form th:if="${loginMember != null and loginMember.role == 'ADMIN'}" 
+					    	th:action="@{|/board/${#strings.toLowerCase(boardType.name())}/${post.id}/delete|}"
 					     	method="post"
 					     	onsubmit="return confirm('정말 이 게시글을 삭제하시겠습니까?');">
 					     <!-- Spring Security CSRF 쓰면 여기 csrf hidden 추가 -->
@@ -206,11 +207,11 @@
 		    </div>
 		</form>
 
-<!-- 🔹 비밀글인데 댓글 작성 권한 없는 경우 안내 -->
-<div class="comment-login-guide"
-     th:if="${post.secret and !canWriteComment}">
-    이 비밀글의 댓글 작성은 작성자와 관리자만 가능합니다.
-</div>
+		<!-- 🔹 비밀글인데 댓글 작성 권한 없는 경우 안내 -->
+		<div class="comment-login-guide"
+		     th:if="${post.secret and !canWriteComment}">
+		    이 비밀글의 댓글 작성은 작성자와 관리자만 가능합니다.
+		</div>
 
         <!-- 댓글 목록 -->
         <div class="comment-list">

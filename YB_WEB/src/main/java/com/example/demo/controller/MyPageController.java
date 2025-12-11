@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import com.example.demo.domain.Member;
 import com.example.demo.domain.BoardPost;
 import com.example.demo.repository.MemberRepository;
+import com.example.demo.repository.BoardCommentRepository;
 import com.example.demo.repository.BoardPostRepository;
 
 import jakarta.servlet.http.HttpSession;
@@ -19,11 +20,13 @@ public class MyPageController {
 
     private final MemberRepository memberRepository;
     private final BoardPostRepository boardPostRepository;
+    private final BoardCommentRepository boardCommentRepository;
 
     public MyPageController(MemberRepository memberRepository,
-                            BoardPostRepository boardPostRepository) {
+                            BoardPostRepository boardPostRepository, BoardCommentRepository boardCommentRepository) {
         this.memberRepository = memberRepository;
         this.boardPostRepository = boardPostRepository;
+        this.boardCommentRepository = boardCommentRepository;
     }
 
     // 🔹 세션에서 로그인 회원 꺼내기
@@ -36,6 +39,9 @@ public class MyPageController {
     public String mypage(Model model,
                          HttpSession session,
                          @RequestParam(value = "tab", required = false) String tab,
+                         @RequestParam(value = "activityType", required = false, defaultValue = "posts") String activityType,
+                         @RequestParam(value = "postPage", required = false, defaultValue = "1") int postPage,
+                         @RequestParam(value = "commentPage", required = false, defaultValue = "1") int commentPage,
                          RedirectAttributes redirectAttributes) {
 
         Member loginMember = getLoginMember(session);
@@ -47,19 +53,46 @@ public class MyPageController {
         Member member = memberRepository.findById(loginMember.getIdx())
                 .orElseThrow(() -> new IllegalStateException("회원 정보를 찾을 수 없습니다."));
 
-        // 내가 작성한 게시글 목록 (최근 20개 예시)
-        List<BoardPost> myPosts =
-                boardPostRepository.findTop20ByMemberIdOrderByCreatedAtDesc(member.getIdx());
-
         model.addAttribute("member", member);
-        model.addAttribute("myPosts", myPosts);
-        model.addAttribute("myComments", java.util.Collections.emptyList());
 
-        // 🔹 기본 탭은 profile, 쿼리 파라미터로 들어오면 그걸 사용
+        // 🔹 기본 탭: profile
         String activeTab = (tab != null && !tab.isBlank()) ? tab : "profile";
         model.addAttribute("activeTab", activeTab);
 
-        return "login/mypage";   // templates/mypage.html
+        // 🔹 활동 내역 탭일 때만 페이징 조회
+        if ("activity".equals(activeTab)) {
+
+            int size = 10; // 페이지당 10개
+
+            // === 내가 쓴 게시글 Page ===
+            org.springframework.data.domain.Pageable postPageable =
+                    org.springframework.data.domain.PageRequest.of(
+                            Math.max(postPage - 1, 0),
+                            size,
+                            org.springframework.data.domain.Sort.by(org.springframework.data.domain.Sort.Direction.DESC, "createdAt")
+                    );
+            org.springframework.data.domain.Page<BoardPost> myPostPage =
+                    boardPostRepository.findByMemberId(member.getIdx(), postPageable);
+
+            // === 내가 쓴 댓글/답글 Page ===
+            org.springframework.data.domain.Pageable commentPageable =
+                    org.springframework.data.domain.PageRequest.of(
+                            Math.max(commentPage - 1, 0),
+                            size,
+                            org.springframework.data.domain.Sort.by(org.springframework.data.domain.Sort.Direction.DESC, "createdAt")
+                    );
+            var myCommentPage =
+                    boardCommentRepository.findByMemberId(member.getIdx(), commentPageable);
+
+            model.addAttribute("postPage", myPostPage);
+            model.addAttribute("commentPage", myCommentPage);
+
+            model.addAttribute("activityType", activityType);    // "posts" or "comments"
+            model.addAttribute("postPageNum", postPage);         // 현재 게시글 페이지(1부터)
+            model.addAttribute("commentPageNum", commentPage);   // 현재 댓글 페이지(1부터)
+        }
+
+        return "login/mypage";
     }
 
     // 🔹 프로필 / 정보 수정

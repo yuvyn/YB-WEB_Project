@@ -54,4 +54,6 @@ public interface BoardPostRepository extends JpaRepository<BoardPost, Long> {
     
     // 🔹 내 게시글 조회 (memberId 기준)
     List<BoardPost> findTop20ByMemberIdOrderByCreatedAtDesc(Long memberId);
+    
+    Page<BoardPost> findByMemberId(Long memberId, Pageable pageable);
 }

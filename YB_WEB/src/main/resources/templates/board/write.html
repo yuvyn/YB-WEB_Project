@@ -115,7 +115,7 @@
                     <!-- 상단 고정 (공지사항에서만 보이게) -->
 					<div class="form-row pin-row"
 					     th:if="${boardType.name() == 'NOTICE' || boardType.name() == 'QNA'}">
-					    <label class="checkbox-label">
+					    <label class="checkbox-label" th:if="${loginMember != null and loginMember.role == 'ADMIN'}">
 					        <input type="checkbox" name="noticePin"
 					               th:checked="${post.noticePin}" />
 					        <span>상단 공지로 고정하기</span>

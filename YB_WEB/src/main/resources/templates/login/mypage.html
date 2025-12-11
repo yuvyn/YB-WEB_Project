@@ -243,71 +243,296 @@
                         </section>
 
                         <!-- 3) 활동 내역 패널 : 내가 쓴 글만 -->
-                        <section class="mypage-panel"
-					         id="panel-activity"
-					         th:classappend="${activeTab} == 'activity' ? ' active' : ''">
-
-                            <h2 class="panel-title">활동 내역</h2>
-                            <p class="panel-desc">
-                                회원님이 작성한 게시글 내역을 확인할 수 있습니다.
-                            </p>
-
-                            <!-- 내가 작성한 게시글 -->
-                            <section class="activity-section">
-                                <div class="activity-header">
-                                    <h3>내가 작성한 게시글</h3>
-                                    <span class="count"
-                                          th:text="|총 ${#lists.size(myPosts)}건|">
-                                        총 0건
-                                    </span>
-                                </div>
-
-                                <table class="board-table activity-table">
-                                    <colgroup>
-                                        <col style="width: 140px;">
-                                        <col>
-                                        <col style="width: 120px;">
-                                        <col style="width: 80px;">
-                                    </colgroup>
-                                    <thead>
-                                    <tr>
-                                        <th>게시판</th>
-                                        <th>제목</th>
-                                        <th>작성일</th>
-                                        <th>조회</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-
-                                    <tr th:if="${#lists.isEmpty(myPosts)}">
-                                        <td colspan="4" class="no-data">
-                                            작성한 게시글이 없습니다.
-                                        </td>
-                                    </tr>
-
-                                    <tr th:each="post : ${myPosts}">
-                                        <td th:text="${post.boardType}">공지</td>
-                                        <td class="title-cell">
-                                            <a th:href="@{/board/{type}/{id}(
-                                                            type=${post.boardType},
-                                                            id=${post.id}
-                                                         )}"
-                                               th:text="${post.title}"
-                                               class="title-link">
-                                                게시글 제목이 들어갑니다.
-                                            </a>
-                                        </td>
-                                        <td th:text="${#temporals.format(post.createdAt, 'yyyy.MM.dd')}">
-                                            2025.11.20
-                                        </td>
-                                        <td th:text="${post.viewCount}">0</td>
-                                    </tr>
-
-                                    </tbody>
-                                </table>
-                            </section>
-
-                        </section>
+						<section class="mypage-panel"
+						         id="panel-activity"
+						         th:classappend="${activeTab} == 'activity' ? ' active' : ''">
+						
+						    <!-- 상단 타이틀 + 토글 버튼 -->
+						    <div class="activity-panel-header">
+						        <div>
+						            <h2 class="panel-title">활동 내역</h2>
+						            <p class="panel-desc">
+						                회원님이 작성한 게시글과 댓글 내역을 확인할 수 있습니다.
+						            </p>
+						        </div>
+						
+						        <!-- 게시글 / 댓글 토글 버튼 -->
+						        <div class="activity-toggle">
+						            <a th:href="@{/mypage(tab='activity', activityType='posts', postPage=${postPageNum}, commentPage=${commentPageNum})}"
+						               class="activity-toggle-btn"
+						               th:classappend="${activityType} == 'posts' ? ' active' : ''">
+						                내가 쓴 게시글
+						            </a>
+						            <a th:href="@{/mypage(tab='activity', activityType='comments', postPage=${postPageNum}, commentPage=${commentPageNum})}"
+						               class="activity-toggle-btn"
+						               th:classappend="${activityType} == 'comments' ? ' active' : ''">
+						                내가 쓴 댓글/답글
+						            </a>
+						        </div>
+						    </div>
+						
+						    <!-- 📝 내가 쓴 게시글 -->
+						    <section class="card activity-card"
+						             th:if="${activityType} == 'posts'">
+						
+						        <div class="activity-header">
+						            <h3>내가 작성한 게시글</h3>
+						            <span class="count"
+						                  th:text="|총 ${postPage != null ? postPage.totalElements : 0}건|">
+						                총 0건
+						            </span>
+						        </div>
+						
+						        <table class="board-table activity-table">
+						            <colgroup>
+						                <col style="width: 140px;">
+						                <col>
+						                <col style="width: 120px;">
+						                <col style="width: 80px;">
+						            </colgroup>
+						            <thead>
+						            <tr>
+						                <th>게시판</th>
+						                <th>제목</th>
+						                <th>작성일</th>
+						                <th>조회</th>
+						            </tr>
+						            </thead>
+						            <tbody>
+						
+						            <!-- 게시글이 하나도 없을 때 -->
+						            <tr th:if="${postPage == null or postPage.empty}">
+						                <td colspan="4" class="no-data">
+						                    작성한 게시글이 없습니다.
+						                </td>
+						            </tr>
+						
+						            <!-- 게시글 목록 -->
+						            <tr th:each="post : ${postPage.content}">
+						                <td>
+						                    <span class="badge-board-type"
+						                          th:switch="${post.boardType}">
+						                        <span th:case="${T(com.example.demo.domain.BoardType).NOTICE}">공지사항</span>
+						                        <span th:case="${T(com.example.demo.domain.BoardType).UPDATE}">업데이트</span>
+						                        <span th:case="${T(com.example.demo.domain.BoardType).FREE}">자유게시판</span>
+						                        <span th:case="${T(com.example.demo.domain.BoardType).QNA}">문의게시판</span>
+						                        <span th:case="*">기타</span>
+						                    </span>
+						                </td>
+						                <td class="title-cell">
+						                    <a th:href="@{/board/{type}/{id}(
+						                                    type=${#strings.toLowerCase(post.boardType.name())},
+						                                    id=${post.id}
+						                                 )}"
+						                       th:text="${post.title}"
+						                       class="title-link">
+						                        게시글 제목이 들어갑니다.
+						                    </a>
+						                </td>
+						                <td th:text="${#temporals.format(post.createdAt, 'yyyy.MM.dd')}">
+						                    2025.11.20
+						                </td>
+						                <td th:text="${post.viewCount}">0</td>
+						            </tr>
+						
+						            </tbody>
+						        </table>
+						
+						        <!-- 게시글 페이징 -->
+								<div class="pagination"
+								     th:if="${postPage != null and postPage.totalPages > 1}">
+								
+								    <!-- 맨 처음 (<<) -->
+								    <a class="page-btn"
+								       th:href="@{/mypage(tab='activity',
+								                          activityType='posts',
+								                          postPage=1,
+								                          commentPage=${commentPageNum})}"
+								       th:classappend="${postPageNum == 1} ? ' disabled'">
+								        &laquo;
+								    </a>
+								
+								    <!-- 이전 페이지 (<) -->
+								    <a class="page-btn"
+								       th:href="@{/mypage(tab='activity',
+								                          activityType='posts',
+								                          postPage=${postPageNum - 1},
+								                          commentPage=${commentPageNum})}"
+								       th:classappend="${postPageNum == 1} ? ' disabled'">
+								        &lsaquo;
+								    </a>
+								
+								    <!-- 숫자들 (1 ~ totalPages) -->
+								    <a class="page-btn"
+								       th:each="p : ${#numbers.sequence(1, postPage.totalPages)}"
+								       th:text="${p}"
+								       th:href="@{/mypage(tab='activity',
+								                          activityType='posts',
+								                          postPage=${p},
+								                          commentPage=${commentPageNum})}"
+								       th:classappend="${p == postPageNum} ? ' active'">
+								    </a>
+								
+								    <!-- 다음 페이지 (>) -->
+								    <a class="page-btn"
+								       th:href="@{/mypage(tab='activity',
+								                          activityType='posts',
+								                          postPage=${postPageNum + 1},
+								                          commentPage=${commentPageNum})}"
+								       th:classappend="${postPageNum == postPage.totalPages} ? ' disabled'">
+								        &rsaquo;
+								    </a>
+								
+								    <!-- 맨 끝 (>>) -->
+								    <a class="page-btn"
+								       th:href="@{/mypage(tab='activity',
+								                          activityType='posts',
+								                          postPage=${postPage.totalPages},
+								                          commentPage=${commentPageNum})}"
+								       th:classappend="${postPageNum == postPage.totalPages} ? ' disabled'">
+								        &raquo;
+								    </a>
+								</div>
+						
+						    </section>
+						
+						    <!-- 💬 내가 쓴 댓글/답글 -->
+						    <section class="card activity-card"
+						             th:if="${activityType} == 'comments'">
+						
+						        <div class="activity-header">
+						            <h3>내가 작성한 댓글/답글</h3>
+						            <span class="count"
+						                  th:text="|총 ${commentPage != null ? commentPage.totalElements : 0}건|">
+						                총 0건
+						            </span>
+						        </div>
+						
+						        <table class="board-table activity-table comment-activity-table">
+						            <colgroup>
+						                <col style="width: 140px;">
+						                <col>
+						                <col style="width: 120px;">
+						            </colgroup>
+						            <thead>
+						            <tr>
+						                <th>게시판</th>
+						                <th>댓글 내용</th>
+						                <th>작성일</th>
+						            </tr>
+						            </thead>
+						            <tbody>
+						
+						            <!-- 댓글이 하나도 없을 때 -->
+						            <tr th:if="${commentPage == null or commentPage.empty}">
+						                <td colspan="3" class="no-data">
+						                    작성한 댓글이 없습니다.
+						                </td>
+						            </tr>
+						
+						            <!-- 댓글 목록 -->
+						            <tr th:each="c : ${commentPage.content}">
+						                <!-- 게시판 타입 -->
+						                <td>
+						                    <span class="badge-board-type"
+						                          th:switch="${c.post.boardType}">
+						                        <span th:case="${T(com.example.demo.domain.BoardType).NOTICE}">공지사항</span>
+						                        <span th:case="${T(com.example.demo.domain.BoardType).UPDATE}">업데이트</span>
+						                        <span th:case="${T(com.example.demo.domain.BoardType).FREE}">자유게시판</span>
+						                        <span th:case="${T(com.example.demo.domain.BoardType).QNA}">문의게시판</span>
+						                        <span th:case="*">기타</span>
+						                    </span>
+						                </td>
+						
+						                <!-- 댓글 내용 -->
+						                <td class="comment-cell">
+						                    <a th:href="@{/board/{type}/{id}(
+						                                    type=${#strings.toLowerCase(c.post.boardType.name())},
+						                                    id=${c.post.id}
+						                                 )}">
+						                        <span class="comment-snippet">
+						                            <span class="badge-reply" th:if="${c.parent != null}">답글</span>
+						                            <span class="badge-secret" th:if="${c.secret}">비밀</span>
+						
+						                            <span th:if="${c.deleted}" class="comment-deleted">
+						                                삭제된 댓글입니다.
+						                            </span>
+						                            <span th:if="${!c.deleted}"
+						                                  th:text="${#strings.abbreviate(c.content, 60)}">
+						                                댓글 내용이 들어갑니다.
+						                            </span>
+						                        </span>
+						                    </a>
+						                </td>
+						
+						                <!-- 작성일 -->
+						                <td th:text="${#temporals.format(c.createdAt, 'yyyy.MM.dd')}">
+						                    2025.11.20
+						                </td>
+						            </tr>
+						
+						            </tbody>
+						        </table>
+						
+						        <!-- 댓글 페이징 --> 
+								<div class="pagination"
+								     th:if="${commentPage != null and commentPage.totalPages > 1}">
+								
+								    <!-- 맨 처음 (<<) -->
+								    <a class="page-btn"
+								       th:href="@{/mypage(tab='activity',
+								                          activityType='comments',
+								                          postPage=${postPageNum},
+								                          commentPage=1)}"
+								       th:classappend="${commentPageNum == 1} ? ' disabled'">
+								        &laquo;
+								    </a>
+								
+								    <!-- 이전 페이지 (<) -->
+								    <a class="page-btn"
+								       th:href="@{/mypage(tab='activity',
+								                          activityType='comments',
+								                          postPage=${postPageNum},
+								                          commentPage=${commentPageNum - 1})}"
+								       th:classappend="${commentPageNum == 1} ? ' disabled'">
+								        &lsaquo;
+								    </a>
+								
+								    <!-- 숫자들 -->
+								    <a class="page-btn"
+								       th:each="p : ${#numbers.sequence(1, commentPage.totalPages)}"
+								       th:text="${p}"
+								       th:href="@{/mypage(tab='activity',
+								                          activityType='comments',
+								                          postPage=${postPageNum},
+								                          commentPage=${p})}"
+								       th:classappend="${p == commentPageNum} ? ' active'">
+								    </a>
+								
+								    <!-- 다음 페이지 (>) -->
+								    <a class="page-btn"
+								       th:href="@{/mypage(tab='activity',
+								                          activityType='comments',
+								                          postPage=${postPageNum},
+								                          commentPage=${commentPageNum + 1})}"
+								       th:classappend="${commentPageNum == commentPage.totalPages} ? ' disabled'">
+								        &rsaquo;
+								    </a>
+								
+								    <!-- 맨 끝 (>>) -->
+								    <a class="page-btn"
+								       th:href="@{/mypage(tab='activity',
+								                          activityType='comments',
+								                          postPage=${postPageNum},
+								                          commentPage=${commentPage.totalPages})}"
+								       th:classappend="${commentPageNum == commentPage.totalPages} ? ' disabled'">
+								        &raquo;
+								    </a>
+								</div>
+						
+						    </section>
+						
+						</section>
 
                         <!-- 4) 회원 탈퇴 패널 -->
                         <section class="mypage-panel"
