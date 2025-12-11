@@ -26,23 +26,24 @@ public class BoardPostService {
 
     // 글 작성
     public BoardPost write(BoardType boardType,
-                           String title,
-                           String content,
-                           String writer,
-                           Long memberId,
-                           boolean noticePin,
-                           String qnaCategory) {
+            String title,
+            String content,
+            String writer,
+            Long memberId,
+            boolean noticePin,
+            String qnaCategory,
+            boolean secret) {
 
-        BoardPost post = new BoardPost(boardType, title, content, writer, memberId);
-        post.setNoticePin(noticePin);
-        
-     // 🔹 QNA일 때만 카테고리 세팅
-        if (boardType == BoardType.QNA) {
-            post.setQnaCategory(qnaCategory);   // ACCOUNT, PAY, BUG, SUGGEST, ETC
-        }
-
-        return boardPostRepository.save(post);
-    }
+			BoardPost post = new BoardPost(boardType, title, content, writer, memberId);
+			post.setNoticePin(noticePin);
+			post.setSecret(secret);
+			
+			if (boardType == BoardType.QNA) {
+			post.setQnaCategory(qnaCategory);
+			}
+			
+			return boardPostRepository.save(post);
+			}
 
  // 🔹 QNA 전용 목록 (카테고리 + 검색)
     @Transactional(readOnly = true)
@@ -158,34 +159,33 @@ public class BoardPostService {
     
  // 🔹 게시글 수정
     public BoardPost updatePost(BoardType boardType,
-                                Long id,
-                                String title,
-                                String content,
-                                boolean noticePin,
-                                String qnaCategory) {
+            Long id,
+            String title,
+            String content,
+            boolean noticePin,
+            String qnaCategory,
+            boolean secret) {
 
-        BoardPost post = boardPostRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
-
-        // URL 상의 타입과 실제 타입이 다른 경우 방어
-        if (post.getBoardType() != boardType) {
-            throw new IllegalStateException("게시판 유형이 일치하지 않습니다.");
-        }
-
-        post.setTitle(title);
-        post.setContent(content);
-        post.setNoticePin(noticePin);
-
-        // QNA일 때만 카테고리 유지 / 수정, 나머지는 null
-        if (boardType == BoardType.QNA) {
-            post.setQnaCategory(qnaCategory);
-        } else {
-            post.setQnaCategory(null);
-        }
-
-        // @Transactional 이라 save 안 해도 dirty checking 되지만, 명시적으로 해도 무방
-        return post;
-    }
+			BoardPost post = boardPostRepository.findById(id)
+			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
+			
+			if (post.getBoardType() != boardType) {
+			throw new IllegalStateException("게시판 유형이 일치하지 않습니다.");
+			}
+			
+			post.setTitle(title);
+			post.setContent(content);
+			post.setNoticePin(noticePin);
+			post.setSecret(secret);   // 🔹 비밀글 여부 반영
+			
+			if (boardType == BoardType.QNA) {
+			post.setQnaCategory(qnaCategory);
+			} else {
+			post.setQnaCategory(null);
+			}
+			
+			return post;
+			}
 
     // 🔹 게시글 삭제
     public void deletePost(BoardType boardType, Long id) {

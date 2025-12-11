@@ -39,10 +39,12 @@
                         </span>
                     </p>
 
-                    <h1 class="board-main-title"
-                        th:text="${post.title}">
-                        게시글 제목
-                    </h1>
+                    <h1 class="board-main-title">
+					    <span th:text="${post.title}">게시글 제목</span>
+					
+					    <!-- 🔒 비밀글이면 자물쇠 아이콘 출력 -->
+					    <span th:if="${post.secret}" class="secret-icon">🔒</span>
+					</h1>
 
 					<!-- 🔹 관리자용 처리 상태 변경 영역 (QNA + ADMIN) -->
 									<!-- 🔹 관리자용 처리 상태 변경 영역 (QNA + 로그인한 사용자) -->
@@ -133,10 +135,16 @@
                 <article class="detail-card">
 
                     <div class="detail-content"
-                         th:utext="${#strings.replace(post.content, '\n', '<br/>')}">
-                        내용이 들어갑니다.
-                    </div>
+				         th:if="${canViewSecretPost}"
+				         th:utext="${#strings.replace(post.content, '\n', '<br/>')}">
+				        내용이 들어갑니다.
+				    </div>
 
+					<!-- 비밀글인데 권한 없으면 메시지 -->
+				    <div class="detail-content secret-post"
+				         th:if="${!canViewSecretPost}">
+				        이 글은 비밀글입니다. 작성자와 관리자만 열람할 수 있습니다.
+				    </div>
                 </article>
 
                 <!-- 버튼들 -->
@@ -166,9 +174,186 @@
 					     </form>
 					 </div>
                 </div>
+                
+                <!-- 🔹 댓글 영역 -->
+<!-- 🔹 비밀글이면 canViewSecretPost가 true인 사람만 댓글 영역 보이게 -->
+<section class="comment-section"
+         th:if="${!post.secret or canViewSecretPost}">
+    <div class="board-inner">
+
+        <h2 class="comment-title">댓글</h2>
+
+        <!-- 로그인 안 했을 때 -->
+        <!-- 로그인 안내: 일반 글에서만 노출 -->
+		<p class="comment-login-guide"
+		   th:if="${loginMember == null and !post.secret}">
+		    댓글을 작성하려면 <a th:href="@{/login}">로그인</a>이 필요합니다.
+		</p>
+		
+		<!-- 🔹 댓글 작성 폼: 컨트롤러에서 계산한 canWriteComment 사용 -->
+		<form th:if="${canWriteComment}"
+		      th:action="@{|/board/${#strings.toLowerCase(boardType.name())}/${post.id}/comments|}"
+		      method="post"
+		      class="comment-form">
+		
+		    <textarea name="content" rows="3" placeholder="댓글을 입력하세요." required></textarea>
+		
+		    <div class="comment-form-bottom">
+		        <label class="secret-checkbox">
+		            <input type="checkbox" name="secret"> 비밀댓글
+		        </label>
+		        <button type="submit" class="btn-primary">등록</button>
+		    </div>
+		</form>
+
+<!-- 🔹 비밀글인데 댓글 작성 권한 없는 경우 안내 -->
+<div class="comment-login-guide"
+     th:if="${post.secret and !canWriteComment}">
+    이 비밀글의 댓글 작성은 작성자와 관리자만 가능합니다.
+</div>
+
+        <!-- 댓글 목록 -->
+        <div class="comment-list">
+
+            <div th:if="${#lists.isEmpty(comments)}" class="comment-empty">
+                아직 등록된 댓글이 없습니다.
+            </div>
+
+            <div th:each="c : ${comments}"
+                 th:class="'comment-item ' + (${c.parent} != null ? 'reply' : 'root')">
+
+                <!-- 댓글 상단 메타 -->
+                <div class="comment-meta">
+                    <span class="comment-writer" th:text="${c.writer}">작성자</span>
+                    <span class="comment-date"
+                          th:text="${#temporals.format(c.createdAt, 'yyyy.MM.dd HH:mm')}">
+                        2025.12.01 12:00
+                    </span>
+                    <span class="comment-secret-badge"
+                          th:if="${c.secret}">비밀</span>
+                </div>
+
+                <!-- 댓글 내용 (비밀댓글 처리) -->
+				<div class="comment-content deleted"
+				     th:if="${c.deleted}">
+				    삭제된 댓글입니다.
+				</div>
+				
+				<!-- 🔹 삭제되지 않았고, 볼 수 있는 일반/비밀 댓글 내용 -->
+				<div class="comment-content"
+				     th:if="${!c.deleted and (!c.secret 
+				             or (loginMember != null 
+				                 and (loginMember.role == 'ADMIN' 
+				                      or loginMember.idx == c.memberId 
+				                      or loginMember.idx == post.memberId)))}">
+				    <pre th:text="${c.content}">댓글 내용</pre>
+				</div>
+				
+				<!-- 🔹 삭제되지 않았고, 비밀댓글이면서 볼 권한 없을 때 -->
+				<div class="comment-content secret"
+				     th:if="${!c.deleted and c.secret 
+				             and (loginMember == null 
+				                  or !(loginMember.role == 'ADMIN' 
+				                       or loginMember.idx == c.memberId 
+				                       or loginMember.idx == post.memberId))}">
+				    비밀 댓글입니다.
+				</div>
+
+                <!-- 버튼들: 로그인 + 작성자 or 관리자 -->
+                <div class="comment-actions"
+			     th:if="${!c.deleted 
+			             and loginMember != null 
+			             and (loginMember.role == 'ADMIN' 
+			                  or loginMember.idx == c.memberId)}">
+
+                    <!-- 수정 폼 토글용 버튼 -->
+                    <button type="button"
+                            class="btn-link"
+                            th:attr="onclick=|toggleEditForm(${c.id})|">
+                        수정
+                    </button>
+
+                    <!-- 삭제 -->
+                    <form th:action="@{|/board/${#strings.toLowerCase(boardType.name())}/${post.id}/comments/${c.id}/delete|}"
+                          method="post"
+                          style="display:inline;"
+                          onsubmit="return confirm('댓글을 삭제하시겠습니까?');">
+                        <button type="submit" class="btn-link danger">삭제</button>
+                    </form>
+                </div>
+
+                <!-- 답글 버튼 (로그인한 사용자만, 최상위 댓글에만) -->
+                <div class="comment-reply-btn"
+				     th:if="${!c.deleted 
+				             and loginMember != null 
+				             and c.parent == null}">
+                    <button type="button"
+                            class="btn-link"
+                            th:attr="onclick=|toggleReplyForm(${c.id})|">
+                        답글
+                    </button>
+                </div>
+
+                <!-- 수정 폼 -->
+                <form th:id="'edit-form-' + ${c.id}"
+                      th:action="@{|/board/${#strings.toLowerCase(boardType.name())}/${post.id}/comments/${c.id}/edit|}"
+                      method="post"
+                      class="comment-edit-form"
+                      style="display:none;">
+
+                    <textarea name="content" rows="3" th:text="${c.content}"></textarea>
+
+                    <div class="comment-form-bottom">
+                        <label class="secret-checkbox">
+                            <input type="checkbox" name="secret" th:checked="${c.secret}"> 비밀댓글
+                        </label>
+                        <button type="submit" class="btn-primary">수정 완료</button>
+                    </div>
+                </form>
+
+                <!-- 답글 폼 -->
+                <form th:id="'reply-form-' + ${c.id}"
+                      th:if="${loginMember != null}"
+                      th:action="@{|/board/${#strings.toLowerCase(boardType.name())}/${post.id}/comments|}"
+                      method="post"
+                      class="comment-reply-form"
+                      style="display:none;">
+
+                    <input type="hidden" name="parentId" th:value="${c.id}">
+                    <textarea name="content" rows="2" placeholder="답글을 입력하세요." required></textarea>
+
+                    <div class="comment-form-bottom">
+                        <label class="secret-checkbox">
+                            <input type="checkbox" name="secret"> 비밀답글
+                        </label>
+                        <button type="submit" class="btn-primary">답글 등록</button>
+                    </div>
+                </form>
+
+            </div>
+
+        </div>
+    </div>
+</section>
 
             </div>
         </section>
+
+	<script>
+    function toggleEditForm(id) {
+        var el = document.getElementById('edit-form-' + id);
+        if (el) {
+            el.style.display = (el.style.display === 'none' || el.style.display === '') ? 'block' : 'none';
+        }
+    }
+
+    function toggleReplyForm(id) {
+        var el = document.getElementById('reply-form-' + id);
+        if (el) {
+            el.style.display = (el.style.display === 'none' || el.style.display === '') ? 'block' : 'none';
+        }
+    }
+</script>
 
     </main>
 

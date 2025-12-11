@@ -3,7 +3,9 @@ package com.example.demo.controller;
 import com.example.demo.domain.BoardPost;
 import com.example.demo.domain.BoardType;
 import com.example.demo.domain.Member;
+import com.example.demo.service.BoardCommentService;
 import com.example.demo.service.BoardPostService;
+
 
 import jakarta.servlet.http.HttpSession;
 
@@ -20,9 +22,11 @@ import java.util.List;
 public class BoardController {
 
     private final BoardPostService boardPostService;
+    private final BoardCommentService boardCommentService;
 
-    public BoardController(BoardPostService boardPostService) {
+    public BoardController(BoardPostService boardPostService, BoardCommentService boardCommentService) {
         this.boardPostService = boardPostService;
+        this.boardCommentService = boardCommentService;
     }
 
     // ===== 공통 목록 메서드 =====
@@ -246,6 +250,7 @@ public class BoardController {
                         @RequestParam("content") String content,
                         @RequestParam(name = "noticePin", required = false, defaultValue = "false") boolean noticePin,
                         @RequestParam(name = "qnaCategory", required = false) String qnaCategory,
+                        @RequestParam(name = "secret", required = false, defaultValue = "false") boolean secret,
                         HttpSession session) {
 
         Member loginMember = (Member) session.getAttribute("loginMember");
@@ -258,7 +263,6 @@ public class BoardController {
 
         BoardType boardType = BoardType.valueOf(type.toUpperCase());
 
-        // 🔹 QNA가 아닌 게시판은 카테고리 null로
         if (boardType != BoardType.QNA) {
             qnaCategory = null;
         }
@@ -270,7 +274,8 @@ public class BoardController {
                 writer,
                 memberId,
                 noticePin,
-                qnaCategory
+                qnaCategory,
+                secret
         );
 
         return "redirect:/board/" + type.toLowerCase() + "/" + post.getId();
@@ -284,6 +289,7 @@ public class BoardController {
                        @RequestParam("content") String content,
                        @RequestParam(name = "noticePin", required = false, defaultValue = "false") boolean noticePin,
                        @RequestParam(name = "qnaCategory", required = false) String qnaCategory,
+                       @RequestParam(name = "secret", required = false, defaultValue = "false") boolean secret,
                        HttpSession session) {
 
         Member loginMember = (Member) session.getAttribute("loginMember");
@@ -307,7 +313,7 @@ public class BoardController {
             qnaCategory = null;
         }
 
-        boardPostService.updatePost(boardType, id, title, content, noticePin, qnaCategory);
+        boardPostService.updatePost(boardType, id, title, content, noticePin, qnaCategory, secret);
 
         return "redirect:/board/" + type.toLowerCase() + "/" + id;
     }
@@ -348,14 +354,114 @@ public class BoardController {
                          Model model) {
 
         BoardType boardType = BoardType.valueOf(type.toUpperCase());
-        BoardPost post = boardPostService.getPost(id);
+
+        BoardPost post = boardPostService.getPost(id);   // ← 네가 쓰던 코드
 
         Member loginMember = (Member) session.getAttribute("loginMember");
 
-        model.addAttribute("post", post);
+        // ==== 여기가 새로 추가할 부분 ====
+        boolean isOwner = false;
+        boolean isAdmin = false;
+
+        if (loginMember != null) {
+            if (post.getMemberId() != null) {
+                isOwner = post.getMemberId().equals(loginMember.getIdx());
+            }
+            isAdmin = "ADMIN".equalsIgnoreCase(loginMember.getRole());
+        }
+
+        boolean canViewSecretPost = true;   // 기본값: 비밀글 아니면 그냥 true
+
+        if (post.isSecret()) {  // post.getSecret()이면 get메서드에 맞게 수정
+            canViewSecretPost = (loginMember != null) && (isOwner || isAdmin);
+        }
+
+        boolean canWriteComment;
+        if (!post.isSecret()) {
+            // 일반 글: 로그인만 되어 있으면 댓글 작성 가능
+            canWriteComment = (loginMember != null);
+        } else {
+            // 비밀글: 볼 수 있는 사람만 댓글도 작성 가능
+            canWriteComment = canViewSecretPost;
+        }
+        // ==== 여기까지 계산 후 model에 추가 ====
+        model.addAttribute("canViewSecretPost", canViewSecretPost);
+        model.addAttribute("canWriteComment", canWriteComment);
+
+        // 이 아래는 네가 원래 쓰던 코드 그대로 두면 됨
         model.addAttribute("boardType", boardType);
+        model.addAttribute("post", post);
         model.addAttribute("loginMember", loginMember);
 
+        // ★ 댓글도 원래 쓰던 방식 그대로 ★
+        // 예시)
+        // List<BoardComment> comments = boardCommentRepository.findByPostIdOrderByCreatedAtDesc(post.getId());
+        // model.addAttribute("comments", comments);
+
         return "board/detail";
+    }
+    
+    // 댓글/답글 작성
+    @PostMapping("/{type}/{id}/comments")
+    public String addComment(@PathVariable("type") String type,
+                             @PathVariable("id") Long postId,
+                             @RequestParam("content") String content,
+                             @RequestParam(name = "parentId", required = false) Long parentId,
+                             @RequestParam(name = "secret", required = false, defaultValue = "false") boolean secret,
+                             HttpSession session) {
+
+        Member loginMember = (Member) session.getAttribute("loginMember");
+        if (loginMember == null) {
+            return "redirect:/member/login";
+        }
+
+        Long memberId = loginMember.getIdx();
+        String writer = loginMember.getNickname();
+
+        boardCommentService.addComment(postId, memberId, writer, content, parentId, secret);
+
+        return "redirect:/board/" + type.toLowerCase() + "/" + postId;
+    }
+    
+    // 댓글/답글 수정
+    @PostMapping("/{type}/{postId}/comments/{commentId}/edit")
+    public String editComment(@PathVariable("type") String type,
+                              @PathVariable("postId") Long postId,
+                              @PathVariable("commentId") Long commentId,
+                              @RequestParam("content") String content,
+                              @RequestParam(name = "secret", required = false, defaultValue = "false") boolean secret,
+                              HttpSession session) {
+
+        Member loginMember = (Member) session.getAttribute("loginMember");
+        if (loginMember == null) {
+            return "redirect:/member/login";
+        }
+
+        Long loginMemberId = loginMember.getIdx();
+        boolean isAdmin = "ADMIN".equalsIgnoreCase(loginMember.getRole());
+
+        boardCommentService.updateComment(commentId, loginMemberId, isAdmin, content, secret);
+
+        return "redirect:/board/" + type.toLowerCase() + "/" + postId;
+    }
+    
+    // 댓글/답글 삭제
+    @PostMapping("/{type}/{postId}/comments/{commentId}/delete")
+    public String deleteComment(@PathVariable("type") String type,
+                                @PathVariable("postId") Long postId,
+                                @PathVariable("commentId") Long commentId,
+                                HttpSession session) {
+
+        Member loginMember = (Member) session.getAttribute("loginMember");
+        if (loginMember == null) {
+            return "redirect:/member/login";
+        }
+
+        Long loginMemberId = loginMember.getIdx();
+        boolean isAdmin = "ADMIN".equalsIgnoreCase(loginMember.getRole());
+
+        boardCommentService.deleteComment(commentId, loginMemberId, isAdmin);
+
+        return "redirect:/board/" + type.toLowerCase() + "/" + postId;
     }
 }

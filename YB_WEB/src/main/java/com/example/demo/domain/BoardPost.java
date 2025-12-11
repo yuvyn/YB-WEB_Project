@@ -46,6 +46,9 @@ public class BoardPost {
     @Column(name = "qna_status", length = 20)
     private String qnaStatus = "RECEIVED";
 
+    @Column(name = "secret", nullable = false)
+    private boolean secret = false;   // 🔹 비밀글 여부
+    
     // === 생성자 ===
     public BoardPost() {}
 
@@ -84,6 +87,14 @@ public class BoardPost {
 
     public LocalDateTime getCreatedAt() { return createdAt; }
     public LocalDateTime getUpdatedAt() { return updatedAt; }
+    
+    public boolean isSecret() {
+        return secret;
+    }
+
+    public void setSecret(boolean secret) {
+        this.secret = secret;
+    }
 
     @PrePersist
     public void onCreate() {

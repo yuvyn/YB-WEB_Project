@@ -152,15 +152,20 @@
 							</td>
 
                             <!-- 제목 -->
-                            <td class="title-cell">
+							<td class="title-cell">
 							    <a th:href="@{/board/{type}/{id}(
 							                    type=${boardType.name()},
 							                    id=${post.id}
 							                )}"
-							       th:text="${post.title}"
 							       class="title-link">
-							        제목
+							
+							        <!-- 실제 제목 텍스트 -->
+							        <span th:text="${post.title}">제목</span>
+							
+							        <!-- 🔒 비밀글일 때만 자물쇠 표시 -->
+							        <span th:if="${post.secret}" class="secret-icon">🔒</span>
 							    </a>
+							
 							    <span class="badge-mini" th:if="${post.isNew}">NEW</span>
 							</td>
 

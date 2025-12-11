@@ -219,3 +219,291 @@ body.board-page {
     color:white;
     border-color:#4169ff;
 }
+
+/* =============== 비밀글 안내 =============== */
+
+.secret-post {
+    font-size: 14px;
+    color: #6b7280;
+    line-height: 1.7;
+    padding: 18px 16px;
+    border-radius: 12px;
+    background: #f9fafb;
+    border: 1px dashed #cbd5f5;
+    text-align: center;
+    margin-top: 6px;
+}
+
+
+/* =============== 댓글 영역 =============== */
+
+.comment-section {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(209,213,219,0.7);
+}
+
+.comment-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 14px;
+}
+
+.comment-login-guide {
+    font-size: 13px;
+    color: #6b7280;
+    margin-bottom: 10px;
+}
+
+.comment-login-guide a {
+    color: #4169ff;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.comment-login-guide a:hover {
+    text-decoration: underline;
+}
+
+/* 댓글 작성 폼 */
+
+.comment-form,
+.comment-edit-form,
+.comment-reply-form {
+    margin-bottom: 16px;
+    background: rgba(255,255,255,0.95);
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+    padding: 12px 14px;
+}
+
+.comment-form textarea,
+.comment-edit-form textarea,
+.comment-reply-form textarea {
+    width: 100%;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+    padding: 8px 10px;
+    font-size: 13px;
+    resize: vertical;
+    min-height: 60px;
+    outline: none;
+    box-sizing: border-box;
+    font-family: 'Noto Sans KR', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.comment-form textarea:focus,
+.comment-edit-form textarea:focus,
+.comment-reply-form textarea:focus {
+    border-color: #4169ff;
+    box-shadow: 0 0 0 1px rgba(65,105,255,0.18);
+}
+
+/* 폼 하단 영역 (비밀 체크 + 버튼) */
+
+.comment-form-bottom {
+    margin-top: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.secret-checkbox {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    color: #6b7280;
+}
+
+.secret-checkbox input[type="checkbox"] {
+    width: 14px;
+    height: 14px;
+}
+
+/* 기본 primary 버튼 (댓글 등록/수정 등) */
+
+.btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 7px 16px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    background: #4169ff;
+    color: #ffffff;
+    box-shadow: 0 6px 16px rgba(37,99,235,0.35);
+}
+
+.btn-primary:hover {
+    filter: brightness(1.05);
+}
+
+/* =============== 댓글 목록 =============== */
+
+.comment-list {
+    margin-top: 10px;
+}
+
+.comment-empty {
+    font-size: 13px;
+    color: #9ca3af;
+    padding: 12px 4px;
+}
+
+/* 루트 댓글 / 대댓글 정렬 */
+
+.comment-item {
+    padding: 10px 8px 8px;
+    border-bottom: 1px solid rgba(229,231,235,0.8);
+}
+
+.comment-item.root {
+    padding-left: 0;
+}
+
+.comment-item.reply {
+    padding-left: 26px;
+    position: relative;
+}
+
+.comment-item.reply::before {
+    content: "";
+    position: absolute;
+    left: 10px;
+    top: 18px;
+    width: 10px;
+    height: 1px;
+    background: #d1d5db;
+}
+
+/* 댓글 메타 정보 */
+
+.comment-meta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 4px 8px;
+    font-size: 12px;
+    margin-bottom: 4px;
+}
+
+.comment-writer {
+    font-weight: 600;
+    color: #111827;
+}
+
+.comment-date {
+    font-size: 11px;
+    color: #9ca3af;
+}
+
+.comment-secret-badge {
+    font-size: 10px;
+    padding: 2px 7px;
+    border-radius: 999px;
+    background: #fef3c7;
+    color: #b45309;
+    border: 1px solid #facc15;
+}
+
+/* 댓글 내용 */
+
+.comment-content {
+    font-size: 13px;
+    color: #111827;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    word-break: break-word;
+    margin-bottom: 6px;
+}
+
+.comment-content.secret {
+    font-size: 13px;
+    color: #9ca3af;
+    font-style: italic;
+}
+
+/* 댓글 액션 버튼 영역 */
+
+.comment-actions,
+.comment-reply-btn {
+    display: inline-flex;
+    gap: 6px;
+    font-size: 12px;
+}
+
+/* 텍스트 링크 버튼 (수정/삭제/답글) */
+
+.btn-link {
+    border: none;
+    background: none;
+    padding: 0;
+    font-size: 12px;
+    color: #6b7280;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.btn-link:hover {
+    color: #4169ff;
+}
+
+.btn-link.danger {
+    color: #dc2626;
+}
+
+.btn-link.danger:hover {
+    color: #b91c1c;
+}
+
+/* 수정/답글 폼 살짝 들여쓰기 */
+
+.comment-edit-form {
+    margin-top: 6px;
+}
+
+.comment-reply-form {
+    margin-top: 4px;
+}
+
+.comment-content.deleted {
+    font-size: 13px;
+    color: #9ca3af;
+    font-style: italic;
+}
+
+.notice-deny {
+    background: #fff4f4;
+    border: 1px solid #f5bcbc;
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    color: #b91c1c;
+    margin-bottom: 14px;
+}
+
+.board-main-title {
+    display: flex;
+    align-items: center;
+    gap: 8px; /* 제목과 자물쇠 간격 */
+}
+
+.secret-icon {
+    font-size: 18px;
+    color: #ef4444; /* 빨간색 계열 */
+    vertical-align: middle;
+}
+/* 모바일 대응을 조금만 해두고 싶으면 (선택) */
+@media (max-width: 1400px) {
+    .board-inner {
+        width: 100%;
+        max-width: 1320px;
+        padding: 0 16px;
+        box-sizing: border-box;
+    }
+}

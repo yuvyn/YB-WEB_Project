@@ -399,3 +399,16 @@ body.board-page {
        background: #111827;
        color: #f9fafb;
    }
+   
+   /* 제목 + 자물쇠 아이콘 정렬 */
+.title-cell .title-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px; /* 제목과 자물쇠 사이 간격 */
+}
+
+/* 자물쇠 스타일 */
+.secret-icon {
+    font-size: 14px;
+    color: #ef4444; /* 살짝 눈에 띄는 빨간 계열 */
+}

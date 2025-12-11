@@ -120,6 +120,11 @@
 					               th:checked="${post.noticePin}" />
 					        <span>상단 공지로 고정하기</span>
 					    </label>
+					    
+					    <label class="chk-secret">
+						    <input type="checkbox" name="secret" th:checked="${post.secret}">
+						    비밀글로 등록
+						</label>
 					</div>
 
                     <!-- 내용 -->
