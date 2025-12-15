@@ -88,28 +88,30 @@
 
         <!-- 우측 로그인 / 게임시작 -->
         <div class="header-actions">
-            <!-- 로그인 상태 -->
-            <div th:if="${session.loginMember != null}">
-		        <!-- 🔹 이름 클릭 시 마이페이지 이동 -->
-		        <a th:href="@{/mypage}" class="mypage-link">
-		            <span th:text="${session.loginMember.name}">모험가</span>
-		        </a>님 환영합니다.
-		        
-		        <form th:action="@{/logout}" method="post" style="display:inline;">
-		            <button class="btn-login" type="submit">LOGOUT</button>
-		        </form>
-		    </div>
+    <!-- 로그인 상태 -->
+    <div class="welcome-box" th:if="${session.loginMember != null}">
+        <!-- 닉네임(… 대상) -->
+        <a th:href="@{/mypage}" class="mypage-link tooltip-hover">
+            <span class="member-name" th:text="${session.loginMember.name}">모험가</span>
+        </a>
+        <!-- 항상 보여야 하는 부분 -->
+        <span class="welcome-fixed">님 환영합니다.</span>
 
-            <!-- 비로그인 상태 -->
-            <div th:if="${session.loginMember == null}">
-                <a th:href="@{/login}">
-                    <button class="btn-login" type="button">LOGIN</button>
-                </a>
-            </div>
+        <form th:action="@{/logout}" method="post" style="display:inline;">
+            <button class="btn-login" type="submit">LOGOUT</button>
+        </form>
+    </div>
 
-            <button class="btn-game-start" type="button"
-                    th:onclick="|location.href='@{/game}'|">GAME START</button>
-        </div>
+    <!-- 비로그인 상태 -->
+    <div th:if="${session.loginMember == null}">
+        <a th:href="@{/login}">
+            <button class="btn-login" type="button">LOGIN</button>
+        </a>
+    </div>
+
+    <button class="btn-game-start" type="button"
+            th:onclick="|location.href='@{/game}'|">GAME START</button>
+</div>
     </div>
 
     <div class="header-glow"></div>

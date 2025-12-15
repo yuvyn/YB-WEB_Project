@@ -412,3 +412,61 @@ body.board-page {
     font-size: 14px;
     color: #ef4444; /* 살짝 눈에 띄는 빨간 계열 */
 }
+
+/* 🔹 상단 주요 공지 카드 제목 링크 */
+.update-featured-card .featured-title a {
+    display: inline-block;
+    text-decoration: none;
+    color: #111827;             /* 기본 진한 글자색 */
+    font-weight: 700;
+    line-height: 1.4;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+    transition: color 0.15s ease, transform 0.15s ease;
+}
+
+/* 방문 여부와 관계없이 같은 색상 유지 */
+.update-featured-card .featured-title a:link,
+.update-featured-card .featured-title a:visited {
+    color: #111827;
+}
+
+/* 호버 시만 살짝 강조 */
+.update-featured-card .featured-title a:hover {
+    color: #4f46e5;             /* 살짝 포인트 컬러 */
+    transform: translateY(-1px);
+}
+
+/* 🔹 공지 목록 테이블 제목 링크 */
+.board-table .title-cell .title-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    text-decoration: none;
+    color: #111827;
+    font-weight: 500;
+    max-width: 100%;
+}
+
+/* 방문 여부와 상관없이 동일한 색 */
+.board-table .title-cell .title-link:link,
+.board-table .title-cell .title-link:visited {
+    color: #111827;
+}
+
+/* 호버 시 */
+.board-table tbody tr:hover .title-cell .title-link {
+    color: #4f46e5;
+}
+
+/* 보드 메인 안의 링크 공통 정리 */
+.board-main a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.board-main a:hover {
+    text-decoration: none;
+}
