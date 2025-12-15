@@ -92,7 +92,7 @@
     <div class="welcome-box" th:if="${session.loginMember != null}">
         <!-- 닉네임(… 대상) -->
         <a th:href="@{/mypage}" class="mypage-link tooltip-hover">
-            <span class="member-name" th:text="${session.loginMember.name}">모험가</span>
+            <span class="member-name" th:text="${session.loginMember.name}">닉네임</span>
         </a>
         <!-- 항상 보여야 하는 부분 -->
         <span class="welcome-fixed">님 환영합니다.</span>

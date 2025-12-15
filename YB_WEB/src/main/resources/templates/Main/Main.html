@@ -296,8 +296,6 @@
 	    </div>
 	</div>
 
-    <!-- 하단 푸터 -->
-    <th:block th:replace="layout/footer :: footer"></th:block>
 </div>
 <script th:src="@{/js/main.js}"></script>
 <script th:inline="javascript">
@@ -317,5 +315,9 @@
     }
 });
 </script>
+
+<!-- 공통 푸터 -->
+    <th:block th:replace="layout/footer :: footer"></th:block>
+
 </body>
 </html>
