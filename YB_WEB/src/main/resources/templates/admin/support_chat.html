@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Admin - Support Chat</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    .row { display: flex; gap: 16px; }
+    .panel { border: 1px solid #ddd; border-radius: 8px; padding: 12px; width: 360px; }
+    .chat { flex: 1; border: 1px solid #ddd; border-radius: 8px; padding: 12px; min-height: 520px; display:flex; flex-direction:column; }
+    .list { list-style: none; padding: 0; margin: 0; }
+    .list li { border-bottom: 1px solid #eee; padding: 8px 0; display:flex; justify-content:space-between; align-items:center; }
+    .msgbox { flex: 1; overflow:auto; border: 1px solid #eee; border-radius: 8px; padding: 8px; background:#fafafa; }
+    .msg { margin: 6px 0; }
+    .msg .who { font-weight: bold; margin-right: 6px; }
+    .sys { color: #777; font-style: italic; }
+    .input { display:flex; gap: 8px; margin-top: 10px; }
+    input { flex:1; padding: 10px; border-radius:8px; border:1px solid #ddd; }
+    button { padding: 10px 12px; border-radius: 8px; border:1px solid #ccc; cursor:pointer; }
+    button.primary { background:#111; color:#fff; border-color:#111; }
+    .badge { display:inline-block; padding:2px 6px; border-radius:999px; font-size:12px; background:#eee; }
+  </style>
+</head>
+<body>
+<h2>고객센터 1:1 상담 (어드민)</h2>
+
+<div class="row">
+  <div class="panel">
+    <h3>대기중(WAITING) <span class="badge" id="waitCount">0</span></h3>
+    <button class="primary" id="btnAcceptNext">다음 상담 수락</button>
+    <ul class="list" id="waitingList"></ul>
+  </div>
+
+  <div class="chat">
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+      <div>
+        <h3 style="margin:0;">현재 상담 세션: <span id="activeSession">-</span></h3>
+        <div class="sys" id="statusText">대기중인 상담을 수락해 주세요.</div>
+      </div>
+      <button id="btnClose">상담 종료</button>
+    </div>
+
+    <div class="msgbox" id="msgbox"></div>
+
+    <div class="input">
+      <input id="text" placeholder="메시지 입력..." />
+      <button class="primary" id="btnSend">전송</button>
+    </div>
+  </div>
+</div>
+
+<!-- SockJS / STOMP -->
+<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+
+<script>
+  const waitingListEl = document.getElementById('waitingList');
+  const waitCountEl = document.getElementById('waitCount');
+  const msgbox = document.getElementById('msgbox');
+  const activeSessionEl = document.getElementById('activeSession');
+  const statusTextEl = document.getElementById('statusText');
+
+  const btnAcceptNext = document.getElementById('btnAcceptNext');
+  const btnSend = document.getElementById('btnSend');
+  const btnClose = document.getElementById('btnClose');
+  const textEl = document.getElementById('text');
+
+  let activeSessionId = null;
+  let stompClient = null;
+  let subscribed = false;
+
+  function appendSys(text){
+    const div = document.createElement('div');
+    div.className = 'msg sys';
+    div.textContent = text;
+    msgbox.appendChild(div);
+    msgbox.scrollTop = msgbox.scrollHeight;
+  }
+  function appendMsg(who, text){
+    const div = document.createElement('div');
+    div.className = 'msg';
+    div.innerHTML = `<span class="who">${who}</span><span>${escapeHtml(text)}</span>`;
+    msgbox.appendChild(div);
+    msgbox.scrollTop = msgbox.scrollHeight;
+  }
+  function escapeHtml(s){
+    return (s||'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;');
+  }
+
+  async function loadWaiting(){
+    const res = await fetch('/api/admin/support/waiting');
+    if(!res.ok) return;
+    const list = await res.json();
+    waitCountEl.textContent = list.length;
+    waitingListEl.innerHTML = '';
+    list.forEach(item => {
+      const li = document.createElement('li');
+      li.innerHTML = `
+        <span>session #${item.id} / user:${item.userMemberId}</span>
+        <button data-id="${item.id}">수락</button>
+      `;
+      li.querySelector('button').addEventListener('click', async () => {
+        await acceptSession(item.id);
+      });
+      waitingListEl.appendChild(li);
+    });
+  }
+
+  function connectWs(){
+    if(stompClient) return;
+    const socket = new SockJS('/ws');
+    stompClient = Stomp.over(socket);
+    stompClient.debug = null;
+    stompClient.connect({}, () => {
+      appendSys('WebSocket 연결됨');
+      // activeSessionId가 생기면 그때 subscribe
+      if(activeSessionId) subscribeSession(activeSessionId);
+    });
+  }
+
+  function subscribeSession(sessionId){
+    if(!stompClient || subscribed) return;
+    stompClient.subscribe('/topic/support/' + sessionId, (frame) => {
+      const data = JSON.parse(frame.body);
+
+      if(data.senderRole === 'USER'){
+        appendMsg('USER', data.message);
+      } else if(data.senderRole === 'ADMIN'){
+        appendMsg('ADMIN', data.message);
+      } else {
+        appendSys(data.message);
+      }
+    });
+    subscribed = true;
+  }
+
+  async function loadHistory(sessionId){
+    const res = await fetch('/api/admin/support/history/' + sessionId);
+    if(!res.ok) return;
+    const history = await res.json();
+    msgbox.innerHTML = '';
+    history.forEach(m => {
+      if(m.senderRole === 'USER') appendMsg('USER', m.message);
+      else if(m.senderRole === 'ADMIN') appendMsg('ADMIN', m.message);
+      else appendSys(m.message);
+    });
+  }
+
+  async function acceptSession(sessionId){
+    const res = await fetch('/api/admin/support/' + sessionId + '/accept', { method:'POST' });
+    if(!res.ok){
+      appendSys('수락 실패: ' + res.status);
+      return;
+    }
+    const acceptedId = await res.json(); // sessionId
+    activeSessionId = acceptedId;
+    activeSessionEl.textContent = acceptedId;
+    statusTextEl.textContent = '상담 진행중(ACTIVE)';
+    subscribed = false;
+    connectWs();
+    subscribeSession(activeSessionId);
+    await loadHistory(activeSessionId);
+    await loadWaiting();
+  }
+
+  btnAcceptNext.addEventListener('click', async () => {
+    const res = await fetch('/api/admin/support/accept-next', { method:'POST' });
+    if(!res.ok){
+      appendSys('다음 상담 수락 실패: ' + res.status);
+      return;
+    }
+    const acceptedId = await res.json();
+    activeSessionId = acceptedId;
+    activeSessionEl.textContent = acceptedId;
+    statusTextEl.textContent = '상담 진행중(ACTIVE)';
+    subscribed = false;
+    connectWs();
+    subscribeSession(activeSessionId);
+    await loadHistory(activeSessionId);
+    await loadWaiting();
+  });
+
+  btnSend.addEventListener('click', () => {
+    const text = textEl.value.trim();
+    if(!text) return;
+    if(!activeSessionId || !stompClient){
+      appendSys('먼저 상담을 수락하세요.');
+      return;
+    }
+    stompClient.send('/app/support/' + activeSessionId + '/send', {}, JSON.stringify({ text }));
+    textEl.value = '';
+  });
+
+  textEl.addEventListener('keydown', (e) => {
+    if(e.key === 'Enter'){
+      e.preventDefault();
+      btnSend.click();
+    }
+  });
+
+  btnClose.addEventListener('click', async () => {
+    if(!activeSessionId) return;
+    const res = await fetch('/api/admin/support/' + activeSessionId + '/close', { method:'POST' });
+    if(res.ok){
+      appendSys('상담 종료됨');
+      statusTextEl.textContent = '상담 종료(CLOSED)';
+      activeSessionId = null;
+      activeSessionEl.textContent = '-';
+      subscribed = false;
+      await loadWaiting();
+    } else {
+      appendSys('종료 실패: ' + res.status);
+    }
+  });
+
+  // 초기 로딩
+  connectWs();
+  loadWaiting();
+  setInterval(loadWaiting, 2000);
+</script>
+</body>
+</html>

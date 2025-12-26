@@ -15,6 +15,9 @@
 </head>
 <body>
 
+<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+
 <div class="page">
 
     <!-- 상단 헤더 -->
@@ -329,6 +332,9 @@
 
         // 현재 모드: bot(챗봇), agent_wait(상담원 대기), agent(상담원 연결됨)
         let chatMode = 'bot';
+        let sessionId = null;
+        let stompClient = null;
+        let connected = false;
 
         // 더미 FAQ 답변 맵
         const quickAnswers = {
@@ -402,61 +408,53 @@
         });
 
         // 상담원 연결 요청(더미)
-        function requestAgent() {
-            // 모드 변경
-            chatMode = 'agent_wait';
+        async function requestAgent() {
+    chatMode = 'agent_wait';
+    appendSystemMessage('상담원 연결을 요청했습니다. 상담원이 수락하면 채팅이 시작됩니다.');
 
-            appendSystemMessage('상담원 연결을 요청하셨습니다. 잠시만 기다려 주세요...');
+    try {
+        // 1) 서버에 상담 요청 (세션 생성/재사용) -> sessionId 받기
+        const res = await fetch('/api/user/support/request', { method:'POST' });
+		if (!res.ok) throw new Error('상담 요청 실패');
+		sessionId = await res.json();
 
-            // 상담원이 입장하는 것처럼 더미 연출
-            setTimeout(function () {
-                appendSystemMessage('상담원이 채팅에 입장했습니다.');
-                appendMessage('bot',
-                    '[상담원] 안녕하세요, YB WEB 고객센터입니다. 😊\n' +
-                    '궁금하신 내용을 자세히 적어 주시면 순서대로 안내 도와드리겠습니다.'
-                );
-                chatMode = 'agent';
-            }, 1200);
-        }
+        // 2) WebSocket 연결 + 구독
+        connectWsAndSubscribe(sessionId);
+
+        // 3) 상태 확인 폴링 (어드민이 acceptNext 해서 ACTIVE 되면 시작)
+        startPollingForAccept(sessionId);
+
+    } catch (e) {
+        console.error(e);
+        appendSystemMessage('상담 요청 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.');
+        chatMode = 'bot';
+    }
+}
 
         // 입력창 submit
         chatForm.addEventListener('submit', function (e) {
-            e.preventDefault();
-            const text = chatTextarea.value.trim();
-            if (!text) return;
+    e.preventDefault();
+    const text = chatTextarea.value.trim();
+    if (!text) return;
 
-            // 내 메시지
-            appendMessage('user', text);
-            chatTextarea.value = '';
+    if (chatMode !== 'agent') {
+        appendSystemMessage('상담원이 수락한 뒤에 메시지를 보낼 수 있습니다.');
+        chatTextarea.value = '';
+        return;
+    }
 
-            // 모드에 따라 응답 다르게
-            if (chatMode === 'bot') {
-                // 챗봇 기본 응답 (자유 입력용)
-                setTimeout(function () {
-                    appendMessage('bot',
-                        '문의해 주셔서 감사합니다. 🙏\n' +
-                        '현재는 데모 버전으로, 실제 상담원과의 연결은 구현 전입니다.\n' +
-                        '실 서비스에서는 담당자가 순차적으로 채팅에 참여하여 1:1 안내를 드리게 됩니다.'
-                    );
-                }, 800);
-            } else if (chatMode === 'agent_wait') {
-                // 상담원 대기 중일 때
-                setTimeout(function () {
-                    appendMessage('bot',
-                        '[시스템] 현재 상담원 연결을 준비 중입니다. 잠시만 기다려 주세요.'
-                    );
-                }, 600);
-            } else if (chatMode === 'agent') {
-                // 상담원 모드인 것처럼 응답 (더미)
-                setTimeout(function () {
-                    appendMessage('bot',
-                        '[상담원] 남겨주신 내용을 확인 중입니다.\n' +
-                        '현재 데모 환경이라 실제 계정/결제 정보는 확인할 수 없지만,\n' +
-                        '실제 서비스에서는 이 위치에서 상담원이 직접 답변을 입력하게 됩니다.'
-                    );
-                }, 900);
-            }
-        });
+    if (!connected || !stompClient || !sessionId) {
+        appendSystemMessage('채팅 연결이 준비되지 않았습니다. 잠시 후 다시 시도해 주세요.');
+        return;
+    }
+
+    // 내 메시지는 UI에 즉시 표시(선택)
+    appendMessage('user', text);
+    chatTextarea.value = '';
+
+    // 서버로 전송
+    stompClient.send('/app/support/' + sessionId + '/send', {}, JSON.stringify({ text }));
+});
 
         // 일반 메시지(유저/봇)
         function appendMessage(type, text) {
@@ -494,6 +492,75 @@
 
             chatBody.appendChild(msg);
             chatBody.scrollTop = chatBody.scrollHeight;
+        }
+        
+        let subscription = null;
+
+        function connectWsAndSubscribe(sessionId) {
+          const doSubscribe = () => {
+            if (subscription) subscription.unsubscribe();
+            subscription = stompClient.subscribe('/topic/support/' + sessionId, function (frame) {
+              const data = JSON.parse(frame.body);
+              if (data.senderRole === 'USER') appendMessage('user', data.message);
+              else if (data.senderRole === 'ADMIN') appendMessage('bot', `[상담원] ${data.message}`);
+              else appendSystemMessage(data.message);
+            });
+          };
+
+          // 이미 연결되어 있으면 구독만 갱신
+          if (connected && stompClient) {
+            doSubscribe();
+            return;
+          }
+
+          const socket = new SockJS('/ws');
+          stompClient = Stomp.over(socket);
+          stompClient.debug = null;
+
+          stompClient.connect({}, function () {
+            connected = true;
+            doSubscribe();
+          });
+        }
+        
+        let pollTimer = null;
+
+        async function startPollingForAccept(sessionId) {
+            if (pollTimer) clearInterval(pollTimer);
+
+            pollTimer = setInterval(async function () {
+                try {
+                    // 세션 상태 확인용 API 하나 만들면 좋음
+                    // 지금은 간단히 history 조회가 되면 ACTIVE라고 가정하는 방식은 위험해서
+                    // 아래처럼 status API를 추가하는 걸 추천함.
+                    const res = await fetch('/api/user/support/status/' + sessionId); // 아래 서버 코드 참고
+                    if (!res.ok) return;
+                    const status = (await res.text()).trim(); // "WAITING" or "ACTIVE" or "CLOSED"
+
+                    if (status === 'ACTIVE') {
+                        clearInterval(pollTimer);
+                        pollTimer = null;
+
+                        chatMode = 'agent';
+                        appendSystemMessage('상담원이 연결되었습니다. 문의 내용을 입력해 주세요.');
+                        // (선택) 기존 히스토리 불러오기
+                        loadHistory(sessionId);
+                    }
+                } catch (e) {}
+            }, 1500);
+        }
+
+        async function loadHistory(sessionId) {
+            try {
+                const res = await fetch('/api/user/support/history/' + sessionId);
+                if (!res.ok) return;
+                const history = await res.json();
+                history.forEach(m => {
+                    if (m.senderRole === 'USER') appendMessage('user', m.message);
+                    else if (m.senderRole === 'ADMIN') appendMessage('bot', `[상담원] ${m.message}`);
+                    else appendSystemMessage(m.message);
+                });
+            } catch (e) {}
         }
     });
 </script>
