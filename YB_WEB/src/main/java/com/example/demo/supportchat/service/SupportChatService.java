@@ -69,12 +69,21 @@ public class SupportChatService {
     public void close(Long sessionId, Long adminMemberId) {
         ChatSession s = sessionRepo.findById(sessionId).orElseThrow();
         if (s.getStatus() != ChatStatus.ACTIVE) return;
+
         if (s.getAdminMemberId() == null || !s.getAdminMemberId().equals(adminMemberId)) {
             throw new SecurityException("담당 상담원이 아닙니다.");
         }
+
         s.close();
         sessionRepo.save(s);
-        messageRepo.save(ChatMessage.of(sessionId, SenderRole.SYSTEM, null, "상담이 종료되었습니다."));
+
+        // ✅ 종료 시스템 메시지 저장
+        ChatMessage closedMsg = messageRepo.save(
+                ChatMessage.of(sessionId, SenderRole.SYSTEM, null, "상담이 종료되었습니다.")
+        );
+
+        // ✅ 실시간 전송 (이게 핵심)
+        messagingTemplate.convertAndSend("/topic/support/" + sessionId, closedMsg);
     }
 
     @Transactional(readOnly = true)

@@ -314,7 +314,7 @@
         <form class="chat-input-area">
             <textarea rows="1"
                       placeholder="문의 내용을 입력해 주세요. (스크린샷 등은 게시판 문의를 이용해 주세요.)"></textarea>
-            <button type="submit">전송</button>
+            <button type="submit" id="btnUserSend">전송</button>
         </form>
     </div>
 
@@ -329,6 +329,7 @@
         const chatForm = document.querySelector('.chat-input-area');
         const chatTextarea = chatForm.querySelector('textarea');
         const quickButtons = document.querySelectorAll('.chat-quick-btn');
+        const btnUserSend = document.getElementById('btnUserSend');
 
         // 현재 모드: bot(챗봇), agent_wait(상담원 대기), agent(상담원 연결됨)
         let chatMode = 'bot';
@@ -364,6 +365,15 @@
             // human 은 아래에서 따로 처리
         };
 
+        function setChatClosedUI() {
+        	  chatMode = 'closed';
+        	  chatTextarea.disabled = true;
+        	  if (btnUserSend) btnUserSend.disabled = true;
+
+        	  // (선택) placeholder 변경
+        	  chatTextarea.placeholder = '상담이 종료되었습니다. 새 문의는 다시 상담원 연결을 요청해 주세요.';
+        	}
+        
         function openChat() {
             chatWindow.classList.add('open');
         }
@@ -437,6 +447,12 @@
     const text = chatTextarea.value.trim();
     if (!text) return;
 
+    if (chatMode === 'closed') {
+    	  appendSystemMessage('상담이 종료되었습니다. 새 문의는 상담원 연결 요청을 다시 진행해 주세요.');
+    	  chatTextarea.value = '';
+    	  return;
+    	}
+    
     if (chatMode !== 'agent') {
         appendSystemMessage('상담원이 수락한 뒤에 메시지를 보낼 수 있습니다.');
         chatTextarea.value = '';
@@ -500,11 +516,31 @@
           const doSubscribe = () => {
             if (subscription) subscription.unsubscribe();
             subscription = stompClient.subscribe('/topic/support/' + sessionId, function (frame) {
-              const data = JSON.parse(frame.body);
-              if (data.senderRole === 'USER') appendMessage('user', data.message);
-              else if (data.senderRole === 'ADMIN') appendMessage('bot', `[상담원] ${data.message}`);
-              else appendSystemMessage(data.message);
-            });
+            	  const data = JSON.parse(frame.body);
+
+            	  if (data.senderRole === 'USER') {
+            	    appendMessage('user', data.message);
+            	    return;
+            	  }
+            	  if (data.senderRole === 'ADMIN') {
+            	    appendMessage('bot', `[상담원] ${data.message}`);
+            	    return;
+            	  }
+
+            	  // ✅ SYSTEM
+            	  appendSystemMessage(data.message);
+
+            	  // ✅ 종료 메시지면 입력 막기
+            	  if ((data.message || '').includes('상담이 종료되었습니다')) {
+            	    setChatClosedUI();
+
+            	    // (선택) 폴링도 멈추기
+            	    if (pollTimer) {
+            	      clearInterval(pollTimer);
+            	      pollTimer = null;
+            	    }
+            	  }
+            	});
           };
 
           // 이미 연결되어 있으면 구독만 갱신
@@ -543,6 +579,9 @@
 
                         chatMode = 'agent';
                         appendSystemMessage('상담원이 연결되었습니다. 문의 내용을 입력해 주세요.');
+                        
+                        chatTextarea.disabled = false;
+                        if (btnUserSend) btnUserSend.disabled = false;
                         // (선택) 기존 히스토리 불러오기
                         loadHistory(sessionId);
                     }
