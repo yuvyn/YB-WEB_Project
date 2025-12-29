@@ -24,11 +24,6 @@ public class MainController {
         return "event/eventB";
     }
     
-    @GetMapping("/game")
-    public String game() {
-        return "game/game";
-    }
-    
     @GetMapping("/QnA")
     public String QnA() {
         return "board/QnAboard";
