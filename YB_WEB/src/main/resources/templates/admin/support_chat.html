@@ -3,34 +3,159 @@
 <head>
 <meta charset="UTF-8">
 <title>Admin - Support Chat</title>
-<link rel="stylesheet" th:href="@{/css/admin/support_chat.css}">
+
+  <!-- 관리자 공통 CSS(방금 만든 것) -->
+  <link rel="stylesheet" th:href="@{/css/admin/admin.css}">
+  <!-- 상담 전용 오버라이드 -->
+  <link rel="stylesheet" th:href="@{/css/admin/support_chat.css}">
 </head>
 <body>
-<h2>고객센터 1:1 상담 (어드민)</h2>
 
-<div class="row">
-  <div class="panel">
-    <h3>대기중(WAITING) <span class="badge" id="waitCount">0</span></h3>
-    <button class="primary" id="btnAcceptNext">다음 상담 수락</button>
-    <ul class="list" id="waitingList"></ul>
-  </div>
+<div class="admin-shell">
 
-  <div class="chat">
-    <div style="display:flex; justify-content:space-between; align-items:center;">
-      <div>
-        <h3 style="margin:0;">현재 상담 세션: <span id="activeSession">-</span></h3>
-        <div class="sys" id="statusText">대기중인 상담을 수락해 주세요.</div>
+  <!-- ===== 좌측 사이드바 (admin.css와 동일한 구조) ===== -->
+  <aside class="admin-aside">
+    <div class="brand">
+      <div class="brand-logo">YB</div>
+      <div class="brand-text">
+        <strong>YB WEB</strong>
+        <span>Admin Console</span>
       </div>
-      <button id="btnClose">상담 종료</button>
     </div>
 
-    <div class="msgbox" id="msgbox"></div>
-
-    <div class="input">
-      <input id="text" placeholder="메시지 입력..." />
-      <button class="primary" id="btnSend">전송</button>
+    <div class="profile-card">
+      <div class="profile-avatar">홍</div>
+      <div class="profile-meta">
+        <strong>홍길동 (관리자)</strong>
+        <span>Customer Support</span>
+      </div>
+      <button class="profile-logout" type="button">로그아웃</button>
     </div>
-  </div>
+
+    <nav class="nav">
+      <div class="nav-group">
+        <div class="nav-title">고객센터</div>
+        <a class="nav-item active" href="#">
+          <span class="dot"></span> 1:1 상담
+        </a>
+        <a class="nav-item" href="#">
+          <span class="dot"></span> 문의 게시판
+        </a>
+      </div>
+
+      <div class="nav-group">
+        <div class="nav-title">시스템</div>
+        <a class="nav-item" href="#"><span class="dot"></span> 대시보드</a>
+        <a class="nav-item" href="#"><span class="dot"></span> 관리자 관리</a>
+      </div>
+    </nav>
+
+    <div class="aside-footer">
+      <div class="aside-tip">
+        <strong>Tip</strong>
+        <span>대기 상담은 “다음 상담 수락”으로 바로 연결하세요.</span>
+      </div>
+      <div class="aside-copy">© YB WEB</div>
+    </div>
+  </aside>
+
+  <!-- ===== 메인 ===== -->
+  <main class="admin-main">
+
+    <!-- 상단 탭 -->
+    <header class="topbar">
+      <div class="tabs">
+        <a class="tab" href="#"><span class="tab-ico">🏠</span> 홈<button class="tab-x" type="button">×</button></a>
+        <a class="tab active" href="#"><span class="tab-ico">💬</span> 1:1 상담<button class="tab-x" type="button">×</button></a>
+      </div>
+
+      <div class="topbar-actions">
+        <div class="searchbox">
+          <span class="s-ico">⌕</span>
+          <input type="text" placeholder="세션/유저 검색..." />
+        </div>
+        <button class="icon-btn" type="button" title="설정">⚙️</button>
+      </div>
+    </header>
+
+    <section class="content">
+
+      <div class="page-head">
+        <div class="page-title">
+          <h1>고객센터 1:1 상담</h1>
+          <p>대기 세션을 수락하고 실시간 채팅으로 응대합니다.</p>
+        </div>
+        <div class="crumbs">
+          <span>고객센터</span><span class="sep">›</span><span class="current">1:1 상담</span>
+        </div>
+      </div>
+
+      <!-- 위쪽 상태/배너 -->
+      <div class="hero-strip">
+        <div class="hero-left">
+          <span class="badge">SUPPORT</span>
+          <strong>실시간 상담 운영</strong>
+          <p>대기 목록 → 수락 → 진행 → 종료 순서로 처리하세요.</p>
+        </div>
+        <div class="hero-right">
+          <div class="mini-stat">
+            <span class="k">대기</span>
+            <span class="v" id="waitCount">0</span>
+          </div>
+          <div class="mini-stat">
+            <span class="k">현재 세션</span>
+            <span class="v" id="activeSession">-</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 메인 2열 -->
+      <div class="support-grid">
+
+        <!-- LEFT: WAITING -->
+        <section class="card support-panel">
+          <div class="card-head">
+            <h2>대기중(WAITING)</h2>
+            <div class="actions">
+              <button class="btn dark" id="btnAcceptNext" type="button">다음 상담 수락</button>
+            </div>
+          </div>
+
+          <ul class="waiting-list" id="waitingList"></ul>
+
+          <div class="panel-foot muted">
+            * 목록은 자동 갱신됩니다.
+          </div>
+        </section>
+
+        <!-- RIGHT: CHAT -->
+        <section class="card support-chat">
+          <div class="support-chat-head">
+            <div>
+              <h2 class="chat-title">
+                진행 상태 <span class="chat-pill" id="statusText">대기중인 상담을 수락해 주세요.</span>
+              </h2>
+              <div class="chat-sub">
+                세션: <strong id="activeSessionTop">-</strong>
+              </div>
+            </div>
+
+            <div class="actions">
+              <button class="btn soft" type="button" id="btnClose">상담 종료</button>
+            </div>
+          </div>
+
+          <div class="chat-body" id="msgbox"></div>
+
+          <div class="chat-input">
+            <input id="text" placeholder="메시지 입력..." />
+            <button class="btn dark" id="btnSend" type="button">전송</button>
+          </div>
+        </section>
+
+      </div>
+    </section>
+  </main>
 </div>
 
 <!-- SockJS / STOMP -->
@@ -42,6 +167,7 @@
   const waitCountEl = document.getElementById('waitCount');
   const msgbox = document.getElementById('msgbox');
   const activeSessionEl = document.getElementById('activeSession');
+  const activeSessionTop = document.getElementById('activeSessionTop');
   const statusTextEl = document.getElementById('statusText');
 
   const btnAcceptNext = document.getElementById('btnAcceptNext');
@@ -55,16 +181,18 @@
 
   function appendSys(text){
     const div = document.createElement('div');
-    div.className = 'msg sys';
+    div.className = 'chat-msg system';
     div.textContent = text;
     msgbox.appendChild(div);
     msgbox.scrollTop = msgbox.scrollHeight;
   }
   function appendMsg(who, text){
     const div = document.createElement('div');
- 	// ✅ ADMIN = 오른쪽, USER = 왼쪽
-    div.className = 'msg ' + (who === 'ADMIN' ? 'admin' : 'user');
-    div.innerHTML = `<span class="who">${who}</span><span>${escapeHtml(text)}</span>`;
+    div.className = 'chat-msg ' + (who === 'ADMIN' ? 'admin' : 'user');
+    div.innerHTML = `
+      <div class="who">${who === 'ADMIN' ? 'ADMIN' : 'USER'}</div>
+      <div class="bubble">${escapeHtml(text)}</div>
+    `;
     msgbox.appendChild(div);
     msgbox.scrollTop = msgbox.scrollHeight;
   }
@@ -80,9 +208,13 @@
     waitingListEl.innerHTML = '';
     list.forEach(item => {
       const li = document.createElement('li');
+      li.className = 'waiting-item';
       li.innerHTML = `
-        <span>session #${item.id} / user:${item.userMemberId}</span>
-        <button data-id="${item.id}">수락</button>
+        <div class="w-meta">
+          <strong>session #${item.id}</strong>
+          <span>user: ${item.userMemberId}</span>
+        </div>
+        <button class="btn" data-id="${item.id}" type="button">수락</button>
       `;
       li.querySelector('button').addEventListener('click', async () => {
         await acceptSession(item.id);
@@ -98,7 +230,6 @@
     stompClient.debug = null;
     stompClient.connect({}, () => {
       appendSys('WebSocket 연결됨');
-      // activeSessionId가 생기면 그때 subscribe
       if(activeSessionId) subscribeSession(activeSessionId);
     });
   }
@@ -107,7 +238,6 @@
     if(!stompClient || subscribed) return;
     stompClient.subscribe('/topic/support/' + sessionId, (frame) => {
       const data = JSON.parse(frame.body);
-
       if(data.senderRole === 'USER'){
         appendMsg('USER', data.message);
       } else if(data.senderRole === 'ADMIN'){
@@ -137,9 +267,10 @@
       appendSys('수락 실패: ' + res.status);
       return;
     }
-    const acceptedId = await res.json(); // sessionId
+    const acceptedId = await res.json();
     activeSessionId = acceptedId;
     activeSessionEl.textContent = acceptedId;
+    activeSessionTop.textContent = acceptedId;
     statusTextEl.textContent = '상담 진행중(ACTIVE)';
     subscribed = false;
     connectWs();
@@ -157,6 +288,7 @@
     const acceptedId = await res.json();
     activeSessionId = acceptedId;
     activeSessionEl.textContent = acceptedId;
+    activeSessionTop.textContent = acceptedId;
     statusTextEl.textContent = '상담 진행중(ACTIVE)';
     subscribed = false;
     connectWs();
@@ -191,6 +323,7 @@
       statusTextEl.textContent = '상담 종료(CLOSED)';
       activeSessionId = null;
       activeSessionEl.textContent = '-';
+      activeSessionTop.textContent = '-';
       subscribed = false;
       await loadWaiting();
     } else {
@@ -198,7 +331,6 @@
     }
   });
 
-  // 초기 로딩
   connectWs();
   loadWaiting();
   setInterval(loadWaiting, 2000);
