@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>일시적인 오류가 발생했습니다</title>
+    <link rel="stylesheet" href="/css/500error.css">
+</head>
+<body>
+
+<div class="error-wrap">
+    <!-- 500 전용 큰 코드 표시 -->
+    <div class="error-code">403</div>
+
+    <div class="error-title">접근 권한이 없습니다</div>
+
+    <p class="error-msg">
+        접근 권한이 없습니다
+    </p>
+
+    <div class="btn-area">
+        <a href="javascript:location.reload();" class="btn btn-dark">새로고침</a>
+        <a href="/" class="btn btn-orange">메인으로 이동</a>
+    </div>
+
+    <div class="error-detail">
+        요청 경로: <span th:text="${path}"></span>
+        · 상태코드: <span th:text="${status}"></span>
+        · 오류메시지: <span th:text="${error}"></span>
+    </div>
+</div>
+
+</body>
+</html>

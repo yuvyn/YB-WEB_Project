@@ -23,30 +23,72 @@
       </div>
     </div>
 
-    <div class="profile-card">
-      <div class="profile-avatar">홍</div>
-      <div class="profile-meta">
-        <strong>홍길동 (관리자)</strong>
-        <span>Customer Support</span>
-      </div>
-      <button class="profile-logout" type="button">로그아웃</button>
-    </div>
+    <div class="profile-card" th:if="${member != null}">
+  <div class="profile-avatar"
+       th:text="${#strings.substring(member.nickname, 0, 1)}">Y</div>
+
+  <div class="profile-meta">
+    <strong>
+      <span th:text="${member.nickname}">닉네임</span>
+      <span th:text="| (${member.role})|">(ADMIN)</span>
+    </strong>
+
+    <span class="muted"
+          th:text="${member.loginId}">loginId</span>
+
+    <!-- 원하면 이메일도 -->
+    <span class="muted"
+          th:text="${member.email}">email</span>
+  </div>
+
+  <!-- Spring Security 쓰면 /logout POST 권장 -->
+  <form th:action="@{/logout}" method="post" style="margin:0;">
+    <button class="profile-logout" type="submit">로그아웃</button>
+  </form>
+</div>
+
+<!-- member가 없을 때 fallback -->
+<div class="profile-card" th:if="${member == null}">
+  <div class="profile-avatar">?</div>
+  <div class="profile-meta">
+    <strong>Unknown</strong>
+    <span class="muted">Not logged in</span>
+  </div>
+</div>
 
     <nav class="nav">
       <div class="nav-group">
-        <div class="nav-title">고객센터</div>
-        <a class="nav-item active" href="#">
-          <span class="dot"></span> 1:1 상담
+        <div class="nav-title">시스템 관리</div>
+        <a class="nav-item" href="/admin">
+          <span class="dot"></span> 대시보드
         </a>
         <a class="nav-item" href="#">
-          <span class="dot"></span> 문의 게시판
+          <span class="dot"></span> 코드 관리
+        </a>
+        <a class="nav-item" href="#">
+          <span class="dot"></span> 권한 관리
+        </a>
+        <a class="nav-item" href="#">
+          <span class="dot"></span> 관리자 관리
         </a>
       </div>
 
       <div class="nav-group">
-        <div class="nav-title">시스템</div>
-        <a class="nav-item" href="#"><span class="dot"></span> 대시보드</a>
-        <a class="nav-item" href="#"><span class="dot"></span> 관리자 관리</a>
+        <div class="nav-title">개인정보 접속기록</div>
+        <a class="nav-item" href="/admin/access-log">
+          <span class="dot"></span> 접속 기록 조회
+        </a>
+        <a class="nav-item" href="#">
+          <span class="dot"></span> 비정상행위 조회
+        </a>
+      </div>
+
+      <div class="nav-group">
+        <div class="nav-title">회원/운영</div>
+        <a class="nav-item" href="#"><span class="dot"></span> 회원 관리</a>
+        <a class="nav-item" href="#"><span class="dot"></span> 기타 관리</a>
+        <a class="nav-item active" href="/admin/support"><span class="dot"></span> 1:1 상담</a>
+        <a class="nav-item" href="#"><span class="dot"></span> 문의 게시판</a>
       </div>
     </nav>
 

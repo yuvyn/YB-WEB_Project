@@ -43,7 +43,10 @@
                             <span th:text="${#strings.substring(member.nickname, 0, 1)}">Y</span>
                         </div>
                         <div class="summary-info">
-                            <div class="summary-nick" th:text="${member.nickname}">YB모험가</div>
+                            <div class="summary-nick-wrap">
+							    <div class="summary-nick" th:text="${member.nickname}">YB모험가</div>
+									<a th:if="${member.role == 'ADMIN'}"th:href="@{/admin}" class="admin-link">관리자 페이지</a>
+								</div>
                             <div class="summary-meta">
                                 <span th:text="${member.loginId}">ybuser01</span>
                                 <span class="divider">·</span>
